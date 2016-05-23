@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<sdf version="1.5">
+  <world name="default">
+    <scene>
+      <shadows>true</shadows>
+    </scene>
+    <!-- A global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <!-- A ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <!-- Quadrotor model -->
+    <include>
+      <uri>model://gzcoav_drone</uri>
+    </include>
+    <!-- User Target -->
+    <model name="gzcoav_user_target">
+      <include>
+        <uri>model://gzcoav_user_target</uri>
+      </include>
+      <static>true</static>
+      <pose>0 0 1.5 0 0 0</pose>
+    </model>
+    <model name="gzcoav_target">
+      <include>
+        <uri>model://gzcoav_target</uri>
+      </include>
+      <static>true</static>
+      <pose>0 0 1.5 0 0 0</pose>
+    </model>
+  </world>
+</sdf>
