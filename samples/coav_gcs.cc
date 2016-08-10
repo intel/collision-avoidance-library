@@ -25,6 +25,7 @@
 
 #include "avoidance/QuadCopterVFFAvoidance.hh"
 #include "vehicles/GazeboQuadCopter.hh"
+#include "vehicles/MavQuadCopter.hh"
 #include "sensors/GazeboRealSenseCamera.hh"
 #include "detection/DepthImageObstacleDetector.hh"
 #include "common/common.hh"
@@ -155,7 +156,7 @@ int main(int argc, char **argv)
     case OTHER:
     case PHYSICAL:
     case GAZEBO:
-        vehicle = std::make_shared<GazeboQuadCopter>();
+        vehicle = std::make_shared<MavQuadCopter>();
         std::cout << "[coav] Vehicle instantiated" << std::endl;
     }
 
