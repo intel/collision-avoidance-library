@@ -45,11 +45,10 @@ const std::vector<Obstacle> &DepthImageObstacleDetector::detect()
     int num_obstacles;
     num_obstacles = this->extract_blobs();
 
-    // Return a copy of the obstacles with the correct size
-    std::vector<Obstacle> resized_obstacles(this->obstacles);
-    resized_obstacles.resize(num_obstacles);
+    // Return the obstacles with the correct size
+    this->obstacles.resize(num_obstacles);
 
-    return resized_obstacles;
+    return this->obstacles;
 }
 
 int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_labels)
@@ -120,6 +119,7 @@ int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_lab
 
 void init_obstacle_array(std::vector<Obstacle> &obstacles)
 {
+    obstacles.resize(MAX_NUM_BLOBS);
     for (unsigned int i = 0; i < obstacles.size(); ++i) {
         obstacles[i].id = -1;
         obstacles[i].center = glm::dvec3(-1, -1, -1);
