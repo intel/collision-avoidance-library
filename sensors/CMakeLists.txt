@@ -9,5 +9,5 @@ set (headers
 )
 
 add_library(sensors ${sources})
-target_link_libraries(sensors communication ${GAZEBO_libraries} ${LDFLAGS})
+target_link_libraries(sensors communication ${GAZEBO_LIBRARIES} ${LDFLAGS})
 
