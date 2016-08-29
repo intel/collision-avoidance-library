@@ -21,12 +21,29 @@ SCRIPT_DIR=$(dirname $(realpath ${BASH_SOURCE[0]}))
 SITL="arducopter-quad"
 
 silentkill () {
-	kill -SIGKILL $1 > /dev/null 2> /dev/null || true
+	SIGNAL=-SIGKILL
+	if [ ! -z $2 ]; then
+		SIGNAL=$2
+	fi
+	kill $SIGNAL $1 > /dev/null 2> /dev/null || true
+}
+
+sleep_until_takeoff () {
+	gz topic -u -e /gazebo/default/gzsitl_quadcopter_rs/vehicle_pose \
+		| python detect_takeoff.py $1 # Detect takeoff on distance $1
+}
+
+listen_collision () {
+	SLEEPTIME=$1
+	TOPIC=/gazebo/default/physics/contacts
+	gz topic -u -e $TOPIC | python detect_collision.py $SLEEPTIME
 }
 
 testcase () {
 	# TODO: run avoidance strategy
 	# TODO: check collision
+	WORLD=$1
+	SLEEPTIME=$2
 
 	# Create logdir if it does not exist
 	LOGDIR="${SCRIPT_DIR}/output/${1}"
@@ -34,37 +51,47 @@ testcase () {
 
 	# Run SITL Simulator
 	cd $SCRIPT_DIR # sitl must run in the same dir of "eeprom.bin"
-	$SITL --model x > "${LOGDIR}/sitl.log" 2> "${LOGDIR}/sitlerr.log" &
+	$SITL --model x \
+		> "${LOGDIR}/sitl.log" \
+		2> "${LOGDIR}/sitlerr.log" &
 	SITLID=$!
 	cd - > /dev/null
 
 	# Gazebo engine without GUI.
 	# The log can be played through `gazebo -p logfile`
-	SDFFILE="${SCRIPT_DIR}/worlds/${1}"
+	SDFFILE="${SCRIPT_DIR}/worlds/${WORLD}"
 	gzserver -r --record_path $LOGDIR $SDFFILE \
-		> "${LOGDIR}/gzserver.log" 2> "${LOGDIR}/gzservererr.log" &
+		> "${LOGDIR}/gzserver.log" \
+		2> "${LOGDIR}/gzservererr.log" &
 	GZID=$!
 
 	# socat creates a bidirectional conversion between SITL and gzsitl plugin
+	sleep 5 # Wait for gazebo being up and running
+
 	socat udp:localhost:14556 tcp:localhost:5760 \
-		> "${LOGDIR}/socat.log" 2> "${LOGDIR}/socaterr.log" &
+		> "${LOGDIR}/socat.log" \
+		2> "${LOGDIR}/socaterr.log" &
 	SOCATID=$!
 
+	sleep 3 # Wait for gazebo being up and running
+	sleep_until_takeoff 0.5 # Detect takeoff on a distance from origin >= 0.5 meters
 	sleep $2 # Maximum acceptable time for this particular mission
 
-	kill -SIGINT $GZID > /dev/null || true # Wait gzserver to save the log.
-	sleep 3 # Ensure that there is enough time to gzserver close the log fd.
-	silentkill $GZID  # Kill gazebo
-	silentkill $SOCATID # Kill socat
-	silentkill $SITLID # Kill SITL
+	# Maximum acceptable time for this particular mission
+	listen_collision $SLEEPTIME \
+		&& echo "[${WORLD}] OK!" || echo "[${WORLD}] FAIL!"
 
-	echo "[${1}] "
+	silentkill $GZID -SIGINT && sleep 3 # Wait gzserver to save the log.
+	silentkill $GZID  # Kill gzserver
+	silentkill $SOCATID # Kill socat
+	silentkill $SITLID # Kill arducopter sitl
 }
 
 runtests () {
 	mkdir -p "${SCRIPT_DIR}/output"
 
-	testcase simple.sdf 55
+	testcase simple.sdf 5
+	testcase simple_obstacle.sdf 5
 }
 
 replay () {
