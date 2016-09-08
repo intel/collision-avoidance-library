@@ -71,7 +71,6 @@ MavQuadCopter::MavQuadCopter(uint16_t local_port)
     // Initialize mav_vehicle update thread
     this->thread_run = true;
     this->thread = std::thread(&MavQuadCopter::run, this);
-    this->thread.detach();
 }
 
 MavQuadCopter::~MavQuadCopter()
@@ -88,7 +87,7 @@ void MavQuadCopter::run()
 
         // Check if vehicle is ready
         if (!this->mav->is_ready()) {
-            return;
+            continue;
         }
 
         mavlink_vehicles::arm_status arm_stat = this->mav->get_arm_status();
@@ -104,34 +103,34 @@ void MavQuadCopter::run()
                 this->vehicle_state = ACTIVE_AIRBORNE;
             }
 
-            break;
+            continue;
         }
         case INIT_ON_GROUND: {
 
             if (!this->autotakeoff) {
                 this->vehicle_state = ACTIVE_ON_GROUND;
-                break;
+                continue;
             }
 
             // Execute takeoff procedures
             if (mode != mavlink_vehicles::mode::GUIDED) {
                 this->mav->set_mode(mavlink_vehicles::mode::GUIDED);
-                break;
+                continue;
             }
 
             if (arm_stat != mavlink_vehicles::arm_status::ARMED) {
                 this->mav->arm_throttle();
-                break;
+                continue;
             }
 
             if (status != mavlink_vehicles::status::ACTIVE) {
                 this->mav->takeoff();
-                break;
+                continue;
             }
 
             // Takeoff succeeded
             this->vehicle_state = ACTIVE_AIRBORNE;
-            break;
+            continue;
         }
         case ACTIVE_ON_GROUND: {
 
@@ -139,29 +138,12 @@ void MavQuadCopter::run()
                 this->vehicle_state = ACTIVE_AIRBORNE;
             }
 
-            break;
+            continue;
         }
         case ACTIVE_AIRBORNE: {
 
-            // Do not send detour waypoint if it hasn't changed
-            if (mavlink_vehicles::math::dist(curr_detour_wp, prev_detour_wp) <
-                defaults::wp_equal_dist_m) {
-                break;
-            }
-
-            // Detour wp has changed
-            prev_detour_wp = curr_detour_wp;
-
-            // TODO: Rotate if autorotate is enabled
-            // if (this->autorotate) {
-            // }
-
-            // Send detour wp
-            this->mav->send_detour_waypoint(curr_detour_wp);
-
-            break;
+            continue;
         }
-
         }
     }
 }
@@ -218,11 +200,16 @@ void MavQuadCopter::set_target_pose(Pose pose)
             mavlink_vehicles::local_pos(pose.pos.y, pose.pos.x, -pose.pos.z),
             this->mav->get_home_position_int());
 
-    this->mav->send_detour_waypoint(global_coord, true, false);
+    this->mav->send_detour_waypoint(global_coord);
 }
 
 void MavQuadCopter::rotate(double angle_deg)
 {
     this->mav->rotate(angle_deg);
+}
+
+bool MavQuadCopter::detour_finished()
+{
+    return this->mav->get_mode() == mavlink_vehicles::mode::AUTO;
 }
 
