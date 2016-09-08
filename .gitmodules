@@ -1,3 +1,4 @@
 [submodule "modules/mavlink_vehicles"]
 	path = modules/mavlink_vehicles
 	url = https://github.com/01org/mavlink-vehicles
+	branch = master
