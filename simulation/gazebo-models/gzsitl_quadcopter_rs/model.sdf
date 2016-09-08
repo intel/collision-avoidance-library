@@ -7,6 +7,7 @@
     </include>
     <!-- Real Sense camera -->
     <include>
+      <name>realsense_camera</name>
       <uri>model://realsense_camera</uri>
       <pose>0 0.07 0.05 0 0 1.570796</pose>
     </include>
