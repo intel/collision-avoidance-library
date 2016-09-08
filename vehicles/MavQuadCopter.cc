@@ -175,8 +175,8 @@ Pose MavQuadCopter::target_pose()
         this->mav->get_mission_waypoint(), this->mav->get_home_position_int());
 
     Pose target_pose;
-    target_pose.pos.x = target_pos_ned.y;
-    target_pose.pos.y = target_pos_ned.x;
+    target_pose.pos.x = target_pos_ned.x;
+    target_pose.pos.y = target_pos_ned.y;
     target_pose.pos.z = -target_pos_ned.z;
     target_pose.rot.x = 0;
     target_pose.rot.y = 0;
@@ -192,29 +192,33 @@ Pose MavQuadCopter::vehicle_pose()
 
     // Convert from global_pos_int to local_pos_enu and return
     local_pos vehicle_pos_ned = this->mav->get_local_position_ned();
-
+    attitude vehicle_att = this->mav->get_attitude();
     Pose vehicle_pose;
+
+    // Convert position from NED to ENU and set
     vehicle_pose.pos.x = vehicle_pos_ned.y;
     vehicle_pose.pos.y = vehicle_pos_ned.x;
     vehicle_pose.pos.z = -vehicle_pos_ned.z;
-    vehicle_pose.rot.x = 0;
-    vehicle_pose.rot.y = 0;
-    vehicle_pose.rot.z = 0;
-    vehicle_pose.rot.w = 0;
+
+    // Converting rotation from NED to ENU
+    std::swap(vehicle_att.roll, vehicle_att.pitch);
+    vehicle_att.yaw = -vehicle_att.yaw;
+
+    // Set rotation
+    vehicle_pose.set_rot(vehicle_att.roll, vehicle_att.pitch, vehicle_att.yaw);
 
     return vehicle_pose;
 }
 
 void MavQuadCopter::set_target_pose(Pose pose)
 {
-    using namespace mavlink_vehicles;
+    // Convert from local coordinates to global coordinates
+    mavlink_vehicles::global_pos_int global_coord =
+        mavlink_vehicles::math::local_ned_to_global(
+            mavlink_vehicles::local_pos(pose.pos.y, pose.pos.x, -pose.pos.z),
+            this->mav->get_home_position_int());
 
-    // Convert from local_pos_enu to global_pos_int
-    global_pos_int target_pos = mavlink_vehicles::math::local_ned_to_global(
-        local_pos(pose.pos.y, pose.pos.x, -pose.pos.z),
-        this->mav->get_home_position_int());
-
-    curr_detour_wp = target_pos;
+    this->mav->send_detour_waypoint(global_coord, true, false);
 }
 
 void MavQuadCopter::rotate(double angle_deg)
