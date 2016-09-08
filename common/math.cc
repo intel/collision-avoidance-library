@@ -35,16 +35,20 @@ Pose operator-(const Pose &a, const Pose &b)
 
 void Pose::set_rot(float pitch, float roll, float yaw)
 {
-  double phi, the, psi;
+    double phi, the, psi;
 
-  phi = roll / 2.0;
-  the = pitch / 2.0;
-  psi = yaw / 2.0;
+    phi = roll / 2.0;
+    the = pitch / 2.0;
+    psi = yaw / 2.0;
 
-  this->rot.w = cos(phi) * cos(the) * cos(psi) + sin(phi) * sin(the) * sin(psi);
-  this->rot.x = sin(phi) * cos(the) * cos(psi) - cos(phi) * sin(the) * sin(psi);
-  this->rot.y = cos(phi) * sin(the) * cos(psi) + sin(phi) * cos(the) * sin(psi);
-  this->rot.z = cos(phi) * cos(the) * sin(psi) - sin(phi) * sin(the) * cos(psi);
+    this->rot.w =
+        cos(phi) * cos(the) * cos(psi) + sin(phi) * sin(the) * sin(psi);
+    this->rot.x =
+        sin(phi) * cos(the) * cos(psi) - cos(phi) * sin(the) * sin(psi);
+    this->rot.y =
+        cos(phi) * sin(the) * cos(psi) + sin(phi) * cos(the) * sin(psi);
+    this->rot.z =
+        cos(phi) * cos(the) * sin(psi) - sin(phi) * sin(the) * cos(psi);
 }
 
 double Pose::pitch()
