@@ -37,11 +37,12 @@ class MavQuadCopter : public QuadCopter
     Pose vehicle_pose() override;
     void set_target_pose(Pose pose) override;
     void rotate(double angle_deg);
-
-  private:
+    bool detour_finished();
 
     // Mavlink vehicle
     std::shared_ptr<mavlink_vehicles::mav_vehicle> mav;
+
+  private:
 
     // Connection
     int sock = 0;
@@ -59,9 +60,5 @@ class MavQuadCopter : public QuadCopter
     vstate vehicle_state = INIT;
 
     bool autotakeoff = false;
-    bool autorotate = false;
-
-    mavlink_vehicles::global_pos_int curr_detour_wp;
-    mavlink_vehicles::global_pos_int prev_detour_wp;
 };
 
