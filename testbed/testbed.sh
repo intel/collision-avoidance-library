@@ -74,6 +74,13 @@ testcase () {
 		2> "${LOGDIR}/socaterr.log" &
 	SOCATID=$!
 
+	sleep 5 # Wait for socat to connect and ardupilot to start
+
+	socat udp:localhost:14557 tcp:localhost:5762 \
+		> "${LOGDIR}/socat2.log" \
+		2> "${LOGDIR}/socaterr2.log" &
+	SOCATID=$!
+
 	sleep 3 # Wait for gazebo being up and running
 	sleep_until_takeoff 0.5 # Detect takeoff on a distance from origin >= 0.5 meters
 
