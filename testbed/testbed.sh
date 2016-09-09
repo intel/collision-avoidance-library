@@ -25,7 +25,8 @@ silentkill () {
 	if [ ! -z $2 ]; then
 		SIGNAL=$2
 	fi
-	kill $SIGNAL $1 > /dev/null 2> /dev/null || true
+	kill $SIGNAL $1 > /dev/null 2> /dev/null
+	wait $1 2> /dev/null
 }
 
 sleep_until_takeoff () {
@@ -35,7 +36,7 @@ sleep_until_takeoff () {
 
 listen_collision () {
 	SLEEPTIME=$1
-	TOPIC=/gazebo/default/physics/contacts
+	TOPIC=/gazebo/default/gzsitl_quadcopter_rs/sensors/contact/contacts
 	gz topic -u -e $TOPIC | python detect_collision.py $SLEEPTIME
 }
 
@@ -75,7 +76,6 @@ testcase () {
 
 	sleep 3 # Wait for gazebo being up and running
 	sleep_until_takeoff 0.5 # Detect takeoff on a distance from origin >= 0.5 meters
-	sleep $2 # Maximum acceptable time for this particular mission
 
 	# Maximum acceptable time for this particular mission
 	listen_collision $SLEEPTIME \
@@ -90,8 +90,8 @@ testcase () {
 runtests () {
 	mkdir -p "${SCRIPT_DIR}/output"
 
-	testcase simple.sdf 5
-	testcase simple_obstacle.sdf 5
+	testcase simple.sdf 30
+	testcase simple_obstacle.sdf 30
 }
 
 replay () {
