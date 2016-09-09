@@ -74,6 +74,9 @@
       <background>0.7 0.7 0.7 1</background>
       <shadows>1</shadows>
     </scene>
+    <audio>
+      <device>default</device>
+    </audio>
     <wind/>
     <spherical_coordinates>
       <surface_model>EARTH_WGS84</surface_model>
@@ -83,8 +86,8 @@
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
     <model name='gzsitl_quadcopter_rs'>
-      <link name='quadrotor::link'>
-        <pose frame=''>0 0 0.182466 0 -0 0</pose>
+      <link name='gzsitl_quadcopter::quadrotor::link'>
+        <pose frame=''>0 0 0.182466 0 -0 1.5708</pose>
         <inertial>
           <mass>1.316</mass>
           <inertia>
@@ -130,6 +133,66 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
+      <plugin name='gzsitl_drone_control' filename='libgzsitl_plugin.so'>
+        <perm_target_ctrl_name>gzsitl_perm_targ_ctrl</perm_target_ctrl_name>
+        <perm_target_vis_name>gzsitl_perm_targ_vis</perm_target_vis_name>
+        <perm_target_topic_name>target_pose</perm_target_topic_name>
+        <subs_target_ctrl_name>gzsitl_subs_targ_ctrl</subs_target_ctrl_name>
+        <subs_target_vis_name>gzsitl_subs_targ_vis</subs_target_vis_name>
+        <subs_target_topic_name>coav/coav_target_pose</subs_target_topic_name>
+        <vehicle_topic_name>vehicle_pose</vehicle_topic_name>
+      </plugin>
+      <static>0</static>
+      <link name='gzsitl_quadcopter::sensors'>
+        <collision name='contact_geometry'>
+          <max_contacts>1</max_contacts>
+          <geometry>
+            <box>
+              <size>0.65 0.65 0.23</size>
+            </box>
+          </geometry>
+          <pose frame=''>0 0 0.115 0 -0 0.785</pose>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <sensor name='contact' type='contact'>
+          <update_rate>5</update_rate>
+          <contact>
+            <collision>contact_geometry</collision>
+            <topic>__default_topic__</topic>
+          </contact>
+        </sensor>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <self_collide>0</self_collide>
+        <inertial>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+          <mass>1</mass>
+        </inertial>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <joint name='gzsitl_quadcopter::sensors_joint' type='fixed'>
+        <child>gzsitl_quadcopter::sensors</child>
+        <parent>gzsitl_quadcopter::quadrotor::link</parent>
+      </joint>
       <plugin name='realsense_plugin' filename='libRealSensePlugin.so'/>
       <link name='realsense_camera::link'>
         <inertial>
@@ -302,24 +365,65 @@
           <update_rate>60</update_rate>
           <visualize>0</visualize>
         </sensor>
-        <pose frame=''>0.07 0 0.05 0 -0 0</pose>
+        <pose frame=''>0 0.07 0.05 0 -0 1.5708</pose>
       </link>
       <joint name='realsense_joint' type='fixed'>
         <child>realsense_camera::link</child>
-        <parent>quadrotor::link</parent>
+        <parent>gzsitl_quadcopter::quadrotor::link</parent>
       </joint>
-      <plugin name='gzsitl_drone_control' filename='libgzsitl_plugin.so'>
-        <perm_target_name>gzsitl_target</perm_target_name>
-        <perm_target_topic_name>target_pose</perm_target_topic_name>
-        <subs_target_name>gzsitl_coav_target</subs_target_name>
-        <subs_target_topic_name>coav/coav_target_pose</subs_target_topic_name>
-        <vehicle_topic_name>vehicle_pose</vehicle_topic_name>
-      </plugin>
-      <static>0</static>
-      <pose frame=''>0.066807 -0.029037 0 0 -0 0</pose>
+      <link name='sensors'>
+        <collision name='contact_geometry'>
+          <max_contacts>1</max_contacts>
+          <geometry>
+            <box>
+              <size>0.65 0.65 0.23</size>
+            </box>
+          </geometry>
+          <pose frame=''>0 0 0.115 0 -0 0.785</pose>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <sensor name='contact' type='contact'>
+          <update_rate>5</update_rate>
+          <contact>
+            <collision>contact_geometry</collision>
+            <topic>__default_topic__</topic>
+          </contact>
+        </sensor>
+        <self_collide>0</self_collide>
+        <inertial>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+          <mass>1</mass>
+        </inertial>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <joint name='sensors_joint' type='fixed'>
+        <child>sensors</child>
+        <parent>gzsitl_quadcopter::quadrotor::link</parent>
+      </joint>
+      <pose frame=''>-0.009662 -0.52337 0 0 -0 0</pose>
     </model>
-    <model name='gzsitl_target'>
-      <link name='Gzsitl_target::link_1'>
+    <model name='gzsitl_perm_targ_ctrl'>
+      <link name='link'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <inertial>
           <mass>0.12017</mass>
@@ -369,13 +473,13 @@
       </link>
       <static>1</static>
       <allow_auto_disable>1</allow_auto_disable>
-      <pose frame=''>3.98474 -0.00109 0 0 -0 0</pose>
+      <pose frame=''>-0.08543 5.25418 0 0 -0 0</pose>
     </model>
     <state world_name='default'>
-      <sim_time>42 715000000</sim_time>
-      <real_time>38 527947153</real_time>
-      <wall_time>1471354097 472485884</wall_time>
-      <iterations>37287</iterations>
+      <sim_time>75 945000000</sim_time>
+      <real_time>28 877265016</real_time>
+      <wall_time>1473878638 582888827</wall_time>
+      <iterations>27521</iterations>
       <model name='ground_plane'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
@@ -386,30 +490,42 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='gzsitl_quadcopter_rs'>
-        <pose frame=''>-7e-06 5e-05 -2e-06 0 -2e-05 -0.000574</pose>
+      <model name='gzsitl_perm_targ_ctrl'>
+        <pose frame=''>-0.017755 10.9351 4.5515 0 -0 0</pose>
         <scale>1 1 1</scale>
-        <link name='quadrotor::link'>
-          <pose frame=''>-1.1e-05 5e-05 0.182464 0 -2e-05 -0.000574</pose>
-          <velocity>-0.003628 1.5e-05 -0.002187 -4.7e-05 -0.01988 -4.9e-05</velocity>
-          <acceleration>-3.62822 0.014692 -2.18655 -0.047228 -1.03061 -0.048838</acceleration>
-          <wrench>-4.77474 0.019335 -2.8775 0 -0 0</wrench>
-        </link>
-        <link name='realsense_camera::link'>
-          <pose frame=''>0.070018 1e-05 0.049978 0 -0.000157 -0.000574</pose>
-          <velocity>-0.000115 1.2e-05 -6.5e-05 -3.4e-05 -0.016689 -7.7e-05</velocity>
-          <acceleration>-0.114579 0.012088 -0.064591 3.0978 0.981675 3.06497</acceleration>
-          <wrench>-0.007055 0.000744 -0.003977 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='gzsitl_target'>
-        <pose frame=''>3.98474 -0.00109 1.43342 0 -0 0</pose>
-        <scale>1 1 1</scale>
-        <link name='Gzsitl_target::link_1'>
-          <pose frame=''>3.98474 -0.00109 1.43342 0 -0 0</pose>
+        <link name='link'>
+          <pose frame=''>-0.017755 10.9351 4.5515 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='gzsitl_quadcopter_rs'>
+        <pose frame=''>-0.00019 -0.00019 0.151292 -0 1e-06 -4e-05</pose>
+        <scale>1 1 1</scale>
+        <link name='gzsitl_quadcopter::quadrotor::link'>
+          <pose frame=''>-0.00019 -0.00019 0.333758 1e-06 -0 1.57076</pose>
+          <velocity>0 0 -0.0098 0 -0 0</velocity>
+          <acceleration>0 0 -9.8 0 -0 0</acceleration>
+          <wrench>0 0 -12.8968 0 -0 0</wrench>
+        </link>
+        <link name='gzsitl_quadcopter::sensors'>
+          <pose frame=''>-0.00019 -0.00019 0.151292 -0 1e-06 -4e-05</pose>
+          <velocity>0 0 -0.0098 0 -0 0</velocity>
+          <acceleration>0 0 -9.8 0 -0 0</acceleration>
+          <wrench>0 0 -9.8 0 -0 0</wrench>
+        </link>
+        <link name='realsense_camera::link'>
+          <pose frame=''>-0.000188 0.06981 0.201292 1e-06 -0 1.57076</pose>
+          <velocity>0 0 -0.0098 0 -0 0</velocity>
+          <acceleration>0 0 -9.8 0 -0 0</acceleration>
+          <wrench>0 0 -0.603437 0 -0 0</wrench>
+        </link>
+        <link name='sensors'>
+          <pose frame=''>-0.00019 -0.00019 0.151292 -0 1e-06 -4e-05</pose>
+          <velocity>0 0 -0.0098 0 -0 0</velocity>
+          <acceleration>0 0 -9.8 0 -0 0</acceleration>
+          <wrench>0 0 -9.8 0 -0 0</wrench>
         </link>
       </model>
       <light name='sun'>
@@ -418,7 +534,7 @@
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose frame=''>-9.05695 11.191 7.40665 0 0.339643 -0.738992</pose>
+        <pose frame=''>17.0106 -0.18938 4.50854 0 0.193682 2.93119</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
