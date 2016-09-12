@@ -26,7 +26,6 @@ silentkill () {
 		SIGNAL=$2
 	fi
 	kill $SIGNAL $1 > /dev/null 2> /dev/null
-	wait $1 2> /dev/null
 }
 
 sleep_until_takeoff () {
@@ -41,8 +40,6 @@ listen_collision () {
 }
 
 testcase () {
-	# TODO: run avoidance strategy
-	# TODO: check collision
 	WORLD=$1
 	SLEEPTIME=$2
 
@@ -61,44 +58,60 @@ testcase () {
 	# Gazebo engine without GUI.
 	# The log can be played through `gazebo -p logfile`
 	SDFFILE="${SCRIPT_DIR}/worlds/${WORLD}"
-	gzserver -r --record_path $LOGDIR $SDFFILE \
+	gzserver --verbose -r --record_path $LOGDIR $SDFFILE \
 		> "${LOGDIR}/gzserver.log" \
 		2> "${LOGDIR}/gzservererr.log" &
 	GZID=$!
 
-	# socat creates a bidirectional conversion between SITL and gzsitl plugin
-	sleep 5 # Wait for gazebo being up and running
+	# Wait for gazebo being up and running
+	sleep 8
 
+	# Bidirectional bridge between sitl (tcp) and gzsitl (udp)
 	socat udp:localhost:14556 tcp:localhost:5760 \
-		> "${LOGDIR}/socat.log" \
-		2> "${LOGDIR}/socaterr.log" &
-	SOCATID=$!
+		> "${LOGDIR}/gzsitl_socat.log" \
+		2> "${LOGDIR}/gzsitl_socaterr.log" &
+	GZSITL_SOCATID=$!
 
-	sleep 5 # Wait for socat to connect and ardupilot to start
+	# Wait for gzsitl-SITL connection to be stabilished
+	sleep 2
 
+	# Run the collision avoidance gcs
+	../build/samples/coav_gcs --depth-camera GAZEBO --vehicle GAZEBO \
+		> "${LOGDIR}/coav_gcs.log" \
+		2> "${LOGDIR}/coav_gcserr.log" &
+	COAVGCSID=$!
+
+	# Wait for gcs being up and running
+	sleep 4
+
+	# Bidirectional bridge between sitl (tcp) and coav_gcs (udp)
 	socat udp:localhost:14557 tcp:localhost:5762 \
-		> "${LOGDIR}/socat2.log" \
-		2> "${LOGDIR}/socaterr2.log" &
-	SOCATID=$!
+		> "${LOGDIR}/coav_socat.log" \
+		2> "${LOGDIR}/coav_socaterr.log" &
+	COAV_SOCATID=$!
 
-	sleep 3 # Wait for gazebo being up and running
+	# Wait for coav_gcs-SITL connection to be stabilished
+	sleep 2
+
 	sleep_until_takeoff 0.5 # Detect takeoff on a distance from origin >= 0.5 meters
 
 	# Maximum acceptable time for this particular mission
 	listen_collision $SLEEPTIME \
 		&& echo "[${WORLD}] OK!" || echo "[${WORLD}] FAIL!"
 
-	silentkill $GZID -SIGINT && sleep 3 # Wait gzserver to save the log.
+	silentkill $GZID -SIGINT && sleep 3 # Wait gzserver to save the log
 	silentkill $GZID  # Kill gzserver
-	silentkill $SOCATID # Kill socat
+	silentkill $GZSITL_SOCATID # Kill gzsitl socat
+	silentkill $COAV_SOCATID # Kill coav_gcs socat
 	silentkill $SITLID # Kill arducopter sitl
+	silentkill $COAVGCSID # Kill coav_gcs sitl
 }
 
 runtests () {
 	mkdir -p "${SCRIPT_DIR}/output"
 
 	testcase simple.sdf 30
-	testcase simple_obstacle.sdf 30
+	testcase simple_obstacle.sdf 40
 }
 
 replay () {
