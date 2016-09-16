@@ -23,11 +23,11 @@
 #include <memory>
 #include <thread>
 
-#include "avoidance/QuadCopterVFFAvoidance.hh"
+#include "avoidance/QuadCopterShiftAvoidance.hh"
 #include "vehicles/GazeboQuadCopter.hh"
 #include "vehicles/MavQuadCopter.hh"
 #include "sensors/GazeboRealSenseCamera.hh"
-#include "detection/DepthImageObstacleDetector.hh"
+#include "detection/DepthImagePolarHistDetector.hh"
 #include "common/common.hh"
 
 enum device_type_ { GAZEBO, PHYSICAL, OTHER };
@@ -134,8 +134,8 @@ int main(int argc, char **argv)
     }
 
     std::shared_ptr<DepthCamera> depth_camera;
-    std::shared_ptr<QuadCopter> vehicle;
-    std::shared_ptr<DepthImageObstacleDetector> obstacle_detector;
+    std::shared_ptr<MavQuadCopter> vehicle;
+    std::shared_ptr<DepthImagePolarHistDetector> obstacle_detector;
 
     // Initialize Sensors
     switch (depth_camera_type) {
@@ -144,12 +144,13 @@ int main(int argc, char **argv)
     case GAZEBO:
         depth_camera = std::make_shared<GazeboRealSenseCamera>();
         std::cout << "[coav] GazeboRealSenseCamera instantiated" << std::endl;
-        obstacle_detector = std::make_shared<DepthImageObstacleDetector>(depth_camera);
+        obstacle_detector = std::make_shared<DepthImagePolarHistDetector>(
+            depth_camera, 180.0 * (atan(depth_camera->get_fov_tan())) / M_PI);
         std::cout << "[coav] ObstacleDetector instantiated" << std::endl;
     }
 
     // Initialize Avoidance Strategy
-    auto avoidance = std::make_shared<QuadCopterVFFAvoidance>();
+    auto avoidance = std::make_shared<QuadCopterShiftAvoidance>();
 
     // Initialize Vehicle
     switch (depth_camera_type) {
@@ -162,9 +163,10 @@ int main(int argc, char **argv)
 
     while (running) {
         // Sense
-        std::vector<Obstacle> obstacles = obstacle_detector->detect();
+        std::vector<Obstacle> obstacles;
+        std::vector<double> hist = obstacle_detector->detect();
         // Avoid
-        avoidance->avoid(obstacles, vehicle);
+        avoidance->avoid(hist, vehicle);
     }
 }
 

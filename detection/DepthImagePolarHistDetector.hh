@@ -13,35 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
-
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/euler_angles.hpp>
+#include <common/common.hh>
+#include <memory>
+#include <vector>
 
-struct Pose {
-    glm::dvec3 pos;
-    glm::dquat rot;
+class DepthImagePolarHistDetector
+{
+  public:
+    DepthImagePolarHistDetector(std::shared_ptr<DepthCamera> depth_camera,
+                                double angle_step);
+    ~DepthImagePolarHistDetector();
 
-    double pitch();
-    double roll();
-    double yaw();
-    void set_rot(float pitch, float roll, float yaw);
+    std::vector<double> detect();
+
+  private:
+    std::shared_ptr<DepthCamera> depth_camera;
+    double angle_step;
+    std::vector<double> histogram;
 };
-
-Pose operator-(const Pose& a, const Pose &b);
-
-int sign(double x);
-double sigmoid(double x);
-
-typedef struct {
-    double len;
-    double theta; // azimuthal angle
-    double phi;   // polar angle
-} PolarVector;
-
-PolarVector cartesian_to_spherical(double x, double y, double z);
-
-#define inbounds(X, A, B) ((X) >= A && (X) <= B)
-

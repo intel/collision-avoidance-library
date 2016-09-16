@@ -13,35 +13,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
-
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/euler_angles.hpp>
+#include "common/common.hh"
+#include "vehicles/MavQuadCopter.hh"
 
-struct Pose {
-    glm::dvec3 pos;
-    glm::dquat rot;
+#include <chrono>
+#include <memory>
+#include <vector>
 
-    double pitch();
-    double roll();
-    double yaw();
-    void set_rot(float pitch, float roll, float yaw);
+class QuadCopterShiftAvoidance
+{
+  public:
+    void avoid(const std::vector<double> &histogram,
+               std::shared_ptr<MavQuadCopter> vehicle);
+
+    void avoid(const std::vector<double> &histogram,
+               std::shared_ptr<QuadCopter> vehicle);
+
+  private:
+    std::chrono::time_point<std::chrono::system_clock> wp_sent_time =
+        std::chrono::system_clock::from_time_t(0);
+
+    enum class avoid_state { moving, detouring };
+    avoid_state avoidance_state = avoid_state::moving;
 };
-
-Pose operator-(const Pose& a, const Pose &b);
-
-int sign(double x);
-double sigmoid(double x);
-
-typedef struct {
-    double len;
-    double theta; // azimuthal angle
-    double phi;   // polar angle
-} PolarVector;
-
-PolarVector cartesian_to_spherical(double x, double y, double z);
-
-#define inbounds(X, A, B) ((X) >= A && (X) <= B)
 
