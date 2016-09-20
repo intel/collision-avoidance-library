@@ -16,6 +16,7 @@
 import math
 import sys
 import re
+import signal
 
 def dist(x, y, z):
     return math.sqrt(x * x + y * y + z * z)
@@ -23,6 +24,11 @@ def dist(x, y, z):
 if __name__ == '__main__':
     takeoff_distance = float(sys.argv[1])
     pos_re = re.compile("position\ \{\ *x\:(.+)y\:(.+)z\:(.+)\}\ orientation.*")
+
+    def handler(signum, frame):
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, handler)
 
     for line in sys.stdin:
         m = pos_re.match(line)

@@ -21,11 +21,11 @@ SCRIPT_DIR=$(dirname $(realpath ${BASH_SOURCE[0]}))
 SITL="arducopter-quad"
 
 silentkill () {
-	SIGNAL=-SIGKILL
 	if [ ! -z $2 ]; then
-		SIGNAL=$2
-	fi
-	kill $SIGNAL $1 > /dev/null 2> /dev/null
+	    kill $2 $1 > /dev/null 2>&1 || true
+	else
+	    kill -KILL $1 > /dev/null 2>&1 && wait $1 2> /dev/null || true
+    fi
 }
 
 sleep_until_takeoff () {
@@ -99,12 +99,7 @@ testcase () {
 	listen_collision $SLEEPTIME \
 		&& echo "[${WORLD}] OK!" || echo "[${WORLD}] FAIL!"
 
-	silentkill $GZID -SIGINT && sleep 3 # Wait gzserver to save the log
-	silentkill $GZID  # Kill gzserver
-	silentkill $GZSITL_SOCATID # Kill gzsitl socat
-	silentkill $COAV_SOCATID # Kill coav_gcs socat
-	silentkill $SITLID # Kill arducopter sitl
-	silentkill $COAVGCSID # Kill coav_gcs sitl
+    cleanup
 }
 
 runtests () {
@@ -117,6 +112,22 @@ runtests () {
 replay () {
 	gazebo -p "${SCRIPT_DIR}/output/${1}/state.log"
 }
+
+cleanup () {
+	silentkill $GZID -INT && sleep 3 # Wait gzserver to save the log
+	silentkill $GZID  # Kill gzserver
+	silentkill $COAVGCSID # Kill coav_gcs sitl
+	silentkill $SITLID # Kill arducopter sitl
+	silentkill $GZSITL_SOCATID # Kill gzsitl socat
+	silentkill $COAV_SOCATID # Kill coav_gcs socat
+}
+
+cleanup_and_exit () {
+    cleanup
+    exit 0
+}
+
+trap cleanup_and_exit SIGINT SIGTERM
 
 if [ -z "$1" ]; then
 	# TODO: add help text
