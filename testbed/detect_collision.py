@@ -25,6 +25,7 @@ if __name__ == '__main__':
         sys.exit(0)
 
     signal.signal(signal.SIGALRM, handler)
+    signal.signal(signal.SIGINT, handler)
     signal.alarm(timeout)
 
     data = ""
