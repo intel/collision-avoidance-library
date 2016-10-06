@@ -28,6 +28,16 @@ silentkill () {
     fi
 }
 
+test_dep () {
+    command -v $1 > /dev/null 2>&1 || { echo >&2 "Error: command '$1' not found"; exit 1; }
+}
+
+check_deps () {
+    test_dep gz
+    test_dep socat
+    test_dep $SITL
+}
+
 sleep_until_takeoff () {
 	gz topic -u -e /gazebo/default/gzsitl_quadcopter_rs/vehicle_pose \
 		| python detect_takeoff.py $1 # Detect takeoff on distance $1
@@ -128,6 +138,8 @@ cleanup_and_exit () {
 }
 
 trap cleanup_and_exit SIGINT SIGTERM
+
+check_deps
 
 if [ -z "$1" ]; then
 	# TODO: add help text
