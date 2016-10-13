@@ -6,7 +6,6 @@ A framework for testing and benchmarking collision avoidance strategies.
     * Gazebo 7.0+ (for virtual camera/vehicle support)
     * socat 1.7+ (for testbed support)
     * GZSitl (for virtual vehicle support)
-    * MavProxy (https://github.com/Dronecode/MAVProxy)
     * Ardupilot (https://github.com/ArduPilot/ardupilot)
 
 ## Build and Install ##
