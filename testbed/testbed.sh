@@ -15,10 +15,18 @@
 
 SCRIPT_DIR=$(dirname $(realpath ${BASH_SOURCE[0]}))
 
-# The SITL must be in the path.
+# ArduCopter must be in the path.
 # It is possible to install it with:
 # $ ./modules/waf/waf-light install
-SITL="arducopter-quad"
+APM_CMD="arducopter-quad"
+
+# PX4 Path and command
+PX4_DIR="$HOME/px4/Firmware"
+PX4_CMD="make posix_sitl_default jmavsim"
+
+# Select Flight Stack
+PX4_FLIGHT_STACK=1 # PX4
+#PX4_FLIGHT_STACK=0 # APM
 
 silentkill () {
 	if [ ! -z $2 ]; then
@@ -35,7 +43,16 @@ test_dep () {
 check_deps () {
     test_dep gz
     test_dep socat
-    test_dep $SITL
+    test_dep $APM_CMD
+}
+
+test_path () {
+    [ -d $1 ] > /dev/null 2>&1 || { echo >&2 "Error: directory '$1' not found"; exit 1; }
+}
+
+check_paths () {
+    test_path $PX4_DIR
+    test_path $SCRIPT_DIR
 }
 
 sleep_until_takeoff () {
@@ -58,12 +75,20 @@ testcase () {
 	mkdir -p $LOGDIR
 
 	# Run SITL Simulator
-	cd $SCRIPT_DIR # sitl must run in the same dir of "eeprom.bin"
-	$SITL --model x \
-		> "${LOGDIR}/sitl.log" \
-		2> "${LOGDIR}/sitlerr.log" &
-	SITLID=$!
-	cd - > /dev/null
+    if (("$PX4_FLIGHT_STACK" != 1)); then
+        cd $SCRIPT_DIR # sitl must run in the same dir of "eeprom.bin"
+        $APM_CMD --model x \
+            > "${LOGDIR}/sitl.log" \
+            2> "${LOGDIR}/sitlerr.log" &
+        SITLID=$!
+        cd - > /dev/null
+    else
+        cd $PX4_DIR
+        $PX4_CMD > "${LOGDIR}/sitl.log" \
+            2> "${LOGDIR}/sitlerr.log" &
+        SITLID=$!
+        cd - > /dev/null
+    fi
 
 	# Gazebo engine without GUI.
 	# The log can be played through `gazebo -p logfile`
@@ -76,14 +101,16 @@ testcase () {
 	# Wait for gazebo being up and running
 	sleep 8
 
-	# Bidirectional bridge between sitl (tcp) and gzsitl (udp)
-	socat udp:localhost:14556 tcp:localhost:5760 \
-		> "${LOGDIR}/gzsitl_socat.log" \
-		2> "${LOGDIR}/gzsitl_socaterr.log" &
-	GZSITL_SOCATID=$!
+    if (("$PX4_FLIGHT_STACK" != 1)); then
+        # Bidirectional bridge between sitl (tcp) and gzsitl (udp)
+        socat udp:localhost:14556 tcp:localhost:5760 \
+            > "${LOGDIR}/gzsitl_socat.log" \
+            2> "${LOGDIR}/gzsitl_socaterr.log" &
+        GZSITL_SOCATID=$!
 
-	# Wait for gzsitl-SITL connection to be stabilished
-	sleep 2
+        # Wait for gzsitl-SITL connection to be stabilished
+        sleep 2
+    fi
 
 	# Run the collision avoidance gcs
 	../build/samples/coav_gcs --depth-camera GAZEBO --vehicle GAZEBO \
@@ -94,14 +121,16 @@ testcase () {
 	# Wait for gcs being up and running
 	sleep 4
 
-	# Bidirectional bridge between sitl (tcp) and coav_gcs (udp)
-	socat udp:localhost:14557 tcp:localhost:5762 \
-		> "${LOGDIR}/coav_socat.log" \
-		2> "${LOGDIR}/coav_socaterr.log" &
-	COAV_SOCATID=$!
+    if (("$PX4_FLIGHT_STACK" != 1)); then
+        # Bidirectional bridge between sitl (tcp) and coav_gcs (udp)
+        socat udp:localhost:14540 tcp:localhost:5762 \
+            > "${LOGDIR}/coav_socat.log" \
+            2> "${LOGDIR}/coav_socaterr.log" &
+        COAV_SOCATID=$!
 
-	# Wait for coav_gcs-SITL connection to be stabilished
-	sleep 2
+        # Wait for coav_gcs-SITL connection to be stabilished
+        sleep 2
+    fi
 
 	sleep_until_takeoff 0.5 # Detect takeoff on a distance from origin >= 0.5 meters
 
@@ -116,7 +145,7 @@ runtests () {
 	mkdir -p "${SCRIPT_DIR}/output"
 
 	testcase simple.sdf 30
-	testcase simple_obstacle.sdf 40
+	testcase simple_obstacle.sdf 60
 }
 
 replay () {
@@ -140,6 +169,7 @@ cleanup_and_exit () {
 trap cleanup_and_exit SIGINT SIGTERM
 
 check_deps
+check_paths
 
 if [ -z "$1" ]; then
 	# TODO: add help text
