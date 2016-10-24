@@ -29,7 +29,7 @@
 
 namespace defaults
 {
-const uint16_t local_port = 14557;
+const uint16_t local_port = 15557;
 const double wp_equal_dist_m = 0.001;
 }
 
