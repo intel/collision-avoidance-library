@@ -15,27 +15,51 @@
 
 SCRIPT_DIR=$(dirname $(realpath ${BASH_SOURCE[0]}))
 
-# The SITL must be in the path.
-# It is possible to install it with:
-# $ ./modules/waf/waf-light install
-SITL="arducopter-quad"
+# ArduCopter Variables
+APM_CMD="arducopter-quad"
+APM_TCP_PORT_1=5760
+APM_TCP_PORT_2=5762
+
+# PX4 Variables
+PX4_DIR=${PX4_DIR:-"~/px4/Firmware"}
+PX4_CMD="make posix_sitl_default jmavsim"
+PX4_UDP_PORT_1=14550
+PX4_UDP_PORT_2=14540
+
+# Collision Avoidance and Gazebo variables
+GZSITL_UDP_PORT=15556
+COAV_GCS_UDP_PORT=15557
+
+# Select Autopilot
+USE_PX4_AUTOPILOT=${USE_PX4_AUTOPILOT:-0}
 
 silentkill () {
 	if [ ! -z $2 ]; then
-	    kill $2 $1 > /dev/null 2>&1 || true
+		kill $2 $1 > /dev/null 2>&1 || true
 	else
-	    kill -KILL $1 > /dev/null 2>&1 && wait $1 2> /dev/null || true
-    fi
+		kill -KILL $1 > /dev/null 2>&1 && wait $1 2> /dev/null || true
+	fi
 }
 
 test_dep () {
-    command -v $1 > /dev/null 2>&1 || { echo >&2 "Error: command '$1' not found"; exit 1; }
+	command -v $1 > /dev/null 2>&1 || { echo >&2 "Error: command '$1' not found"; exit 1; }
 }
 
 check_deps () {
-    test_dep gz
-    test_dep socat
-    test_dep $SITL
+	test_dep gz
+	test_dep socat
+	test_dep $APM_CMD
+}
+
+test_path () {
+	[ -d $1 ] > /dev/null 2>&1 || { echo >&2 "Error: directory '$1' not found"; exit 1; }
+}
+
+check_paths () {
+	test_path $SCRIPT_DIR
+	if (("$USE_PX4_AUTOPILOT" == 1)); then
+		test_path $PX4_DIR
+	fi
 }
 
 sleep_until_takeoff () {
@@ -58,12 +82,23 @@ testcase () {
 	mkdir -p $LOGDIR
 
 	# Run SITL Simulator
-	cd $SCRIPT_DIR # sitl must run in the same dir of "eeprom.bin"
-	$SITL --model x \
-		> "${LOGDIR}/sitl.log" \
-		2> "${LOGDIR}/sitlerr.log" &
-	SITLID=$!
-	cd - > /dev/null
+	if (("$USE_PX4_AUTOPILOT" == 1)); then
+		cd $PX4_DIR
+		$PX4_CMD > "${LOGDIR}/sitl.log" \
+		    2> "${LOGDIR}/sitlerr.log" &
+		SITLID=$!
+		cd - > /dev/null
+	else
+		cd $SCRIPT_DIR # sitl must run in the same dir of "eeprom.bin"
+		$APM_CMD --model x \
+		    > "${LOGDIR}/sitl.log" \
+		    2> "${LOGDIR}/sitlerr.log" &
+		SITLID=$!
+		cd - > /dev/null
+	fi
+
+	# Wait until gazebo is up and running
+	sleep 8
 
 	# Gazebo engine without GUI.
 	# The log can be played through `gazebo -p logfile`
@@ -73,29 +108,41 @@ testcase () {
 		2> "${LOGDIR}/gzservererr.log" &
 	GZID=$!
 
-	# Wait for gazebo being up and running
+	# Wait until gazebo is up and running
 	sleep 8
 
-	# Bidirectional bridge between sitl (tcp) and gzsitl (udp)
-	socat udp:localhost:15556 tcp:localhost:5760 \
+	SOCAT_ARG_1="tcp:localhost:$APM_TCP_PORT_1"
+	SOCAT_ARG_2="udp:localhost:$GZSITL_UDP_PORT"
+	if (("$USE_PX4_AUTOPILOT" == 1)); then
+		SOCAT_ARG_1="udp-listen:$PX4_UDP_PORT_1"
+	fi
+
+	# Bidirectional bridge between autopilot and gazebo-sitl
+	socat $SOCAT_ARG_1 $SOCAT_ARG_2 \
 		> "${LOGDIR}/gzsitl_socat.log" \
 		2> "${LOGDIR}/gzsitl_socaterr.log" &
 	GZSITL_SOCATID=$!
 
-	# Wait for gzsitl-SITL connection to be stabilished
+	# Wait for gzsitl-sitl connection to be stabilished
 	sleep 2
 
 	# Run the collision avoidance gcs
-	../build/samples/simple_gcs \
+	../build/samples/coav_gcs --depth-camera GAZEBO --vehicle GAZEBO \
 		> "${LOGDIR}/coav_gcs.log" \
 		2> "${LOGDIR}/coav_gcserr.log" &
 	COAVGCSID=$!
 
-	# Wait for gcs being up and running
+	# Wait until gcs is up and running
 	sleep 4
 
-	# Bidirectional bridge between sitl (tcp) and coav_gcs (udp)
-	socat udp:localhost:15557 tcp:localhost:5762 \
+	SOCAT_ARG_1="tcp:localhost:$APM_TCP_PORT_2"
+	SOCAT_ARG_2="udp:localhost:$COAV_GCS_UDP_PORT"
+	if (("$USE_PX4_AUTOPILOT" == 1)); then
+		SOCAT_ARG_1="udp-listen:$PX4_UDP_PORT_2"
+	fi
+
+	# Bidirectional bridge between the autopilot and the coav_gcs
+	socat $SOCAT_ARG_1 $SOCAT_ARG_2 \
 		> "${LOGDIR}/coav_socat.log" \
 		2> "${LOGDIR}/coav_socaterr.log" &
 	COAV_SOCATID=$!
@@ -109,7 +156,7 @@ testcase () {
 	listen_collision $SLEEPTIME \
 		&& echo "[${WORLD}] OK!" || echo "[${WORLD}] FAIL!"
 
-    cleanup
+	cleanup
 }
 
 runtests () {
@@ -124,22 +171,23 @@ replay () {
 }
 
 cleanup () {
+	silentkill $GZSITL_SOCATID # Kill gzsitl socat
+	silentkill $COAV_SOCATID # Kill coav_gcs socat
+	silentkill $SITLID # Kill arducopter sitl
 	silentkill $GZID -INT && sleep 3 # Wait gzserver to save the log
 	silentkill $GZID  # Kill gzserver
 	silentkill $COAVGCSID # Kill coav_gcs sitl
-	silentkill $SITLID # Kill arducopter sitl
-	silentkill $GZSITL_SOCATID # Kill gzsitl socat
-	silentkill $COAV_SOCATID # Kill coav_gcs socat
 }
 
 cleanup_and_exit () {
-    cleanup
-    exit 0
+	cleanup
+	exit 0
 }
 
 trap cleanup_and_exit SIGINT SIGTERM
 
 check_deps
+check_paths
 
 if [ -z "$1" ]; then
 	# TODO: add help text

@@ -7,6 +7,7 @@ A framework for testing and benchmarking collision avoidance strategies.
     * socat 1.7+ (for testbed support)
     * GZSitl (for virtual vehicle support)
     * Ardupilot (https://github.com/ArduPilot/ardupilot)
+    * PX4 (https://github.com/PX4/Firmware)
 
 ## Build and Install ##
 
@@ -41,10 +42,22 @@ least once with:
 
 ## Run Testbed ##
 
-1. The testbed.sh will automate the execution of a series of missions, given as
-world files in `testbeds/worlds/<world_name>.sdf`. The script will start gazebo,
-ardupilot and the collision avoidance gcs automatically, outputting the result
-and the logs of each mission, as they're executed.
+1. The testbed uses ArduPilot as autopilot by default. Set the following
+environment variables prior to running testbed to use PX4 instead.
+
+    ```
+    export PX4_DIR="your/px4/directory/Firmware"
+    export USE_PX4_AUTOPILOT=1
+    ```
+
+    Before running the testbed, make sure PX4 sitl and jmavsim have already
+    been built by following the instructions on PX4 documentation.
+
+2. The testbed.sh will automate the execution of a series of missions, given as
+world files in `testbeds/worlds/<world_name>.sdf`. The script will start
+gazebo, the autopilot (APM or PX4), and the collision avoidance gcs
+automatically, outputting the result and the logs of each mission, as they're
+executed.
 
     The missions are simple gazebo world files composed by at least a
     gzsitl_perm_target and a gzsitl_quadcopter_rs. Two test missions are
@@ -62,7 +75,7 @@ and the logs of each mission, as they're executed.
         mkdir -p "${SCRIPT_DIR}/output"
 
         testcase simple.sdf 30
-        testcase simple_obstacle.sdf 40
+        testcase simple_obstacle.sdf 60
     }
     ```
 
@@ -78,7 +91,7 @@ and the logs of each mission, as they're executed.
     testbed.sh
     ```
 
-2. To replay a previously executed mission in gazebo, make sure **your current
+3. To replay a previously executed mission in gazebo, make sure **your current
 folder is testbed** and simply execute the following command:
 
     ```
