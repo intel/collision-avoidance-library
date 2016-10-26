@@ -157,7 +157,7 @@ int main(int argc, char **argv)
     case OTHER:
     case PHYSICAL:
     case GAZEBO:
-        vehicle = std::make_shared<MavQuadCopter>();
+        vehicle = std::make_shared<MavQuadCopter>(14540);
         std::cout << "[coav] Vehicle instantiated" << std::endl;
     }
 

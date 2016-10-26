@@ -7,6 +7,7 @@ A framework for testing and benchmarking collision avoidance strategies.
     * socat 1.7+ (for testbed support)
     * GZSitl (for virtual vehicle support)
     * Ardupilot (https://github.com/ArduPilot/ardupilot)
+    * PX4 (https://github.com/PX4/Firmware)
 
 ## Build and Install ##
 
@@ -41,10 +42,33 @@ least once with:
 
 ## Run Testbed ##
 
-1. The testbed.sh will automate the execution of a series of missions, given as
-world files in `testbeds/worlds/<world_name>.sdf`. The script will start gazebo,
-ardupilot and the collision avoidance gcs automatically, outputting the result
-and the logs of each mission, as they're executed.
+1. The testbed uses ArduPilot as autopilot by default. To run it with PX4, open
+testbed.sh and edit the values of $PX4_DIR and $PX4_FLIGHT_STACK as follows:
+
+    ```
+    # PX4 Path
+    PX4_DIR="$YOUR_PX4_PATH/Firmware"
+
+    # Select Flight Stack
+    PX4_FLIGHT_STACK=1
+    ```
+
+    Before running the testbed, make sure you have compiled PX4 at least once
+    with the following command:
+
+    ```
+    cd $YOUR_PX$_PATH/Firmware
+    make posix_sitl_default jmavsim
+    ```
+
+    Please follow the instructions on the PX4 Readme in case you have problems
+    to compile it.
+
+2. The testbed.sh will automate the execution of a series of missions, given as
+world files in `testbeds/worlds/<world_name>.sdf`. The script will start
+gazebo, the autopilot (APM or PX4), and the collision avoidance gcs
+automatically, outputting the result and the logs of each mission, as they're
+executed.
 
     The missions are simple gazebo world files composed by at least a
     gzsitl_perm_target and a gzsitl_quadcopter_rs. Two test missions are
@@ -62,7 +86,7 @@ and the logs of each mission, as they're executed.
         mkdir -p "${SCRIPT_DIR}/output"
 
         testcase simple.sdf 30
-        testcase simple_obstacle.sdf 40
+        testcase simple_obstacle.sdf 60
     }
     ```
 
@@ -78,7 +102,7 @@ and the logs of each mission, as they're executed.
     testbed.sh
     ```
 
-2. To replay a previously executed mission in gazebo, make sure **your current
+3. To replay a previously executed mission in gazebo, make sure **your current
 folder is testbed** and simply execute the following command:
 
     ```
