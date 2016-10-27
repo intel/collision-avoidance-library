@@ -4,6 +4,7 @@ set (sources
   DepthImageObstacleDetector.cc
   DepthImageStraightLineDetector.cc
   DepthImagePolarHistDetector.cc
+  DepthImageSimpleDetector.cc
 )
 
 add_library(detection ${sources})

@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 set (sources
   QuadCopterShiftAvoidance.cc
   QuadCopterVFFAvoidance.cc
+  QuadCopterStopAvoidance.cc
 )
 
 add_library(avoidance ${sources})

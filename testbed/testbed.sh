@@ -86,7 +86,7 @@ testcase () {
 	sleep 2
 
 	# Run the collision avoidance gcs
-	../build/samples/coav_gcs --depth-camera GAZEBO --vehicle GAZEBO \
+	../build/samples/simple_gcs \
 		> "${LOGDIR}/coav_gcs.log" \
 		2> "${LOGDIR}/coav_gcserr.log" &
 	COAVGCSID=$!
