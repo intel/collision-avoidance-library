@@ -27,15 +27,12 @@ namespace defaults
 
 DepthImagePolarHistDetector::DepthImagePolarHistDetector(
     std::shared_ptr<DepthCamera> depth_camera, double angle_step)
-    : depth_camera(depth_camera), angle_step(angle_step)
 {
+    this->sensor = depth_camera;
+    this->angle_step = angle_step;
 }
 
-DepthImagePolarHistDetector::~DepthImagePolarHistDetector()
-{
-}
-
-std::vector<double> DepthImagePolarHistDetector::detect()
+const std::vector<double> &DepthImagePolarHistDetector::detect()
 {
 
     // Obtain camera depth buffer and camera properties

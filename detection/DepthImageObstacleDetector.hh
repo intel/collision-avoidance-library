@@ -18,17 +18,14 @@
 #include <common/common.hh>
 #include <vector>
 
-class DepthImageObstacleDetector : public Detector<DepthCamera>
+class DepthImageObstacleDetector : public Detector<DepthCamera, Obstacle>
 {
 
   public:
     DepthImageObstacleDetector(std::shared_ptr<DepthCamera> depth_camera);
-    ~DepthImageObstacleDetector();
-
     const std::vector<Obstacle> &detect() override;
 
   private:
-    std::shared_ptr<DepthCamera> depth_camera;
     std::vector<Obstacle> obstacles;
     std::vector<uint16_t> labels;
     std::vector<uint16_t> curr_depth_frame;

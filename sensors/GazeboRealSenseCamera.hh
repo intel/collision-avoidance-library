@@ -38,11 +38,12 @@ class GazeboRealSenseCamera: public DepthCamera
     void on_stream_depth_recvd(ConstImageStampedPtr &_msg);
 
     std::mutex depth_buffer_mtx;
-    std::vector<uint16_t> depth_buffer[2];
+    std::vector<uint16_t> depth_buffer[2] = {{}, {}};
     uint current_buffer = 0;
     std::shared_ptr<GazeboContext> gazebo_context;
     gazebo::transport::NodePtr gznode;
     gazebo::transport::SubscriberPtr rs_depth_sub;
+    bool camera_exists = false;
 
     unsigned int width = 0;
     unsigned int height = 0;

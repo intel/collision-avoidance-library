@@ -16,8 +16,8 @@
 
 #pragma once
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include "math.hh"
 
@@ -31,7 +31,7 @@ class QuadCopter
 
 class DepthCamera
 {
-public:
+  public:
     virtual std::vector<uint16_t> &get_depth_buffer() = 0;
     virtual unsigned int get_height() = 0;
     virtual unsigned int get_width() = 0;
@@ -39,29 +39,28 @@ public:
     virtual double get_fov_tan() = 0;
 };
 
-struct Obstacle
-{
+struct Obstacle {
     uint id;
     glm::dvec3 center;
 };
 
-template<typename SensorType>
+template <typename SensorType, typename DetectedElementType>
 class Detector
 {
   public:
-    void bind(std::unique_ptr<SensorType> s) {
-      sensor = std::move(s);
-    }
-    virtual const std::vector<Obstacle> &detect() = 0;
+    virtual const std::vector<DetectedElementType> &detect() = 0;
 
   protected:
-    std::unique_ptr<SensorType> sensor;
+    std::shared_ptr<SensorType> sensor;
 };
 
-template<typename Vehicle>
+template <typename VehicleType, typename DetectedElementType>
 class CollisionAvoidanceStrategy
 {
   public:
-    virtual void avoid(const std::vector<Obstacle> &obstacles, std::shared_ptr<Vehicle> v) = 0;
+    virtual void avoid(const std::vector<DetectedElementType> &elements) = 0;
+
+  protected:
+    std::shared_ptr<VehicleType> vehicle;
 };
 

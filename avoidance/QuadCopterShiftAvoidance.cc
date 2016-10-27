@@ -32,8 +32,13 @@ const double lowest_altitude = 1.0;
 const double detour_wp_angle = M_PI/3.0;
 }
 
-void QuadCopterShiftAvoidance::avoid(const std::vector<double> &histogram,
-                                   std::shared_ptr<MavQuadCopter> vehicle)
+QuadCopterShiftAvoidance::QuadCopterShiftAvoidance(
+    std::shared_ptr<MavQuadCopter> quadcopter)
+{
+    this->vehicle = quadcopter;
+}
+
+void QuadCopterShiftAvoidance::avoid(const std::vector<double> &histogram)
 {
     Pose vehicle_pose = vehicle->vehicle_pose();
 

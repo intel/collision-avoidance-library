@@ -19,7 +19,7 @@ GazeboRealSenseCamera::GazeboRealSenseCamera()
     this->gznode.reset(gazebo_context->node());
     this->gznode->Init();
 
-    std::cout << "[GazeboRealSenseCamera] Initialized" << std::endl;
+    std::cout << "[GazeboRealSenseCamera] Gazebo Initialized" << std::endl;
 
     // TODO: Retrieve camera data straight from topic or camera plugin
     this->width = DEPTH_CAM_WIDTH;
@@ -74,6 +74,11 @@ double GazeboRealSenseCamera::get_fov_tan()
 
 void GazeboRealSenseCamera::on_stream_depth_recvd(ConstImageStampedPtr &_msg)
 {
+    if (!this->camera_exists) {
+        this->camera_exists = true;
+        std::cout << "[GazeboRealSenseCamera] Real Sense Initialized" << std::endl;
+    }
+
     std::lock_guard<std::mutex> locker(depth_buffer_mtx);
 
     uint16_t *data = (uint16_t *) _msg->image().data().c_str();

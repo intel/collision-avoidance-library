@@ -18,17 +18,14 @@
 #include <common/common.hh>
 #include <vector>
 
-class DepthImageStraightLineDetector : public Detector<DepthCamera>
+class DepthImageStraightLineDetector : public Detector<DepthCamera, Obstacle>
 {
   public:
     DepthImageStraightLineDetector(std::shared_ptr<DepthCamera> depth_camera);
-    ~DepthImageStraightLineDetector();
-
-    void set_waypoint();
     const std::vector<Obstacle> &detect() override;
+    void set_waypoint();
 
   private:
-    std::shared_ptr<DepthCamera> depth_camera;
     std::vector<Obstacle> obstacles;
 };
 

@@ -26,6 +26,12 @@
 #define COAV_CALC_PERIOD_MS 100
 #define COAV_TARGET_SEC_MARGIN_M 1.5
 
+QuadCopterVFFAvoidance::QuadCopterVFFAvoidance(
+    std::shared_ptr<QuadCopter> quadcopter)
+{
+    this->vehicle = quadcopter;
+}
+
 double get_closest_obst_dist(const std::vector<Obstacle> &obstacles)
 {
 
@@ -50,7 +56,7 @@ PolarVector get_critical_point(const Obstacle& obstacle)
     return cp;
 }
 
-void QuadCopterVFFAvoidance::avoid(const std::vector<Obstacle> &obstacles, std::shared_ptr<QuadCopter> vehicle)
+void QuadCopterVFFAvoidance::avoid(const std::vector<Obstacle> &obstacles)
 {
     /* TODO: WORK IN PROGRESS */
 

@@ -22,24 +22,21 @@
 
 #define MAX_NUM_BLOBS 3000
 
-DepthImageObstacleDetector::DepthImageObstacleDetector(std::shared_ptr<DepthCamera> _depth_camera)
-    : depth_camera(_depth_camera)
+DepthImageObstacleDetector::DepthImageObstacleDetector(
+    std::shared_ptr<DepthCamera> depth_camera)
 {
+    this->sensor = depth_camera;
     this->obstacles.resize(MAX_NUM_BLOBS);
-}
-
-DepthImageObstacleDetector::~DepthImageObstacleDetector()
-{
 }
 
 const std::vector<Obstacle> &DepthImageObstacleDetector::detect()
 {
     // Store current camera frame data
-    this->curr_depth_frame = this->depth_camera->get_depth_buffer();
-    this->curr_height = this->depth_camera->get_height();
-    this->curr_width = this->depth_camera->get_width();
-    this->curr_scale = this->depth_camera->get_scale();
-    this->curr_fov = this->depth_camera->get_fov_tan();
+    this->curr_depth_frame = this->sensor->get_depth_buffer();
+    this->curr_height = this->sensor->get_height();
+    this->curr_width = this->sensor->get_width();
+    this->curr_scale = this->sensor->get_scale();
+    this->curr_fov = this->sensor->get_fov_tan();
 
     // Detect obstacles from current depth buffer
     int num_obstacles;

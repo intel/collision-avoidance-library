@@ -20,10 +20,11 @@
 #include <chrono>
 #include <glm/glm.hpp>
 
-class QuadCopterVFFAvoidance : public CollisionAvoidanceStrategy<QuadCopter>
+class QuadCopterVFFAvoidance : public CollisionAvoidanceStrategy<QuadCopter, Obstacle>
 {
 public:
-  void avoid(const std::vector<Obstacle> &obstacles, std::shared_ptr<QuadCopter> v) override;
+  QuadCopterVFFAvoidance(std::shared_ptr<QuadCopter> quadcopter);
+  void avoid(const std::vector<Obstacle> &obstacles) override;
 
 private:
   bool coav_enabled = true;

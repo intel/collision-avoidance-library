@@ -149,9 +149,6 @@ int main(int argc, char **argv)
         std::cout << "[coav] ObstacleDetector instantiated" << std::endl;
     }
 
-    // Initialize Avoidance Strategy
-    auto avoidance = std::make_shared<QuadCopterShiftAvoidance>();
-
     // Initialize Vehicle
     switch (depth_camera_type) {
     case OTHER:
@@ -161,12 +158,16 @@ int main(int argc, char **argv)
         std::cout << "[coav] Vehicle instantiated" << std::endl;
     }
 
+    // Initialize Avoidance Strategy
+    auto avoidance = std::make_shared<QuadCopterShiftAvoidance>(vehicle);
+
     while (running) {
         // Sense
         std::vector<Obstacle> obstacles;
         std::vector<double> hist = obstacle_detector->detect();
+
         // Avoid
-        avoidance->avoid(hist, vehicle);
+        avoidance->avoid(hist);
     }
 }
 

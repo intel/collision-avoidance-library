@@ -23,10 +23,11 @@
 #include <vector>
 
 class QuadCopterShiftAvoidance
+    : public CollisionAvoidanceStrategy<MavQuadCopter, double>
 {
   public:
-    void avoid(const std::vector<double> &histogram,
-               std::shared_ptr<MavQuadCopter> vehicle);
+    QuadCopterShiftAvoidance(std::shared_ptr<MavQuadCopter> quadcopter);
+    void avoid(const std::vector<double> &histogram) override;
 
   private:
     std::chrono::time_point<std::chrono::system_clock> wp_sent_time =
