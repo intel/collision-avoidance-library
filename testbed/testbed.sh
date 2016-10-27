@@ -77,7 +77,7 @@ testcase () {
 	sleep 8
 
 	# Bidirectional bridge between sitl (tcp) and gzsitl (udp)
-	socat udp:localhost:14556 tcp:localhost:5760 \
+	socat udp:localhost:15556 tcp:localhost:5760 \
 		> "${LOGDIR}/gzsitl_socat.log" \
 		2> "${LOGDIR}/gzsitl_socaterr.log" &
 	GZSITL_SOCATID=$!
@@ -95,7 +95,7 @@ testcase () {
 	sleep 4
 
 	# Bidirectional bridge between sitl (tcp) and coav_gcs (udp)
-	socat udp:localhost:14557 tcp:localhost:5762 \
+	socat udp:localhost:15557 tcp:localhost:5762 \
 		> "${LOGDIR}/coav_socat.log" \
 		2> "${LOGDIR}/coav_socaterr.log" &
 	COAV_SOCATID=$!
