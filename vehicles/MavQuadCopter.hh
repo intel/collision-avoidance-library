@@ -23,7 +23,7 @@
 
 #include "common/math.hh"
 #include "common/common.hh"
-#include "modules/mavlink_vehicles/mavlink_vehicles/mavlink_vehicles.hh"
+#include "mavlink_vehicles.hh"
 
 class MavQuadCopter : public QuadCopter
 {

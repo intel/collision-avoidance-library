@@ -25,7 +25,7 @@
 #include "MavQuadCopter.hh"
 #include "common/common.hh"
 #include "common/math.hh"
-#include "modules/mavlink_vehicles/mavlink_vehicles/mavlink_vehicles.hh"
+#include "mavlink_vehicles.hh"
 
 namespace defaults
 {
@@ -90,9 +90,7 @@ void MavQuadCopter::run()
             continue;
         }
 
-        mavlink_vehicles::arm_status arm_stat = this->mav->get_arm_status();
         mavlink_vehicles::status status = this->mav->get_status();
-        mavlink_vehicles::mode mode = this->mav->get_mode();
 
         switch (this->vehicle_state) {
         case INIT: {
@@ -113,16 +111,6 @@ void MavQuadCopter::run()
             }
 
             // Execute takeoff procedures
-            if (mode != mavlink_vehicles::mode::GUIDED) {
-                this->mav->set_mode(mavlink_vehicles::mode::GUIDED);
-                continue;
-            }
-
-            if (arm_stat != mavlink_vehicles::arm_status::ARMED) {
-                this->mav->arm_throttle();
-                continue;
-            }
-
             if (status != mavlink_vehicles::status::ACTIVE) {
                 this->mav->takeoff();
                 continue;
