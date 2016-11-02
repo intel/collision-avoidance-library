@@ -29,6 +29,7 @@
 #include "sensors/GazeboRealSenseCamera.hh"
 #include "detection/DepthImagePolarHistDetector.hh"
 #include "common/common.hh"
+#include "common/DepthCamera.hh"
 
 enum device_type_ { GAZEBO, PHYSICAL, OTHER };
 

@@ -13,21 +13,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
-#pragma once
 
-#include <memory>
-#include <vector>
+#include <cmath>
 
-#include "common/common.hh"
-#include "common/DepthCamera.hh"
+#include "DepthCamera.hh"
 
-class DepthImageSimpleDetector : public Detector<DepthCamera, bool>
+unsigned int DepthCamera::get_height()
 {
-  public:
-    DepthImageSimpleDetector(std::shared_ptr<DepthCamera> depth_camera);
-    const std::vector<bool> &detect() override;
+    return height;
+}
 
-  private:
-    std::vector<bool> detection = {false};
-};
+unsigned int DepthCamera::get_width()
+{
+    return width;
+}
+
+double DepthCamera::get_scale()
+{
+    return scale;
+}
+
+double DepthCamera::get_fov_tan()
+{
+    static double curr_fov = 0;
+    static double curr_fov_tan = 0;
+
+    // Check if fov has changed to recalculate fov_tan
+    if (this->fov != curr_fov) {
+        curr_fov = fov;
+        curr_fov_tan = tan(fov);
+    }
+
+    return curr_fov_tan;
+}
 

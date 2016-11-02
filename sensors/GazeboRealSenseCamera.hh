@@ -16,8 +16,8 @@
 #pragma once
 
 #include <gazebo/transport/transport.hh>
+#include <common/DepthCamera.hh>
 #include <communication/GazeboContext.hh>
-#include <common/common.hh>
 #include <mutex>
 #include <vector>
 #include <memory>
@@ -28,11 +28,7 @@ class GazeboRealSenseCamera: public DepthCamera
     GazeboRealSenseCamera();
     ~GazeboRealSenseCamera();
 
-    std::vector<uint16_t> &get_depth_buffer();
-    unsigned int get_height();
-    unsigned int get_width();
-    double get_scale();
-    double get_fov_tan();
+    std::vector<uint16_t> &get_depth_buffer() override;
 
   private:
     void on_stream_depth_recvd(ConstImageStampedPtr &_msg);
@@ -44,10 +40,5 @@ class GazeboRealSenseCamera: public DepthCamera
     gazebo::transport::NodePtr gznode;
     gazebo::transport::SubscriberPtr rs_depth_sub;
     bool camera_exists = false;
-
-    unsigned int width = 0;
-    unsigned int height = 0;
-    double fov = 0;
-    double scale = 0;
 };
 

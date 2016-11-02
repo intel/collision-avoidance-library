@@ -8,5 +8,5 @@ set (sources
 )
 
 add_library(detection ${sources})
-target_link_libraries(detection utils ${LDFLAGS})
+target_link_libraries(detection common utils ${LDFLAGS})
 

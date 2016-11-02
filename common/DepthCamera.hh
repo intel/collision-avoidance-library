@@ -15,19 +15,21 @@
 */
 #pragma once
 
-#include <memory>
+#include <cstdint>
 #include <vector>
 
-#include "common/common.hh"
-#include "common/DepthCamera.hh"
-
-class DepthImageSimpleDetector : public Detector<DepthCamera, bool>
+class DepthCamera
 {
-  public:
-    DepthImageSimpleDetector(std::shared_ptr<DepthCamera> depth_camera);
-    const std::vector<bool> &detect() override;
+    protected:
+        unsigned int width = 0;
+        unsigned int height = 0;
+        double fov = 0;
+        double scale = 0;
 
-  private:
-    std::vector<bool> detection = {false};
+    public:
+        virtual std::vector<uint16_t> &get_depth_buffer() = 0;
+        unsigned int get_height();
+        unsigned int get_width();
+        double get_scale();
+        double get_fov_tan();
 };
-

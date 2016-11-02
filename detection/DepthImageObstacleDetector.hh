@@ -16,6 +16,7 @@
 #pragma once
 
 #include <common/common.hh>
+#include <common/DepthCamera.hh>
 #include <vector>
 
 class DepthImageObstacleDetector : public Detector<DepthCamera, Obstacle>

@@ -43,35 +43,6 @@ std::vector<uint16_t> &GazeboRealSenseCamera::get_depth_buffer()
     return depth_buffer[this->current_buffer ^= 1];
 }
 
-unsigned int GazeboRealSenseCamera::get_height()
-{
-    return height;
-}
-
-unsigned int GazeboRealSenseCamera::get_width()
-{
-    return width;
-}
-
-double GazeboRealSenseCamera::get_scale()
-{
-    return scale;
-}
-
-double GazeboRealSenseCamera::get_fov_tan()
-{
-    static double curr_fov = 0;
-    static double curr_fov_tan = 0;
-
-    // Check if fov has changed to recalculate fov_tan
-    if (fov != curr_fov) {
-        curr_fov = fov;
-        curr_fov_tan = tan(fov);
-    }
-
-    return curr_fov_tan;
-}
-
 void GazeboRealSenseCamera::on_stream_depth_recvd(ConstImageStampedPtr &_msg)
 {
     if (!this->camera_exists) {
