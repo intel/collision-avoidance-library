@@ -26,6 +26,7 @@
 #include "avoidance/QuadCopterShiftAvoidance.hh"
 #include "vehicles/GazeboQuadCopter.hh"
 #include "vehicles/MavQuadCopter.hh"
+#include "sensors/DepthCamera.hh"
 #include "sensors/GazeboRealSenseCamera.hh"
 #include "detection/DepthImagePolarHistDetector.hh"
 #include "common/common.hh"

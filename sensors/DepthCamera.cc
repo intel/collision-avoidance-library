@@ -13,20 +13,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
-#pragma once
 
-#include <common/common.hh>
-#include <sensors/DepthCamera.hh>
-#include <vector>
+#include <cmath>
 
-class DepthImageStraightLineDetector : public Detector<DepthCamera, Obstacle>
+#include "DepthCamera.hh"
+
+unsigned int DepthCamera::get_height()
 {
-  public:
-    DepthImageStraightLineDetector(std::shared_ptr<DepthCamera> depth_camera);
-    const std::vector<Obstacle> &detect() override;
-    void set_waypoint();
+    return height;
+}
 
-  private:
-    std::vector<Obstacle> obstacles;
-};
+unsigned int DepthCamera::get_width()
+{
+    return width;
+}
+
+double DepthCamera::get_scale()
+{
+    return scale;
+}
+
+double DepthCamera::get_fov_tan()
+{
+    static double curr_fov = 0;
+    static double curr_fov_tan = 0;
+
+    // Check if fov has changed to recalculate fov_tan
+    if (this->fov != curr_fov) {
+        curr_fov = fov;
+        curr_fov_tan = tan(fov);
+    }
+
+    return curr_fov_tan;
+}
 

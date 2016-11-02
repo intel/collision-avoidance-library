@@ -15,18 +15,22 @@
 */
 #pragma once
 
-#include <common/common.hh>
-#include <sensors/DepthCamera.hh>
+#include <cstdint>
 #include <vector>
 
-class DepthImageStraightLineDetector : public Detector<DepthCamera, Obstacle>
+class DepthCamera
 {
-  public:
-    DepthImageStraightLineDetector(std::shared_ptr<DepthCamera> depth_camera);
-    const std::vector<Obstacle> &detect() override;
-    void set_waypoint();
+    protected:
+        unsigned int width = 0;
+        unsigned int height = 0;
+        double fov = 0;
+        double scale = 0;
 
-  private:
-    std::vector<Obstacle> obstacles;
+    public:
+        virtual std::vector<uint16_t> &get_depth_buffer() = 0;
+        unsigned int get_height();
+        unsigned int get_width();
+        double get_scale();
+        double get_fov_tan();
+
 };
-

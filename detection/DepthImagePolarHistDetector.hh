@@ -16,6 +16,7 @@
 #pragma once
 
 #include <common/common.hh>
+#include <sensors/DepthCamera.hh>
 #include <memory>
 #include <vector>
 

@@ -29,16 +29,6 @@ class QuadCopter
     virtual void set_target_pose(Pose pose) = 0;
 };
 
-class DepthCamera
-{
-  public:
-    virtual std::vector<uint16_t> &get_depth_buffer() = 0;
-    virtual unsigned int get_height() = 0;
-    virtual unsigned int get_width() = 0;
-    virtual double get_scale() = 0;
-    virtual double get_fov_tan() = 0;
-};
-
 struct Obstacle {
     uint id;
     glm::dvec3 center;
