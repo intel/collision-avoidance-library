@@ -1,13 +1,19 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
-set (sources
+set(SOURCES
   GazeboRealSenseCamera.cc
 )
 
-set (headers
-  GazeboRealSenseCamera.hh
+set(LIBRARIES
+    communication
+    ${GAZEBO_LIBRARIES}
 )
 
-add_library(sensors ${sources})
-target_link_libraries(sensors communication ${GAZEBO_LIBRARIES} ${LDFLAGS})
+if(REALSENSE_FOUND)
+    set(SOURCES ${SOURCES} RealSenseCamera.cc)
+    set(LIBRARIES ${LIBRARIES} ${REALSENSE_LIBRARIES})
+endif(REALSENSE_FOUND)
+
+add_library(sensors ${SOURCES})
+target_link_libraries(sensors ${LIBRARIES} ${LDFLAGS})
 
