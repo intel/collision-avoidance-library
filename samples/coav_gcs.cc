@@ -31,6 +31,10 @@
 #include "common/common.hh"
 #include "common/DepthCamera.hh"
 
+#ifdef USING_REALSENSE
+#include "sensors/RealSenseCamera.hh"
+#endif
+
 enum device_type_ { GAZEBO, PHYSICAL, OTHER };
 
 static device_type_ vehicle_type = OTHER;
@@ -129,10 +133,17 @@ int main(int argc, char **argv)
     }
 
     // TODO: Implement PHYSICAL device support
-    if (depth_camera_type == PHYSICAL || vehicle_type == PHYSICAL) {
+    if (vehicle_type == PHYSICAL) {
         std::cout << "Physical devices are not supported yet" << std::endl;
         return 0;
     }
+
+#ifndef USING_REALSENSE
+    if (depth_camera_type == PHYSICAL) {
+        std::cout << "Physical camera are not supported" << std::endl;
+        return 0;
+    }
+#endif
 
     std::shared_ptr<DepthCamera> depth_camera;
     std::shared_ptr<MavQuadCopter> vehicle;
@@ -142,13 +153,19 @@ int main(int argc, char **argv)
     switch (depth_camera_type) {
     case OTHER:
     case PHYSICAL:
+#ifdef USING_REALSENSE
+        depth_camera = std::make_shared<RealSenseCamera>(640, 480, 30);
+        std::cout << "[coav] RealSenseCamera instantiated" << std::endl;
+        break;
+#endif
     case GAZEBO:
         depth_camera = std::make_shared<GazeboRealSenseCamera>();
         std::cout << "[coav] GazeboRealSenseCamera instantiated" << std::endl;
-        obstacle_detector = std::make_shared<DepthImagePolarHistDetector>(
-            depth_camera, 180.0 * (atan(depth_camera->get_fov_tan())) / M_PI);
-        std::cout << "[coav] ObstacleDetector instantiated" << std::endl;
     }
+
+    obstacle_detector = std::make_shared<DepthImagePolarHistDetector>(
+            depth_camera, 180.0 * (atan(depth_camera->get_fov_tan())) / M_PI);
+    std::cout << "[coav] ObstacleDetector instantiated" << std::endl;
 
     // Initialize Vehicle
     switch (depth_camera_type) {

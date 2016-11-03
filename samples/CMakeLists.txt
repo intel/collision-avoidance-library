@@ -41,3 +41,7 @@ target_link_libraries(test_detector
   ${GLUT_LIBRARIES}
 )
 
+if(REALSENSE_FOUND)
+    add_definitions(-DUSING_REALSENSE)
+endif(REALSENSE_FOUND)
+
