@@ -28,6 +28,7 @@
 #include "vehicles/MavQuadCopter.hh"
 #include "sensors/DepthCamera.hh"
 #include "sensors/GazeboRealSenseCamera.hh"
+#include "sensors/RealSenseCamera.hh"
 #include "detection/DepthImagePolarHistDetector.hh"
 #include "common/common.hh"
 
@@ -129,7 +130,7 @@ int main(int argc, char **argv)
     }
 
     // TODO: Implement PHYSICAL device support
-    if (depth_camera_type == PHYSICAL || vehicle_type == PHYSICAL) {
+    if (vehicle_type == PHYSICAL) {
         std::cout << "Physical devices are not supported yet" << std::endl;
         return 0;
     }
@@ -142,6 +143,9 @@ int main(int argc, char **argv)
     switch (depth_camera_type) {
     case OTHER:
     case PHYSICAL:
+        depth_camera = std::make_shared<RealSenseCamera>();
+        std::cout << "[coav] RealSenseCamera instantiated" << std::endl;
+        break;
     case GAZEBO:
         depth_camera = std::make_shared<GazeboRealSenseCamera>();
         std::cout << "[coav] GazeboRealSenseCamera instantiated" << std::endl;
