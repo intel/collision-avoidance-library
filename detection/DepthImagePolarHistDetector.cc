@@ -36,11 +36,11 @@ const std::vector<double> &DepthImagePolarHistDetector::detect()
 {
 
     // Obtain camera depth buffer and camera properties
-    std::vector<uint16_t> depth_buffer = this->depth_camera->get_depth_buffer();
-    unsigned int height = this->depth_camera->get_height();
-    unsigned int width = this->depth_camera->get_width();
-    double fov_tan = this->depth_camera->get_fov_tan();
-    double scale = this->depth_camera->get_scale();
+    std::vector<uint16_t> depth_buffer = this->sensor->get_depth_buffer();
+    unsigned int height = this->sensor->get_height();
+    unsigned int width = this->sensor->get_width();
+    double fov_tan = this->sensor->get_fov_tan();
+    double scale = this->sensor->get_scale();
 
     // Return an empty histogram if the depth buffer is invalid
     if(depth_buffer.size() == 0) {

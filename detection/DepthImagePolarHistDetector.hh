@@ -27,7 +27,6 @@ class DepthImagePolarHistDetector : public Detector<DepthCamera, double>
     const std::vector<double> &detect() override;
 
   private:
-    std::shared_ptr<DepthCamera> depth_camera;
     double angle_step;
     std::vector<double> histogram;
 };
