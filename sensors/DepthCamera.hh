@@ -15,19 +15,22 @@
 */
 #pragma once
 
-#include <common/common.hh>
-#include <sensors/DepthCamera.hh>
-#include <memory>
+#include <cstdint>
 #include <vector>
 
-class DepthImagePolarHistDetector : public Detector<DepthCamera, double>
+class DepthCamera
 {
-  public:
-    DepthImagePolarHistDetector(std::shared_ptr<DepthCamera> depth_camera,
-                                double angle_step);
-    const std::vector<double> &detect() override;
+    protected:
+        unsigned int width = 0;
+        unsigned int height = 0;
+        double fov = 0;
+        double scale = 0;
 
-  private:
-    double angle_step;
-    std::vector<double> histogram;
+    public:
+        virtual std::vector<uint16_t> &get_depth_buffer() = 0;
+        unsigned int get_height();
+        unsigned int get_width();
+        double get_scale();
+        double get_fov_tan();
+
 };

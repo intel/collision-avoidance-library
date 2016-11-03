@@ -13,21 +13,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
-#pragma once
 
-#include <common/common.hh>
-#include <sensors/DepthCamera.hh>
-#include <memory>
-#include <vector>
+#include <cmath>
 
-class DepthImagePolarHistDetector : public Detector<DepthCamera, double>
+#include "DepthCamera.hh"
+
+unsigned int DepthCamera::get_height()
 {
-  public:
-    DepthImagePolarHistDetector(std::shared_ptr<DepthCamera> depth_camera,
-                                double angle_step);
-    const std::vector<double> &detect() override;
+    return height;
+}
 
-  private:
-    double angle_step;
-    std::vector<double> histogram;
-};
+unsigned int DepthCamera::get_width()
+{
+    return width;
+}
+
+double DepthCamera::get_scale()
+{
+    return scale;
+}
+
+double DepthCamera::get_fov_tan()
+{
+    static double curr_fov = 0;
+    static double curr_fov_tan = 0;
+
+    // Check if fov has changed to recalculate fov_tan
+    if (this->fov != curr_fov) {
+        curr_fov = fov;
+        curr_fov_tan = tan(fov);
+    }
+
+    return curr_fov_tan;
+}
+

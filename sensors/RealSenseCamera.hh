@@ -13,44 +13,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
-
 #pragma once
 
+#include <librealsense/rs.hpp>
 #include <memory>
+#include <mutex>
 #include <vector>
 
-#include "math.hh"
+#include "DepthCamera.hh"
 
-class QuadCopter
+class RealSenseCamera: public DepthCamera
 {
   public:
-    virtual Pose target_pose() = 0;
-    virtual Pose vehicle_pose() = 0;
-    virtual void set_target_pose(Pose pose) = 0;
-};
+    RealSenseCamera();
 
-struct Obstacle {
-    uint id;
-    glm::dvec3 center;
-};
+    std::vector<uint16_t> &get_depth_buffer() override;
 
-template <typename SensorType, typename DetectedElementType>
-class Detector
-{
-  public:
-    virtual const std::vector<DetectedElementType> &detect() = 0;
+  private:
+    std::mutex depth_buffer_mtx;
+    std::vector<uint16_t> depth_buffer;
 
-  protected:
-    std::shared_ptr<SensorType> sensor;
-};
-
-template <typename VehicleType, typename DetectedElementType>
-class CollisionAvoidanceStrategy
-{
-  public:
-    virtual void avoid(const std::vector<DetectedElementType> &elements) = 0;
-
-  protected:
-    std::shared_ptr<VehicleType> vehicle;
+    std::shared_ptr<rs::context> ctx;
+    rs::device *dev;
 };
 

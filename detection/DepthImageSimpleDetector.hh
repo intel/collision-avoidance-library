@@ -19,6 +19,7 @@
 #include <vector>
 
 #include "common/common.hh"
+#include "sensors/DepthCamera.hh"
 
 class DepthImageSimpleDetector : public Detector<DepthCamera, bool>
 {
