@@ -15,6 +15,7 @@ find_package(gazebo REQUIRED)
 find_package(GLM REQUIRED)
 find_package(OpenGL)
 find_package(GLUT)
+find_package(realsense)
 
 # Custom instalation paths
 if (COAVLIB_PLUGIN_INSTALL_PATH)
