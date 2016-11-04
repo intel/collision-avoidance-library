@@ -15,6 +15,10 @@
 
 SCRIPT_DIR=$(dirname $(realpath ${BASH_SOURCE[0]}))
 
+# Supported Autopilots
+AP_PX4=0
+AP_APM=1
+
 # ArduCopter Variables
 APM_CMD="arducopter-quad"
 APM_TCP_PORT_1=5760
@@ -30,8 +34,14 @@ PX4_UDP_PORT_2=14540
 GZSITL_UDP_PORT=15556
 COAV_GCS_UDP_PORT=15557
 
-# Select Autopilot
-USE_PX4_AUTOPILOT=${USE_PX4_AUTOPILOT:-0}
+# Set autopilot
+AUTOPILOT=${TESTBED_AUTOPILOT:-AP_PX4}
+
+# Check if a supported autopilot has been selected
+if (("$AUTOPILOT" != "$AP_PX4" && "$AUTOPILOT" != "$AP_APM")); then
+    echo >&2 "Error: Autopilot '$AUTOPILOT' is not supported"
+    exit 1
+fi
 
 silentkill () {
     if [ ! -z $2 ]; then
@@ -57,7 +67,7 @@ test_path () {
 
 check_paths () {
     test_path $SCRIPT_DIR
-    if (("$USE_PX4_AUTOPILOT" == 1)); then
+    if (("$AUTOPILOT" == "$AP_PX4")); then
         test_path $PX4_DIR
     fi
 }
@@ -82,13 +92,13 @@ testcase () {
     mkdir -p $LOGDIR
 
     # Run SITL Simulator
-    if (("$USE_PX4_AUTOPILOT" == 1)); then
+    if (("$AUTOPILOT" == "$AP_PX4")); then
         cd $PX4_DIR
         $PX4_CMD > "${LOGDIR}/sitl.log" \
             2> "${LOGDIR}/sitlerr.log" &
         SITLID=$!
         cd - > /dev/null
-    else
+    elif (("$AUTOPILOT" == "$AP_APM")); then
         cd $SCRIPT_DIR # sitl must run in the same dir of "eeprom.bin"
         $APM_CMD --model x \
             > "${LOGDIR}/sitl.log" \
@@ -111,10 +121,11 @@ testcase () {
     # Wait until gazebo is up and running
     sleep 8
 
-    SOCAT_ARG_1="tcp:localhost:$APM_TCP_PORT_1"
     SOCAT_ARG_2="udp:localhost:$GZSITL_UDP_PORT"
-    if (("$USE_PX4_AUTOPILOT" == 1)); then
+    if (("$AUTOPILOT" == "$AP_PX4")); then
         SOCAT_ARG_1="udp-listen:$PX4_UDP_PORT_1"
+    elif (("$AUTOPILOT" == "$AP_APM")); then
+        SOCAT_ARG_1="tcp:localhost:$APM_TCP_PORT_1"
     fi
 
     # Bidirectional bridge between autopilot and gazebo-sitl
@@ -135,10 +146,11 @@ testcase () {
     # Wait until gcs is up and running
     sleep 4
 
-    SOCAT_ARG_1="tcp:localhost:$APM_TCP_PORT_2"
     SOCAT_ARG_2="udp:localhost:$COAV_GCS_UDP_PORT"
-    if (("$USE_PX4_AUTOPILOT" == 1)); then
+    if (("$AUTOPILOT" == "$AP_PX4")); then
         SOCAT_ARG_1="udp-listen:$PX4_UDP_PORT_2"
+    elif (("$AUTOPILOT" == "$AP_APM")); then
+        SOCAT_ARG_1="tcp:localhost:$APM_TCP_PORT_2"
     fi
 
     # Bidirectional bridge between the autopilot and the coav_gcs
@@ -173,7 +185,7 @@ replay () {
 cleanup () {
     silentkill $GZSITL_SOCATID # Kill gzsitl socat
     silentkill $COAV_SOCATID # Kill coav_gcs socat
-    silentkill $SITLID # Kill arducopter sitl
+    silentkill $SITLID # Kill sitl
     silentkill $GZID -INT && sleep 3 # Wait gzserver to save the log
     silentkill $GZID  # Kill gzserver
     silentkill $COAVGCSID # Kill coav_gcs sitl
