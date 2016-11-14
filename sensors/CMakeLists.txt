@@ -15,5 +15,5 @@ if(REALSENSE_FOUND)
 endif(REALSENSE_FOUND)
 
 add_library(sensors ${SOURCES})
-target_link_libraries(sensors ${LIBRARIES} ${LDFLAGS})
+target_link_libraries(sensors ${LIBRARIES})
 

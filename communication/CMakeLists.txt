@@ -5,5 +5,5 @@ set (sources
 )
 
 add_library(communication ${sources})
-target_link_libraries(communication ${GAZEBO_LIBRARIES} ${LDFLAGS})
+target_link_libraries(communication ${GAZEBO_LIBRARIES})
 

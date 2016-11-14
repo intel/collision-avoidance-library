@@ -8,5 +8,5 @@ add_library(vehicles ${sources})
 target_link_libraries(vehicles
     communication
     mavlink_vehicles
-    ${GAZEBO_libraries} ${LDFLAGS})
+    ${GAZEBO_libraries})
 

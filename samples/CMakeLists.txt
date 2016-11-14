@@ -9,11 +9,7 @@ target_link_libraries(simple_gcs
   sensors
   detection
   avoidance
-  utils
   vehicles
-  ${GAZEBO_LIBRARIES}
-  ${PROTOBUF_LIBRARIES}
-  ${LDFLAGS}
 )
 
 target_link_libraries(coav_gcs
@@ -21,22 +17,15 @@ target_link_libraries(coav_gcs
   sensors
   detection
   avoidance
-  utils
   vehicles
-  ${GAZEBO_LIBRARIES}
-  ${PROTOBUF_LIBRARIES}
-  ${LDFLAGS}
 )
 
 target_link_libraries(test_detector
   common
   communication
   detection
-  utils
   sensors
   vehicles
-  ${GAZEBO_LIBRARIES}
-  ${PROTOBUF_LIBRARIES}
   ${OPENGL_LIBRARIES}
   ${GLUT_LIBRARIES}
 )

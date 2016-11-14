@@ -10,7 +10,5 @@ add_library(avoidance ${sources})
 target_link_libraries(avoidance
   common
   vehicles
-  ${GAZEBO_libraries}
-  ${LDFLAGS}
 )
 

@@ -5,5 +5,3 @@ set (sources
 )
 
 add_library(utils ${sources})
-target_link_libraries(utils ${GAZEBO_libraries} ${LDFLAGS})
-
