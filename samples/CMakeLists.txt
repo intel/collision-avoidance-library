@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 add_executable(coav_gcs coav_gcs.cc)
 add_executable(test_detector test.cc)

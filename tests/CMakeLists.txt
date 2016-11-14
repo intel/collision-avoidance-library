@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 add_executable(unit_tests Tests.cc)
 add_library(pptree_tests PPTree_Test.cc)
