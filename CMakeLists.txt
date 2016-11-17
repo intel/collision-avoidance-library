@@ -89,6 +89,10 @@ if (${WITH_GAZEBO})
     link_directories(${GAZEBO_LIBRARY_DIRS})
 endif()
 
+if (${WITH_REALSENSE})
+    include_directories(${REALSENSE_INCLUDE_DIRS})
+endif()
+
 # Add library subdirectories
 add_subdirectory(avoidance)
 add_subdirectory(common)
