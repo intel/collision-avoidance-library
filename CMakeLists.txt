@@ -8,10 +8,24 @@ function(option_deps DEP_VAR FEATURE REQUIRED)
     endif()
 endfunction()
 
+#add option dependency
+macro(dependent_option option doc default dependency)
+    if (${dependency})
+        set(enable_${option} true)
+    endif()
+
+    if (DEFINED enable_${option})
+        option(${option} ${doc} ${default})
+    else()
+        set(${option} OFF)
+        message(WARNING "Option ${option} ignored. Missing required option ${dependency}")
+    endif()
+endmacro()
+
 #Build Options
 option(WITH_REALSENSE "Add realsense support" ON)
 option(WITH_GAZEBO "Enable Gazebo simulation features" OFF)
-option(WITH_VDEBUG "Compile visual debugger" OFF)
+dependent_option(WITH_VDEBUG "Compile visual debugger" OFF WITH_GAZEBO)
 
 # Check if submodules have been initialized
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/modules/mavlink_vehicles/CMakeLists.txt)
