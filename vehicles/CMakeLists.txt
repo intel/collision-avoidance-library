@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
-set (sources
-    GazeboQuadCopter.cc
-    MavQuadCopter.cc)
+set(SOURCES MavQuadCopter.cc)
+set(LIBRARIES mavlink_vehicles)
 
-add_library(vehicles ${sources})
-target_link_libraries(vehicles
-    communication
-    mavlink_vehicles
-    ${GAZEBO_libraries} ${LDFLAGS})
+if (${WITH_GAZEBO})
+    set(SOURCES ${SOURCES} GazeboQuadCopter.cc)
+    set(LIBRARIES ${LIBRARIES} communication ${GAZEBO_libraries})
+endif()
 
+add_library(vehicles ${SOURCES})
+target_link_libraries(vehicles ${LIBRARIES})

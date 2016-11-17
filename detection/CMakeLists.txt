@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 set (sources
   DepthImageObstacleDetector.cc
@@ -8,5 +8,5 @@ set (sources
 )
 
 add_library(detection ${sources})
-target_link_libraries(detection common utils ${LDFLAGS})
+target_link_libraries(detection common)
 
