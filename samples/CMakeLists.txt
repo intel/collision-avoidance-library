@@ -18,10 +18,6 @@ if (${WITH_GAZEBO})
       avoidance
       vehicles
     )
-
-    if(${WITH_REALSENSE})
-        add_definitions(-DUSING_REALSENSE)
-    endif()
 endif()
 
 if (${WITH_VDEBUG})
@@ -36,4 +32,3 @@ if (${WITH_VDEBUG})
       ${GLUT_LIBRARIES}
     )
 endif()
-

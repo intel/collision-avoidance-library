@@ -9,4 +9,4 @@ if (${WITH_GAZEBO})
 endif()
 
 add_library(vehicles ${SOURCES})
-target_link_libraries(vehicles ${LIBRARIES})
+target_link_libraries(vehicles PRIVATE ${LIBRARIES} PUBLIC "-pthread")
