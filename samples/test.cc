@@ -33,7 +33,7 @@ void mouseMove(int mouseX, int mouseY)
 }
 
 void updateMouse(int button, int state, int mouseX, int mouseY)
-{    
+{
     if (button != GLUT_LEFT_BUTTON)
         return;
 
@@ -47,7 +47,7 @@ void updateMouse(int button, int state, int mouseX, int mouseY)
 }
 
 void updateDisplay()
-{    
+{
     glClearColor(0.1, 0.1, 0.1, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
