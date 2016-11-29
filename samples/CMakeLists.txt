@@ -9,7 +9,9 @@ if (${WITH_GAZEBO})
       avoidance
       vehicles
     )
+endif()
 
+if (${WITH_GAZEBO} OR ${WITH_REALSENSE})
     add_executable(coav_gcs coav_gcs.cc)
     target_link_libraries(coav_gcs
       common
@@ -18,10 +20,6 @@ if (${WITH_GAZEBO})
       avoidance
       vehicles
     )
-
-    if(${WITH_REALSENSE})
-        add_definitions(-DUSING_REALSENSE)
-    endif()
 endif()
 
 if (${WITH_VDEBUG})
@@ -36,4 +34,3 @@ if (${WITH_VDEBUG})
       ${GLUT_LIBRARIES}
     )
 endif()
-
