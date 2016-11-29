@@ -33,7 +33,7 @@ if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/modules/mavlink_vehicles/CMakeLists.tx
     return()
 endif()
 
-#List requitred packages for each build option
+#List required packages for each build option
 set(DEPS "GLM")
 option_deps(DEPS WITH_GAZEBO "gazebo")
 option_deps(DEPS WITH_REALSENSE "realsense")
