@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project(LIBCOAV)
 
-#Set add REQUIRED list to DEP_VAR if FEATURE is ON
+# Set add REQUIRED list to DEP_VAR if FEATURE is ON
 function(option_deps DEP_VAR FEATURE REQUIRED)
     if (${FEATURE})
         set(${DEP_VAR} ${${DEP_VAR}} ${REQUIRED} ${ARGN} PARENT_SCOPE)
     endif()
 endfunction()
 
-#add option dependency
+# Add option dependency
 macro(dependent_option option doc default dependency)
     if (${dependency})
         set(enable_${option} true)
@@ -22,11 +22,20 @@ macro(dependent_option option doc default dependency)
     endif()
 endmacro()
 
-#Build Options
+# Build Options
 option(WITH_REALSENSE "Add realsense support" ON)
+option(WITH_SAMPLES "Compile project samples" OFF)
 option(WITH_GAZEBO "Enable Gazebo simulation features" OFF)
 dependent_option(WITH_VDEBUG "Compile visual debugger" OFF WITH_GAZEBO)
-option(WITH_SAMPLES "Compile project samples" OFF)
+
+# Options definitions and custom setup
+if (${WITH_REALSENSE})
+    add_definitions(-DHAVE_REALSENSE)
+endif()
+
+if (${WITH_GAZEBO})
+    add_definitions(-DHAVE_GAZEBO)
+endif()
 
 # Check if submodules have been initialized
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/modules/mavlink_vehicles/CMakeLists.txt)
@@ -64,7 +73,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${LDFLAGS} -z noexecstack -z relro -z now")
 include_directories(${PROJECT_SOURCE_DIR})
 
 if (${WITH_GAZEBO})
-    # Custom instalation paths
+    # Custom installation paths
     if (COAVLIB_PLUGIN_INSTALL_PATH)
         GET_FILENAME_COMPONENT(COAVLIB_PLUGIN_PATH ${COAVLIB_PLUGIN_INSTALL_PATH} ABSOLUTE)
     else()
