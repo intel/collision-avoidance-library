@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
-if (${WITH_GAZEBO})
+if (${WITH_GAZEBO} OR ${WITH_REALSENSE})
     add_executable(simple_gcs simple_gcs.cc)
     target_link_libraries(simple_gcs
       common
@@ -18,10 +18,6 @@ if (${WITH_GAZEBO})
       avoidance
       vehicles
     )
-
-    if(${WITH_REALSENSE})
-        add_definitions(-DUSING_REALSENSE)
-    endif()
 endif()
 
 if (${WITH_VDEBUG})
@@ -36,4 +32,3 @@ if (${WITH_VDEBUG})
       ${GLUT_LIBRARIES}
     )
 endif()
-

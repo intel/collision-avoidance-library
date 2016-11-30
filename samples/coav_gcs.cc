@@ -14,24 +14,29 @@
 // limitations under the License.
 */
 
-#include <gazebo/gazebo.hh>
-#include <gazebo/gazebo_client.hh>
-#include <gazebo/msgs/msgs.hh>
-#include <gazebo/transport/transport.hh>
+#include <algorithm>
 #include <getopt.h>
 #include <iostream>
 #include <memory>
 #include <thread>
 
 #include "avoidance/QuadCopterShiftAvoidance.hh"
-#include "vehicles/GazeboQuadCopter.hh"
 #include "vehicles/MavQuadCopter.hh"
-#include "sensors/GazeboRealSenseCamera.hh"
 #include "detection/DepthImagePolarHistDetector.hh"
 #include "common/common.hh"
 #include "common/DepthCamera.hh"
 
-#ifdef USING_REALSENSE
+#ifdef HAVE_GAZEBO
+#include <gazebo/gazebo_client.hh>
+#include <gazebo/gazebo.hh>
+#include <gazebo/msgs/msgs.hh>
+#include <gazebo/transport/transport.hh>
+
+#include "sensors/GazeboRealSenseCamera.hh"
+#include "vehicles/GazeboQuadCopter.hh"
+#endif
+
+#ifdef HAVE_REALSENSE
 #include "sensors/RealSenseCamera.hh"
 #endif
 
@@ -79,7 +84,6 @@ static device_type_ parse_device_type(const char *optarg)
 
     return ret_val;
 }
-
 
 int main(int argc, char **argv)
 {
@@ -138,7 +142,7 @@ int main(int argc, char **argv)
         return 0;
     }
 
-#ifndef USING_REALSENSE
+#ifndef HAVE_REALSENSE
     if (depth_camera_type == PHYSICAL) {
         std::cout << "Physical camera are not supported" << std::endl;
         return 0;
@@ -151,16 +155,28 @@ int main(int argc, char **argv)
 
     // Initialize Sensors
     switch (depth_camera_type) {
-    case OTHER:
     case PHYSICAL:
-#ifdef USING_REALSENSE
+#ifdef HAVE_REALSENSE
         depth_camera = std::make_shared<RealSenseCamera>(640, 480, 30);
         std::cout << "[coav] RealSenseCamera instantiated" << std::endl;
         break;
+#else
+        std::cout << "Physical camera requested but support wasn't found." << std::endl;
+        return 0;
 #endif
     case GAZEBO:
+#ifdef HAVE_GAZEBO
         depth_camera = std::make_shared<GazeboRealSenseCamera>();
         std::cout << "[coav] GazeboRealSenseCamera instantiated" << std::endl;
+        break;
+#else
+        std::cout << "Gazebo simulated camera requested but support wasn't found." << std::endl;
+        return 0;
+#endif
+    case OTHER:
+    default:
+        std::cout << "At least one valid Depth Camera is needed to run this example but none was found." << std::endl;
+        return 0;
     }
 
     obstacle_detector = std::make_shared<DepthImagePolarHistDetector>(
@@ -168,13 +184,8 @@ int main(int argc, char **argv)
     std::cout << "[coav] ObstacleDetector instantiated" << std::endl;
 
     // Initialize Vehicle
-    switch (depth_camera_type) {
-    case OTHER:
-    case PHYSICAL:
-    case GAZEBO:
-        vehicle = std::make_shared<MavQuadCopter>();
-        std::cout << "[coav] Vehicle instantiated" << std::endl;
-    }
+    vehicle = std::make_shared<MavQuadCopter>();
+    std::cout << "[coav] Vehicle instantiated" << std::endl;
 
     // Initialize Avoidance Strategy
     auto avoidance = std::make_shared<QuadCopterShiftAvoidance>(vehicle);
@@ -188,4 +199,3 @@ int main(int argc, char **argv)
         avoidance->avoid(hist);
     }
 }
-

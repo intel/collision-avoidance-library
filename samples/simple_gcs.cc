@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
+
 #include <cmath>
 #include <memory>
 #include <vector>
@@ -20,14 +21,25 @@
 #include "avoidance/QuadCopterStopAvoidance.hh"
 #include "common/common.hh"
 #include "detection/DepthImageSimpleDetector.hh"
-#include "sensors/GazeboRealSenseCamera.hh"
 #include "vehicles/MavQuadCopter.hh"
+
+#ifdef HAVE_GAZEBO
+#include "sensors/GazeboRealSenseCamera.hh"
+#elif HAVE_REALSENSE
+#include "sensors/RealSenseCamera.hh"
+#endif
 
 int main(int argc, char **argv)
 {
     // Initialize Depth Camera
-    std::shared_ptr<DepthCamera> depth_camera =
-        std::make_shared<GazeboRealSenseCamera>();
+    std::shared_ptr<DepthCamera> depth_camera;
+#ifdef HAVE_REALSENSE
+    depth_camera = std::make_shared<RealSenseCamera>(640, 480, 30);
+#elif HAVE_GAZEBO
+    depth_camera = std::make_shared<GazeboRealSenseCamera>();
+#else
+#error "Either RealSense or Gazebo support is necessary. None was found."
+#endif
 
     // Initialize Vehicle
     std::shared_ptr<MavQuadCopter> vehicle = std::make_shared<MavQuadCopter>();
@@ -41,7 +53,6 @@ int main(int argc, char **argv)
         std::make_shared<QuadCopterStopAvoidance>(vehicle);
 
     while (true) {
-
         // Sense and avoid
         auto sensed_elements = obstacle_detector->detect();
 
@@ -49,4 +60,3 @@ int main(int argc, char **argv)
         avoidance->avoid(sensed_elements);
     }
 }
-
