@@ -15,6 +15,11 @@
 */
 #pragma once
 
+/**
+ * @file
+ * @brief Gazebo quadcopter
+ */
+
 #include <gazebo/transport/transport.hh>
 #include <communication/GazeboContext.hh>
 #include "common/common.hh"

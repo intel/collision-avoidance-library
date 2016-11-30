@@ -15,6 +15,11 @@
 */
 #pragma once
 
+/**
+ * @file
+ * @brief Test base class
+ */
+
 class Test
 {
 

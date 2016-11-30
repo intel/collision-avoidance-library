@@ -15,6 +15,11 @@
 */
 #pragma once
 
+/**
+ * @file
+ * @brief Stop avoidance strategy for quadcopters
+ */
+
 #include "common/common.hh"
 #include "vehicles/MavQuadCopter.hh"
 

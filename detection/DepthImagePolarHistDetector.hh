@@ -15,6 +15,11 @@
 */
 #pragma once
 
+/**
+ * @file
+ * @brief Polar histogram detector for depth inputs
+ */
+
 #include <common/common.hh>
 #include <common/DepthCamera.hh>
 #include <memory>

@@ -15,6 +15,11 @@
 */
 #pragma once
 
+/**
+ * @file
+ * @brief Simple detector for depth inputs
+ */
+
 #include <memory>
 #include <vector>
 

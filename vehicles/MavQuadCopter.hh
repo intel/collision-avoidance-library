@@ -15,6 +15,11 @@
 */
 #pragma once
 
+/**
+ * @file
+ * @brief Mavlink quadcopter
+ */
+
 #include <memory>
 #include <thread>
 #include <cstdint>

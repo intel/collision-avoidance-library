@@ -15,6 +15,11 @@
 */
 #pragma once
 
+/**
+ * @file
+ * @brief Gazebo context
+ */
+
 #include <memory>
 #include <gazebo/gazebo_client.hh>
 #include <gazebo/transport/transport.hh>

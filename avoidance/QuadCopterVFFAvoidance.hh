@@ -15,6 +15,11 @@
 */
 #pragma once
 
+/**
+ * @file
+ * @brief Virtual force field avoidance strategy for quadcopters
+ */
+
 #include "common/common.hh"
 
 #include <chrono>

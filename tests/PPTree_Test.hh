@@ -15,6 +15,11 @@
 */
 #pragma once
 
+/**
+ * @file
+ * @brief PPTree tests
+ */
+
 #include "Tests.hh"
 
 class PPTree_Test : public Test

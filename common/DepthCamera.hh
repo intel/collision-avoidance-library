@@ -15,6 +15,11 @@
 */
 #pragma once
 
+/**
+ * @file
+ * @brief Depth Camera base class
+ */
+
 #include <cstdint>
 #include <vector>
 

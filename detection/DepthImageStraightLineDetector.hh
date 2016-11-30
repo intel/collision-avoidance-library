@@ -15,6 +15,11 @@
 */
 #pragma once
 
+/**
+ * @file
+ * @brief Straight line detector for depth inputs
+ */
+
 #include <common/common.hh>
 #include <common/DepthCamera.hh>
 #include <vector>

@@ -15,6 +15,11 @@
 */
 #pragma once
 
+/**
+ * @file
+ * @brief Gazebo realsense depth camera
+ */
+
 #include <gazebo/transport/transport.hh>
 #include <common/DepthCamera.hh>
 #include <communication/GazeboContext.hh>

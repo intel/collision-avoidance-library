@@ -15,6 +15,11 @@
 */
 #pragma once
 
+/**
+ * @file
+ * @brief Realsense depth camera
+ */
+
 #include <librealsense/rs.hpp>
 #include <memory>
 #include <mutex>

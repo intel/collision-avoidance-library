@@ -17,6 +17,11 @@
 
 #include <vector>
 
+/**
+ * @file
+ * @brief PPTree util class
+ */
+
 struct Set {
     Set *parent;
     int rank = 0;
