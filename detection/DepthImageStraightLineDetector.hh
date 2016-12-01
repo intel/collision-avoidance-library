@@ -24,6 +24,9 @@
 #include <common/DepthCamera.hh>
 #include <vector>
 
+/**
+ * @brief Straight Line detector based on depth data
+ */
 class DepthImageStraightLineDetector : public Detector<DepthCamera, Obstacle>
 {
   public:

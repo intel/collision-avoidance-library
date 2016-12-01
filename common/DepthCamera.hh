@@ -23,6 +23,9 @@
 #include <cstdint>
 #include <vector>
 
+/**
+ * @brief Depth Camera base class
+ */
 class DepthCamera
 {
     protected:

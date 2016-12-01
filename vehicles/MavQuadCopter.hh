@@ -30,6 +30,9 @@
 #include "common/common.hh"
 #include "mavlink_vehicles.hh"
 
+/**
+ * @brief Interface to a Mavlink quadcopter
+ */
 class MavQuadCopter : public QuadCopter
 {
   public:

@@ -27,6 +27,9 @@
 
 #include <common/DepthCamera.hh>
 
+/**
+ * @brief Interface to a physical RealSense depth camera
+ */
 class RealSenseCamera: public DepthCamera
 {
   public:

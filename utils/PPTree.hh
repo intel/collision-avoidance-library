@@ -22,6 +22,9 @@
  * @brief PPTree util class
  */
 
+/**
+ * @brief PPTree Set
+ */
 struct Set {
     Set *parent;
     int rank = 0;
@@ -31,6 +34,9 @@ struct Set {
     static void join(Set *a, Set *b);
 };
 
+/**
+ * @brief PPTree data structure
+ */
 class PPTree
 {
   public:

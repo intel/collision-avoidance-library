@@ -27,6 +27,11 @@
 #include <memory>
 #include <vector>
 
+/**
+ * @brief Stop Avoidance collision avoidance strategy for quadcopters.
+ *        The vehicle simply brakes and stays steady until the path in front of
+ *        it is free from obstacles.
+ */
 class QuadCopterStopAvoidance
     : public CollisionAvoidanceStrategy<MavQuadCopter, bool>
 {

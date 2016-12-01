@@ -26,6 +26,9 @@
 #include "common/common.hh"
 #include "common/DepthCamera.hh"
 
+/**
+ * @brief Simple detector based on depth data
+ */
 class DepthImageSimpleDetector : public Detector<DepthCamera, bool>
 {
   public:

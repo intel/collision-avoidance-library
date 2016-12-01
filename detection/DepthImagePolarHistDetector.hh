@@ -25,6 +25,9 @@
 #include <memory>
 #include <vector>
 
+/**
+ * @brief Polar Histogram detector based on Depth data
+ */
 class DepthImagePolarHistDetector : public Detector<DepthCamera, double>
 {
   public:

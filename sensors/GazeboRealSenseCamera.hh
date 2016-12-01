@@ -27,6 +27,9 @@
 #include <vector>
 #include <memory>
 
+/**
+ * @brief Interface to a Gazebo virtual RealSense depth camera
+ */
 class GazeboRealSenseCamera: public DepthCamera
 {
   public:

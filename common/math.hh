@@ -24,6 +24,10 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
+/**
+ * @brief Stores a position vector and a rotation quaternion in three
+ *        dimensional space.
+ */
 struct Pose {
     glm::dvec3 pos;
     glm::dquat rot;
@@ -39,6 +43,9 @@ Pose operator-(const Pose& a, const Pose &b);
 int sign(double x);
 double sigmoid(double x);
 
+/**
+ * @brief Stores a polar position vector in three dimensional space.
+ */
 typedef struct {
     double len;
     double theta; // azimuthal angle

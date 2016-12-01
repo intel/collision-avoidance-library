@@ -27,6 +27,11 @@
 #include <memory>
 #include <vector>
 
+/**
+ * @brief Shift Avoidance collision avoidance strategy for quadcopters.
+ *        The vehicle locks its heading and moves sideways until the path in
+ *        front of it is free from obstacles.
+ */
 class QuadCopterShiftAvoidance
     : public CollisionAvoidanceStrategy<MavQuadCopter, double>
 {

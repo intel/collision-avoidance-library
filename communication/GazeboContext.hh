@@ -24,6 +24,9 @@
 #include <gazebo/gazebo_client.hh>
 #include <gazebo/transport/transport.hh>
 
+/**
+ * @brief Represents an open connection to a Gazebo server
+ */
 class GazeboContext
 {
   public:

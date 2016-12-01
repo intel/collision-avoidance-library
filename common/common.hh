@@ -25,6 +25,9 @@
 
 #include "math.hh"
 
+/**
+ * @brief Quadcopter base class
+ */
 class QuadCopter
 {
   public:
@@ -33,11 +36,17 @@ class QuadCopter
     virtual void set_target_pose(Pose pose) = 0;
 };
 
+/**
+ * @brief Class that represents an obstacle element
+ */
 struct Obstacle {
     uint id;
     glm::dvec3 center;
 };
 
+/**
+ * @brief Detector base class
+ */
 template <typename SensorType, typename DetectedElementType>
 class Detector
 {
@@ -48,6 +57,9 @@ class Detector
     std::shared_ptr<SensorType> sensor;
 };
 
+/**
+ * @brief Collision Avoidance Strategy base class
+ */
 template <typename VehicleType, typename DetectedElementType>
 class CollisionAvoidanceStrategy
 {

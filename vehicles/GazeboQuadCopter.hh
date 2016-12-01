@@ -25,6 +25,9 @@
 #include "common/common.hh"
 #include <mutex>
 
+/**
+ * @brief Interface to a Gazebo virtual quadcopter
+ */
 class GazeboQuadCopter : public QuadCopter
 {
   public:

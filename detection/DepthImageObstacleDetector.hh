@@ -24,6 +24,9 @@
 #include <common/DepthCamera.hh>
 #include <vector>
 
+/**
+ * @brief Obstacle Detector based on Depth data
+ */
 class DepthImageObstacleDetector : public Detector<DepthCamera, Obstacle>
 {
 

@@ -25,6 +25,14 @@
 #include <chrono>
 #include <glm/glm.hpp>
 
+/**
+ * @brief Virtual Force Field Avoidance strategy for quadcopters.
+ *        The current mission waypoint behaves as a source of attractive force
+ *        while the obstacles behave as sources of repulsive force based on
+ *        their dimension and distance from the vehicle. The vehicle changes
+ *        its heading according to the resultant force trying to avoid
+ *        obstacles.
+ */
 class QuadCopterVFFAvoidance : public CollisionAvoidanceStrategy<QuadCopter, Obstacle>
 {
 public:
