@@ -32,7 +32,6 @@ class DepthImageStraightLineDetector : public Detector<DepthCamera, Obstacle>
   public:
     DepthImageStraightLineDetector(std::shared_ptr<DepthCamera> depth_camera);
     const std::vector<Obstacle> &detect() override;
-    void set_waypoint();
 
   private:
     std::vector<Obstacle> obstacles;
