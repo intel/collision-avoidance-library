@@ -35,9 +35,22 @@
 class QuadCopterStopAvoidance
     : public CollisionAvoidanceStrategy<MavQuadCopter, bool>
 {
-  public:
-    QuadCopterStopAvoidance(std::shared_ptr<MavQuadCopter> quadcopter);
+    /**
+     * @brief Default Constructor.
+     * @param quadcopter Smart pointer to the MavQuadCopter object that will
+     *                   be controlled by the avoidance strategy.
+     */
+    public: QuadCopterStopAvoidance(std::shared_ptr<MavQuadCopter> quadcopter);
 
-    void avoid(const std::vector<bool> &detection) override;
+    /**
+     * @brief Avoidance command implementation.
+     *        Call this function from your program to send updated avoidance
+     *        commands to the vehicle according to the binary representation
+     *        of obstacles given as input.
+     * @param detection An one element boolean array that will be true if an
+     *                  obstacle is detected right in front of the vehicle and
+     *                  false otherwise.
+     */
+    public: void avoid(const std::vector<bool> &detection) override;
 };
 

@@ -30,13 +30,33 @@
  */
 class GazeboQuadCopter : public QuadCopter
 {
-  public:
-    GazeboQuadCopter();
-    ~GazeboQuadCopter();
+    /**
+     * @brief Default Constructor.
+     */
+    public: GazeboQuadCopter();
 
-    Pose target_pose() override;
-    Pose vehicle_pose() override;
-    void set_target_pose(Pose pose) override;
+    /**
+     * @brief Default Destructor.
+     */
+    public: ~GazeboQuadCopter();
+
+    /**
+     * @brief Implementation of target_pose getter.
+     * @return The pose of the current mission target.
+     */
+    public: Pose target_pose() override;
+
+    /**
+     * @brief Implementation of vehicle_pose getter.
+     * @return The current pose of the vehicle.
+     */
+    public: Pose vehicle_pose() override;
+
+    /**
+     * @brief Implementation of the mission target pose setter.
+     * @param pose New mission target pose
+     */
+    public: void set_target_pose(Pose pose) override;
 
   private:
     void on_target_pose_recvd(ConstPosePtr &_msg);

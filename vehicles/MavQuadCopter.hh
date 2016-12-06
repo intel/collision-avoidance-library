@@ -35,20 +35,71 @@
  */
 class MavQuadCopter : public QuadCopter
 {
-  public:
-    MavQuadCopter(uint16_t local_port);
-    MavQuadCopter(uint16_t local_port, bool autorotate, bool autotakeoff);
-    MavQuadCopter();
-    ~MavQuadCopter();
+    /**
+     * @brief Local Port constructor.
+     * @param local_port Set the port to which this MavQuadCopter instance will
+     *                   be bounded to.
+     */
+    public: MavQuadCopter(uint16_t local_port);
 
-    Pose target_pose() override;
-    Pose vehicle_pose() override;
-    void set_target_pose(Pose pose) override;
-    void rotate(double angle_deg);
-    bool detour_finished();
+    /**
+     * @brief Local Port and Auto Control constructor.
+     * @param local_port Set the port to which this MavQuadCopter instance will
+     *                   be bounded to.
+     * @param autorotate If set to true, the MavQuadCopter will rotate
+     *                   automatically to point to the mission target at all
+     *                   times.
+     * @param autotakeoff If set to true, the vehicle will takeoff
+     *                    automatically if it's landed.
+     */
+    public: MavQuadCopter(uint16_t local_port, bool autorotate, bool autotakeoff);
 
-    // Mavlink vehicle
-    std::shared_ptr<mavlink_vehicles::mav_vehicle> mav;
+    /**
+     * @brief Default Constructor.
+     */
+    public: MavQuadCopter();
+
+    /**
+     * @brief Default Destructor.
+     */
+    public: ~MavQuadCopter();
+
+    /**
+     * @brief Implementation of target_pose getter.
+     * @return The pose of the current mission target.
+     */
+    public: Pose target_pose() override;
+
+    /**
+     * @brief Implementation of vehicle_pose getter.
+     * @return The current pose of the vehicle.
+     */
+    public: Pose vehicle_pose() override;
+
+    /**
+     * @brief Implementation of the mission target pose setter.
+     * @param pose New mission target pose
+     */
+    public: void set_target_pose(Pose pose) override;
+
+    /**
+     * @brief Command the vehicle to immediately stop and rotate before moving
+     *        to the next detour or mission waypoint.
+     * @param angle_rad Rotation angle in radians (Right handed, Z-up)
+     */
+    public: void rotate(double angle_deg);
+
+    /**
+     * @brief Check if the vehicle is in detour mode.
+     * @return True if not in detour mode. False otherwise.
+     */
+    public: bool detour_finished();
+
+    /**
+     * @brief Provides direct access to the complete interface of a mavlink
+     * vehicle.
+     */
+    public: std::shared_ptr<mavlink_vehicles::mav_vehicle> mav;
 
   private:
 

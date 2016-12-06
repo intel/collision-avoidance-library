@@ -29,10 +29,22 @@
  */
 class GazeboContext
 {
-  public:
-    ~GazeboContext();
-    gazebo::transport::Node *node();
-    static std::shared_ptr<GazeboContext> instance();
+    /**
+     * @brief Shut Down the open Gazebo connection and release resources.
+     */
+    public: ~GazeboContext();
+
+    /**
+     * @brief Get a pointer to the gazebo transport node.
+     * @return Gazebo transport node.
+     */
+    public gazebo::transport::Node *node();
+
+    /**
+     * @brief Create a GazeboContext instance
+     * @return A smart pointer to a GazeboContext instance
+     */
+    public static std::shared_ptr<GazeboContext> instance();
 
   private:
     GazeboContext();

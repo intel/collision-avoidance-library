@@ -31,9 +31,20 @@
  */
 class DepthImageSimpleDetector : public Detector<DepthCamera, bool>
 {
-  public:
-    DepthImageSimpleDetector(std::shared_ptr<DepthCamera> depth_camera);
-    const std::vector<bool> &detect() override;
+    /**
+     * @brief Default Constructor.
+     * @param depth_camera Smart pointer to the DepthCamera that will be used
+     *                     as an input sensor to the detector.
+     */
+    public: DepthImageSimpleDetector(std::shared_ptr<DepthCamera> depth_camera);
+
+    /**
+     * @brief Generate an one-element vector of booleans based on the data from the
+     *        depth camera. The unique element of the vector contains 'true' if
+     *        an obstacle has been found right in front of the camera and
+     *        'false' otherwise.
+     */
+    public: const std::vector<bool> &detect() override;
 
   private:
     std::vector<bool> detection = {false};

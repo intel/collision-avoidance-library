@@ -35,9 +35,22 @@
  */
 class QuadCopterVFFAvoidance : public CollisionAvoidanceStrategy<QuadCopter, Obstacle>
 {
-public:
-  QuadCopterVFFAvoidance(std::shared_ptr<QuadCopter> quadcopter);
-  void avoid(const std::vector<Obstacle> &obstacles) override;
+    /**
+     * @brief Default Constructor.
+     * @param quadcopter Smart pointer to the QuadCopter object that will
+     *                   be controlled by the avoidance strategy.
+     */
+    public: QuadCopterVFFAvoidance(std::shared_ptr<QuadCopter> quadcopter);
+
+    /**
+     * @brief Avoidance command implementation.
+     *        Call this function from your program to send updated avoidance
+     *        commands to the vehicle according to the obstacles given as
+     *        input.
+     * @param obstacles Vector of obstacles with coordinates relative to the
+     *                  center of the detector.
+     */
+    public: void avoid(const std::vector<Obstacle> &obstacles) override;
 
 private:
   bool coav_enabled = true;

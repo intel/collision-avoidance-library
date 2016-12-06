@@ -35,9 +35,22 @@
 class QuadCopterShiftAvoidance
     : public CollisionAvoidanceStrategy<MavQuadCopter, double>
 {
-  public:
-    QuadCopterShiftAvoidance(std::shared_ptr<MavQuadCopter> quadcopter);
-    void avoid(const std::vector<double> &histogram) override;
+    /**
+     * @brief Default Constructor.
+     * @param quadcopter Smart pointer to the MavQuadCopter object that will
+     *                   be controlled by the avoidance strategy.
+     */
+    public: QuadCopterShiftAvoidance(std::shared_ptr<MavQuadCopter> quadcopter);
+
+    /**
+     * @brief Avoidance command implementation.
+     *        Call this function from your program to send updated avoidance
+     *        commands to the vehicle according to the polar histogram given
+     *        as input.
+     * @param histogram Polar histogram representing the obstacles in the
+     *                  field of view.
+     */
+    public: void avoid(const std::vector<double> &histogram) override;
 
   private:
     std::chrono::time_point<std::chrono::system_clock> wp_sent_time =

@@ -29,10 +29,20 @@
  */
 class DepthImageObstacleDetector : public Detector<DepthCamera, Obstacle>
 {
+    /**
+     * @brief Default Constructor.
+     * @param depth_camera Smart pointer to the depth_camera that will be used
+     *                     as an input sensor to the detector.
+     */
+    public: DepthImageObstacleDetector(std::shared_ptr<DepthCamera> depth_camera);
 
-  public:
-    DepthImageObstacleDetector(std::shared_ptr<DepthCamera> depth_camera);
-    const std::vector<Obstacle> &detect() override;
+    /**
+     * @brief Generate a vector of obstacles based on the data from the
+     *        depth camera. The position of the obstacles is given in local
+     *        coordinates, relative to the camera pose.
+     * @return Reference to the generated vector of Obstacles.
+     */
+    public: const std::vector<Obstacle> &detect() override;
 
   private:
     std::vector<Obstacle> obstacles;

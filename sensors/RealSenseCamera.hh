@@ -32,10 +32,17 @@
  */
 class RealSenseCamera: public DepthCamera
 {
-  public:
-    RealSenseCamera(size_t width, size_t height, unsigned int fps);
+    /**
+     * @brief Default Constructor.
+     */
+    public: RealSenseCamera(size_t width, size_t height, unsigned int fps);
 
-    std::vector<uint16_t> &get_depth_buffer() override;
+    /**
+     * @brief Get the most recent depth buffer.
+     * @return Depth buffer in uint16_t. To convert to meters multiply these
+     *         values by depth camera scale.
+     */
+    public: std::vector<uint16_t> &get_depth_buffer() override;
 
   private:
     std::mutex depth_buffer_mtx;

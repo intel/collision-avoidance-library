@@ -29,8 +29,19 @@
  */
 class DepthImageStraightLineDetector : public Detector<DepthCamera, Obstacle>
 {
-  public:
-    DepthImageStraightLineDetector(std::shared_ptr<DepthCamera> depth_camera);
+    /**
+     * @brief Default Constructor.
+     * @param depth_camera Smart pointer to the depth_camera that will be used
+     *                     as an input sensor to the detector.
+     */
+    public: DepthImageStraightLineDetector(std::shared_ptr<DepthCamera> depth_camera);
+
+    /**
+     * @brief Generate a vector of obstacles based on the data from the
+     *        depth camera. The position of the obstacles is given in global
+     *        coordinates, relative to the camera pose.
+     * @return Reference to the generated vector of Obstacles.
+     */
     const std::vector<Obstacle> &detect() override;
 
   private:

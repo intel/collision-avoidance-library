@@ -32,15 +32,46 @@ struct Pose {
     glm::dvec3 pos;
     glm::dquat rot;
 
+    /**
+     * @brief Rotation about the y-axis.
+     * @return The rotation in radians.
+     */
     double pitch();
+
+    /**
+     * @brief Return the rotation about the x-axis in radians.
+     * @return The rotation in radians.
+     */
     double roll();
+
+    /**
+     * @brief Return the rotation about the z-axis in radians.
+     * @return The rotation in radians.
+     */
     double yaw();
+
+    /**
+     * @brief Set the pose rotation with euler angles.
+     */
     void set_rot(float pitch, float roll, float yaw);
 };
 
+/**
+ * @brief Pose substraction
+ */
 Pose operator-(const Pose& a, const Pose &b);
 
+/**
+ * @brief Get the signal of x.
+ * @return -1 if x is negative, +1 if x is positive and 0 if x equals
+ *        zero.
+ */
 int sign(double x);
+
+/**
+ * @brief Sigmoid function.
+ * @return The sigmoid of x.
+ */
 double sigmoid(double x);
 
 /**
@@ -52,7 +83,13 @@ typedef struct {
     double phi;   // polar angle
 } PolarVector;
 
+/**
+ * @brief Convert cartesian coordinates to spherical coordinates.
+ */
 PolarVector cartesian_to_spherical(double x, double y, double z);
 
+/**
+ * @brief Check if the value X is within A and B (inclusive).
+ */
 #define inbounds(X, A, B) ((X) >= A && (X) <= B)
 

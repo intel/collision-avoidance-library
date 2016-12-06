@@ -34,10 +34,41 @@ class DepthCamera
         double fov = 0;
         double scale = 0;
 
-    public:
-        virtual std::vector<uint16_t> &get_depth_buffer() = 0;
-        unsigned int get_height();
-        unsigned int get_width();
-        double get_scale();
-        double get_fov_tan();
+    /**
+     * @brief Pure virtual function that returns a depth buffer as an uint16_t
+     *        array.
+     * @return Depth buffer.
+     */
+    public: virtual std::vector<uint16_t> &get_depth_buffer() = 0;
+
+    /**
+     * @brief Pure virtual function that returns the height of the depth
+     *        buffer in pixels.
+     * @return Depth buffer height in pixels.
+     */
+    public: unsigned int get_height();
+
+    /**
+     * @brief Pure virtual function that returns the width of the depth
+     *        buffer in pixels.
+     * @return Depth buffer width in pixels.
+     */
+    public: unsigned int get_width();
+
+    /**
+     * @brief Pure virtual function that returns the scale in meters in which
+     *        the depth data is stored in the depth buffer. To convert the
+     *        depth data to meters simply multiply it by the value returned by this
+     *        function.
+     * @return Scale in meters.
+     */
+    public: double get_scale();
+
+    /**
+     * @brief Pure virtual function that returns the tangent of the diagonal
+     *        field of view of the depth camera.
+     * @return Tangent of the diagonal field of view.
+     */
+    public: double get_fov_tan();
 };
+

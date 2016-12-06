@@ -30,12 +30,28 @@
  */
 class DepthImagePolarHistDetector : public Detector<DepthCamera, double>
 {
-  public:
-    DepthImagePolarHistDetector(std::shared_ptr<DepthCamera> depth_camera,
+    /**
+     * @brief Default Constructor.
+     * @param depth_camera Smart pointer to the depth_camera that will be used
+     *                     as an input sensor to the detector.
+     * @param angle_step Horizontal angle span that will be contained in each
+     *                   element of the resulting histogram. For example, if
+     *                   angle_step >= camera_fov, the number of elements of
+     *                   the resulting histogram will be one.
+     */
+    public: DepthImagePolarHistDetector(std::shared_ptr<DepthCamera> depth_camera,
                                 double angle_step);
-    const std::vector<double> &detect() override;
+
+    /**
+     * @brief Generate a vector of doubles based on the data from the
+     *        depth camera. Each element of the output vector contains the
+     *        closest distance in meters found in that angle.
+     * @return Reference to the generated vector of distances.
+     */
+    public: const std::vector<double> &detect() override;
 
   private:
     double angle_step;
     std::vector<double> histogram;
 };
+
