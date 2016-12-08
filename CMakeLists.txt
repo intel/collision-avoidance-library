@@ -50,6 +50,10 @@ option_deps(DEPS WITH_REALSENSE "realsense")
 option_deps(DEPS WITH_VDEBUG "gazebo" "OpenGL" "GLUT")
 list(REMOVE_DUPLICATES DEPS)
 
+#List optional packages
+set(OPTIONAL_DEPS "Doxygen")
+list(REMOVE_DUPLICATES OPTIONAL_DEPS)
+
 # Add module path
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -57,6 +61,28 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 foreach(dep ${DEPS})
     find_package(${dep} REQUIRED)
 endforeach()
+
+# Find optional packages
+foreach(dep ${OPTIONAL_DEPS})
+    find_package(${dep})
+endforeach()
+
+# Generate documentation
+if(DOXYGEN_FOUND)
+    set(GENERATED_DOC_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc")
+    file(MAKE_DIRECTORY ${GENERATED_DOC_DIR})
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile.in
+                   ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+    set_property(GLOBAL PROPERTY ALLOW_DUPLICATE_CUSTOM_TARGETS 1)
+    add_custom_target(doc
+                      ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+                      WORKING_DIRECTORY ${GENERATED_DOC_DIR}
+                      COMMENT "Generating API documentation" VERBATIM)
+else()
+    message(WARNING "Doxygen has not been found. Install it and run cmake again \
+    to generate the documentation with 'make doc'. Please ignore this message \
+    if you're not planning to generate the Doxygen documentation right now.")
+endif(DOXYGEN_FOUND)
 
 # Compiler flags
 set(CMAKE_CXX_STANDARD 11)

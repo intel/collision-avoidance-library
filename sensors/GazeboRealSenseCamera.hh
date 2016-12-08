@@ -15,6 +15,11 @@
 */
 #pragma once
 
+/**
+ * @file
+ * @brief Gazebo realsense depth camera
+ */
+
 #include <gazebo/transport/transport.hh>
 #include <common/DepthCamera.hh>
 #include <communication/GazeboContext.hh>
@@ -22,13 +27,27 @@
 #include <vector>
 #include <memory>
 
+/**
+ * @brief Interface to a Gazebo virtual RealSense depth camera
+ */
 class GazeboRealSenseCamera: public DepthCamera
 {
-  public:
-    GazeboRealSenseCamera();
-    ~GazeboRealSenseCamera();
+    /**
+     * @brief Default Constructor.
+     */
+    public: GazeboRealSenseCamera();
 
-    std::vector<uint16_t> &get_depth_buffer() override;
+    /**
+     * @brief Default Destructor.
+     */
+    public: ~GazeboRealSenseCamera();
+
+    /**
+     * @brief Get the most recent depth buffer.
+     * @return Depth buffer in uint16_t. To convert to meters multiply these
+     *         values by depth camera scale.
+     */
+    public: std::vector<uint16_t> &get_depth_buffer() override;
 
   private:
     void on_stream_depth_recvd(ConstImageStampedPtr &_msg);

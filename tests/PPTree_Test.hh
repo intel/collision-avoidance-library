@@ -15,8 +15,16 @@
 */
 #pragma once
 
+/**
+ * @file
+ * @brief PPTree tests
+ */
+
 #include "Tests.hh"
 
+/**
+ * @brief PPTree unity test
+ */
 class PPTree_Test : public Test
 {
 

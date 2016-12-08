@@ -15,16 +15,42 @@
 */
 #pragma once
 
+/**
+ * @file
+ * @brief Virtual force field avoidance strategy for quadcopters
+ */
+
 #include "common/common.hh"
 
 #include <chrono>
 #include <glm/glm.hpp>
 
+/**
+ * @brief Virtual Force Field Avoidance strategy for quadcopters.
+ *        The current mission waypoint behaves as a source of attractive force
+ *        while the obstacles behave as sources of repulsive force based on
+ *        their dimension and distance from the vehicle. The vehicle changes
+ *        its heading according to the resultant force trying to avoid
+ *        obstacles.
+ */
 class QuadCopterVFFAvoidance : public CollisionAvoidanceStrategy<QuadCopter, Obstacle>
 {
-public:
-  QuadCopterVFFAvoidance(std::shared_ptr<QuadCopter> quadcopter);
-  void avoid(const std::vector<Obstacle> &obstacles) override;
+    /**
+     * @brief Default Constructor.
+     * @param quadcopter Smart pointer to the QuadCopter object that will
+     *                   be controlled by the avoidance strategy.
+     */
+    public: QuadCopterVFFAvoidance(std::shared_ptr<QuadCopter> quadcopter);
+
+    /**
+     * @brief Avoidance command implementation.
+     *        Call this function from your program to send updated avoidance
+     *        commands to the vehicle according to the obstacles given as
+     *        input.
+     * @param obstacles Vector of obstacles with coordinates relative to the
+     *                  center of the detector.
+     */
+    public: void avoid(const std::vector<Obstacle> &obstacles) override;
 
 private:
   bool coav_enabled = true;
