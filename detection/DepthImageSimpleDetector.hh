@@ -24,10 +24,11 @@
 class DepthImageSimpleDetector : public Detector<DepthCamera, bool>
 {
   public:
-    DepthImageSimpleDetector(std::shared_ptr<DepthCamera> depth_camera);
+    DepthImageSimpleDetector(std::shared_ptr<DepthCamera> depth_camera, double threshold_m = 5.0);
+
     const std::vector<bool> &detect() override;
 
   private:
     std::vector<bool> detection = {false};
+    double threshold;
 };
-
