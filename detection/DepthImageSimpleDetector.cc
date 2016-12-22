@@ -30,6 +30,14 @@ DepthImageSimpleDetector::DepthImageSimpleDetector(
     std::shared_ptr<DepthCamera> depth_camera)
 {
     this->sensor = depth_camera;
+    this->threshold = defaults::min_dist_m;
+}
+
+DepthImageSimpleDetector::DepthImageSimpleDetector(
+    std::shared_ptr<DepthCamera> depth_camera, double threshold_m)
+{
+    this->sensor = depth_camera;
+    this->threshold = threshold_m;
 }
 
 const std::vector<bool> &DepthImageSimpleDetector::detect()
@@ -58,7 +66,7 @@ const std::vector<bool> &DepthImageSimpleDetector::detect()
         for (int j = init_j; j < final_j; j++) {
             uint16_t depth_value = depth_buffer[i * width + j];
             if (depth_value != 0 &&
-                depth_value < defaults::min_dist_m / scale) {
+                depth_value < this->threshold / scale) {
                 this->detection[0] = true;
                 break;
             }
