@@ -17,6 +17,7 @@
 #include <cmath>
 
 #include "DepthImageObstacleDetector.hh"
+#include "utils/DebugUtils.hh"
 #include "utils/PPTree.hh"
 #include "common/common.hh"
 
@@ -45,6 +46,9 @@ const std::vector<Obstacle> &DepthImageObstacleDetector::detect()
 
     // Detect obstacles from current depth buffer
     this->extract_blobs();
+
+    if (this->visualization_on)
+        this->visualize();
 
     return this->obstacles;
 }
@@ -141,7 +145,7 @@ int DepthImageObstacleDetector::extract_blobs()
     int blob_num_pixels[MAX_NUM_LABELS] = {0};
 
     // Blob to Obstacle Vector
-    int blob_to_obstacle[MAX_NUM_LABELS];
+    //int blob_to_obstacle[MAX_NUM_LABELS];
     int num_obstacles = 0;
     uint16_t curr_label = 1;
 
@@ -223,3 +227,101 @@ int DepthImageObstacleDetector::extract_blobs()
     return num_obstacles;
 }
 
+void DepthImageObstacleDetector::visualization(bool onoff)
+{
+    if (!onoff) {
+        this->visualization_on = false;
+        glfwDestroyWindow(this->win);
+        glfwTerminate();
+        delete this->frame_buffer;
+        return;
+    }
+
+    if (!this->win) {
+        glfwInit();
+        this->win = glfwCreateWindow(this->width, this->height, "Detected Obstacles", 0, 0);
+        this->frame_buffer = new uint8_t[this->width * this->height];
+
+        glGenTextures(1, &this->texture);
+        this->visualization_on = true;
+    }
+}
+
+void DepthImageObstacleDetector::visualize()
+{
+    if (!this->win) {
+        this->win = glfwCreateWindow(this->width, this->height, "Detected Obstacles", 0, 0);
+        this->frame_buffer = new uint8_t[this->width * this->height * 3];
+
+        glGenTextures(1, &this->texture);
+    }
+
+    glfwMakeContextCurrent(this->win);
+
+    glViewport(0, 0, this->width, this->height);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glPushMatrix();
+    glOrtho(0, this->width, this->height, 0, -1, +1);
+
+    glBindTexture(GL_TEXTURE_2D, this->texture);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, this->width);
+
+    for (unsigned int i = 0; i < this->labels.size(); i++) {
+        uint8_t *rgb = this->frame_buffer + (3 * i);
+
+        if (blob_to_obstacle[this->labels[i]] != -1) {
+            Obstacle &o = this->obstacles[blob_to_obstacle[this->labels[i]]];
+            rainbow_scale(o.center.x * this->scale / 5.0, rgb);
+        } else if (this->labels[i]) {
+            rgb[0] = rgb[1] = rgb[2] = 0xC6;
+        } else {
+            rgb[0] = rgb[1] = rgb[2] = 0;
+        }
+    }
+
+    uint8_t *p = this->frame_buffer;
+    int x, y;
+    for (Obstacle o : this->obstacles ) {
+        x = (int)((1.0 + ((base_phi - o.center.z) / hfov)) * width);
+        y = (int)((o.center.y - base_theta) * height / vfov);
+
+        if (y - 5 < 0 || y + 5 > this->height ||
+            x - 5 < 0 || x + 5 > this->width)
+            continue;
+
+        for (int j = y - 5; j < y + 5; j++)
+            for (int i = x - 5; i < x + 5; i++) {
+                p[((j * this->width) + i) * 3] = 255;
+                p[(((j * this->width) + i) * 3) + 1] = 0;
+                p[(((j * this->width) + i) * 3) + 2] = 255;
+            }
+    }
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->width, this->height, 0, GL_RGB,
+        GL_UNSIGNED_BYTE, reinterpret_cast<const GLvoid *>(this->frame_buffer));
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glBindTexture(GL_TEXTURE_2D, this->texture);
+    glEnable(GL_TEXTURE_2D);
+    glBegin(GL_QUADS);
+
+    // Order matters :/
+    glTexCoord2f(0, 0); glVertex2f(0, 0);
+    glTexCoord2f(1, 0); glVertex2f(this->width, 0);
+    glTexCoord2f(1, 1); glVertex2f(this->width, this->height);
+    glTexCoord2f(0, 1); glVertex2f(0, this->height);
+
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glPopMatrix();
+    glfwSwapBuffers(this->win);
+}

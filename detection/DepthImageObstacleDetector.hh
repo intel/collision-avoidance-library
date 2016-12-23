@@ -18,6 +18,7 @@
 #include <common/common.hh>
 #include <common/DepthCamera.hh>
 #include <vector>
+#include <GLFW/glfw3.h>
 
 class DepthImageObstacleDetector : public Detector<DepthCamera>
 {
@@ -26,10 +27,13 @@ class DepthImageObstacleDetector : public Detector<DepthCamera>
     DepthImageObstacleDetector(std::shared_ptr<DepthCamera> depth_camera, double threshold_meters = 0.0);
     const std::vector<Obstacle> &detect() override;
 
+    void visualization(bool onoff);
+
   private:
     std::vector<Obstacle> obstacles;
     std::vector<uint16_t> depth_frame;
     std::vector<uint16_t> labels;
+    int blob_to_obstacle[UINT16_MAX];
     int width;
     int height;
     double hfov;
@@ -52,5 +56,11 @@ class DepthImageObstacleDetector : public Detector<DepthCamera>
     int min_num_pixels = 400; // equivalent area of a 20x20 square
 
     uint16_t threshold = 0;
-};
 
+    bool visualization_on = false;
+    GLFWwindow *win = NULL;
+    GLuint texture = 0;
+    uint8_t *frame_buffer;
+
+    void visualize(void);
+};
