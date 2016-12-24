@@ -28,7 +28,6 @@ class DepthImageObstacleDetector : public Detector<DepthCamera, Obstacle>
 
   private:
     std::vector<Obstacle> obstacles;
-    std::vector<uint16_t> labels;
     std::vector<uint16_t> curr_depth_frame;
     std::vector<uint16_t> curr_labels;
     int curr_width;
