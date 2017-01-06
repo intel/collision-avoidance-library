@@ -46,10 +46,9 @@ Set *PPTree::find(int node_id)
 }
 
 
-bool PPTree::ds_union(int a, int b)
+void PPTree::ds_union(int a, int b)
 {
     Set::join(&this->sets[a], &this->sets[b]);
-    return true;
 }
 
 PPTree::~PPTree()
