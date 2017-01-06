@@ -24,8 +24,8 @@ Set::Set()
 
 Set *Set::repr()
 {
-    if (this->parent == this)
-        return this;
+    if (!this->parent || this->parent == this)
+        return this->parent = this;
 
     return this->parent = this->parent->repr();
 }
@@ -57,6 +57,9 @@ PPTree::~PPTree()
 
 void Set::join(Set *a, Set *b)
 {
+    a = a->repr();
+    b = b->repr();
+
     if (a == b) {
         /* Already united. */
         return;
