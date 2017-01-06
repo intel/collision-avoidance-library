@@ -20,14 +20,14 @@
 #include "utils/PPTree.hh"
 #include "common/common.hh"
 
-#define MAX_NUM_BLOBS 3000
+#define MAX_NUM_LABELS UINT16_MAX
 #define BACKGROUND 0
 
 DepthImageObstacleDetector::DepthImageObstacleDetector(
     std::shared_ptr<DepthCamera> depth_camera, double threshold_meters = 0.0)
 {
     this->sensor = depth_camera;
-    this->obstacles.resize(MAX_NUM_BLOBS);
+    this->obstacles.resize(MAX_NUM_LABELS);
     this->threshold = (uint16_t)(threshold_meters / depth_camera->get_scale());
 }
 
@@ -117,7 +117,7 @@ int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_lab
 
 void init_obstacle_array(std::vector<Obstacle> &obstacles)
 {
-    obstacles.resize(MAX_NUM_BLOBS);
+    obstacles.resize(MAX_NUM_LABELS);
     for (unsigned int i = 0; i < obstacles.size(); ++i) {
         obstacles[i].id = -1;
         obstacles[i].center = glm::dvec3(-1, -1, -1);
@@ -134,15 +134,15 @@ int DepthImageObstacleDetector::extract_blobs()
     }
 
     // Instantiate disjoint data set
-    PPTree ds_tree(MAX_NUM_BLOBS);
+    PPTree ds_tree(MAX_NUM_LABELS);
 
     // Store number of pixels for each blob
-    int blob_num_pixels[MAX_NUM_BLOBS] = {0};
+    int blob_num_pixels[MAX_NUM_LABELS] = {0};
 
     // Blob to Obstacle Vector
-    int blob_to_obstacle[MAX_NUM_BLOBS];
+    int blob_to_obstacle[MAX_NUM_LABELS];
     int num_obstacles = 0;
-    int curr_label = 1;
+    uint16_t curr_label = 1;
 
     // Init Obstacles vector and labels vector
     init_obstacle_array(obstacles);
@@ -162,7 +162,7 @@ int DepthImageObstacleDetector::extract_blobs()
                         ds_tree.ds_union(neigh_labels[0], neigh_labels[k]);
                     }
                 } else {
-                    this->labels[row_offset + j] = (curr_label <= MAX_NUM_BLOBS) ? curr_label++ : 0;
+                    this->labels[row_offset + j] = (curr_label <= MAX_NUM_LABELS) ? curr_label++ : 0;
                 }
             } else {
                 this->labels[row_offset + j] = 0;
@@ -179,7 +179,7 @@ int DepthImageObstacleDetector::extract_blobs()
     }
 
     /* Initialize blob to obstacle vector. */
-    for (int i = 0; i < MAX_NUM_BLOBS; i++) {
+    for (int i = 0; i < MAX_NUM_LABELS; i++) {
         blob_to_obstacle[i] = -1;
     }
 
