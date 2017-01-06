@@ -15,6 +15,7 @@
 */
 
 #include <cstdlib>
+
 #include "PPTree.hh"
 
 Set::Set()
@@ -57,6 +58,9 @@ PPTree::~PPTree()
 
 void Set::join(Set *a, Set *b)
 {
+    a = a->repr();
+    b = b->repr();
+
     if (a == b) {
         /* Already united. */
         return;
