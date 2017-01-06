@@ -21,6 +21,7 @@
 #include "common/common.hh"
 
 #define MAX_NUM_BLOBS 3000
+#define BACKGROUND 0
 
 DepthImageObstacleDetector::DepthImageObstacleDetector(
     std::shared_ptr<DepthCamera> depth_camera)
@@ -146,14 +147,13 @@ int DepthImageObstacleDetector::extract_blobs()
     // First Pass
     for (int i = 0; i < this->height; i++) {
         for (int j = 0; j < this->width; j++) {
-            if (this->depth_frame[i * this->width + j] != this->bg_color) {
+            if (this->depth_frame[i * this->width + j] != BACKGROUND) {
                 std::vector<int> neigh_labels(4);
 
                 int num_neighbors = get_neighbors_label(i, j, neigh_labels.data());
 
                 if (num_neighbors) {
                     this->labels[i * this->width + j] = neigh_labels[0];
-
                     for (int k = 1; k < num_neighbors; k++) {
                         ds_tree.ds_union(neigh_labels[0], neigh_labels[k]);
                     }
@@ -169,14 +169,13 @@ int DepthImageObstacleDetector::extract_blobs()
             } else {
                 this->labels[i * this->width + j] = 0;
             }
-
         }
     }
 
     /* Second Pass. */
     for (int i = 0; i < this->height; i++) {
         for (int j = 0; j < this->width; j++) {
-            if (this->depth_frame[i * this->width + j] != this->bg_color) {
+            if (this->depth_frame[i * this->width + j] != BACKGROUND) {
                 this->labels[i * this->width + j] =
                     ds_tree.ds_find(this->labels[i * this->width + j]);
 
@@ -196,7 +195,7 @@ int DepthImageObstacleDetector::extract_blobs()
         for (int j = 0; j < this->width; j++) {
             int index = this->labels[i * this->width + j];
 
-            if (this->depth_frame[index] == this->bg_color) {
+            if (this->depth_frame[index] == BACKGROUND) {
                 continue;
             }
 

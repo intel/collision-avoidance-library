@@ -44,6 +44,5 @@ class DepthImageObstacleDetector : public Detector<DepthCamera, Obstacle>
     int max_num_obstacles = 1000;
     int color_tolerance = 2000;
     int min_num_pixels = 20;
-    uint16_t bg_color = 0;
 };
 
