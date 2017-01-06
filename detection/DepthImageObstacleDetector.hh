@@ -23,7 +23,7 @@ class DepthImageObstacleDetector : public Detector<DepthCamera, Obstacle>
 {
 
   public:
-    DepthImageObstacleDetector(std::shared_ptr<DepthCamera> depth_camera);
+    DepthImageObstacleDetector(std::shared_ptr<DepthCamera> depth_camera, double threshold_meters = 0.0);
     const std::vector<Obstacle> &detect() override;
 
   private:
@@ -35,6 +35,7 @@ class DepthImageObstacleDetector : public Detector<DepthCamera, Obstacle>
     double fov;
     double scale;
 
+    bool is_valid(const uint16_t depth);
     bool is_in_range(const uint16_t d1, const uint16_t d2);
 
     int get_neighbors_label(const int i, const int j, std::vector<int> &neigh_labels);
@@ -46,5 +47,7 @@ class DepthImageObstacleDetector : public Detector<DepthCamera, Obstacle>
     int max_num_obstacles = 1000;
     int tolerance = 20;
     int min_num_pixels = 400; // equivalent area of a 20x20 square
+
+    uint16_t threshold = 0;
 };
 

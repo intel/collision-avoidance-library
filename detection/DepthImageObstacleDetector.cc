@@ -24,10 +24,11 @@
 #define BACKGROUND 0
 
 DepthImageObstacleDetector::DepthImageObstacleDetector(
-    std::shared_ptr<DepthCamera> depth_camera)
+    std::shared_ptr<DepthCamera> depth_camera, double threshold_meters)
 {
     this->sensor = depth_camera;
     this->obstacles.resize(MAX_NUM_BLOBS);
+    this->threshold = (uint16_t)(threshold_meters / depth_camera->get_scale());
 }
 
 const std::vector<Obstacle> &DepthImageObstacleDetector::detect()
@@ -46,6 +47,11 @@ const std::vector<Obstacle> &DepthImageObstacleDetector::detect()
     this->obstacles.resize(num_obstacles);
 
     return this->obstacles;
+}
+
+inline bool DepthImageObstacleDetector::is_valid(const uint16_t depth)
+{
+    return (depth != BACKGROUND && (this->threshold ? depth < this->threshold : true));
 }
 
 inline bool DepthImageObstacleDetector::is_in_range(const uint16_t d1, const uint16_t d2)
@@ -144,7 +150,7 @@ int DepthImageObstacleDetector::extract_blobs()
     // First Pass
     for (int i = 0; i < this->height; i++) {
         for (int j = 0; j < this->width; j++) {
-            if (this->depth_frame[i * this->width + j] != BACKGROUND) {
+            if (is_valid(this->depth_frame[i * this->width + j])) {
                 std::vector<int> neigh_labels(4);
 
                 int num_neighbors = get_neighbors_label(i, j, neigh_labels);
