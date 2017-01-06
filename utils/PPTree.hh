@@ -32,7 +32,7 @@ class PPTree
     PPTree(int num_nodes);
     ~PPTree();
 
-    bool ds_union(int node_x_id, int node_y_id);
+    void ds_union(int node_x_id, int node_y_id);
     int ds_find(int node_id);
 
   private:
