@@ -58,7 +58,7 @@ int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_lab
 
     /* Check west */
     if (j > 0) {
-        if (fabs(depth_frame[i * this->width + (j - 1)] -
+        if (abs(depth_frame[i * this->width + (j - 1)] -
                  depth_frame[i * this->width + j]) <=
             tolerance) {
             neigh_labels[neighbor_idx] =
@@ -69,7 +69,7 @@ int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_lab
 
     /* Check northwest */
     if (j > 0 && i > 0) {
-        if (fabs(depth_frame[(i - 1) * this->width + (j - 1)] -
+        if (abs(depth_frame[(i - 1) * this->width + (j - 1)] -
                  depth_frame[i * this->width + j]) <=
             tolerance) {
             neigh_labels[neighbor_idx] =
@@ -80,7 +80,7 @@ int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_lab
 
     /* Check north */
     if (i > 0) {
-        if (fabs(depth_frame[(i - 1) * this->width + j] -
+        if (abs(depth_frame[(i - 1) * this->width + j] -
                  depth_frame[i * this->width + j]) <=
             tolerance) {
             neigh_labels[neighbor_idx] =
@@ -91,7 +91,7 @@ int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_lab
 
     /* Check northeast */
     if (i > 0 && j < (this->width - 1)) {
-        if (fabs(depth_frame[(i - 1) * this->width + j + 1] -
+        if (abs(depth_frame[(i - 1) * this->width + j + 1] -
                  depth_frame[i * this->width + j]) <=
             tolerance) {
             neigh_labels[neighbor_idx] =
