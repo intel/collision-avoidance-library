@@ -35,7 +35,9 @@ class DepthImageObstacleDetector : public Detector<DepthCamera, Obstacle>
     double fov;
     double scale;
 
-    int get_neighbors_label(int i, int j, int *neigh_labels);
+    bool is_in_range(const uint16_t d1, const uint16_t d2);
+
+    int get_neighbors_label(const int i, const int j, std::vector<int> &neigh_labels);
 
     int extract_blobs();
 
