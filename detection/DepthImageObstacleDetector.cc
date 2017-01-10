@@ -186,9 +186,8 @@ int DepthImageObstacleDetector::extract_blobs()
         for (int j = 0; j < this->width; j++) {
             int label = this->labels[i * this->width + j];
 
-            if (this->depth_frame[i * this->width + j] == BACKGROUND) {
+            if (!label)
                 continue;
-            }
 
             if (blob_num_pixels[label] < this->min_num_pixels) {
                 if (j > 0) {
