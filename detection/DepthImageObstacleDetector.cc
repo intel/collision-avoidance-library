@@ -193,17 +193,8 @@ int DepthImageObstacleDetector::extract_blobs()
         for (int j = 0; j < this->width; j++) {
             int label = this->labels[i * this->width + j];
 
-            if (!label)
+            if (!label || blob_num_pixels[label] < this->min_num_pixels)
                 continue;
-
-            if (blob_num_pixels[label] < this->min_num_pixels) {
-                if (j > 0) {
-                    this->labels[i * this->width + j] = this->labels[i * this->width + j - 1];
-                } else {
-                    this->labels[i * this->width + j] = 0;
-                }
-                continue;
-            }
 
             if (blob_to_obstacle[label] == -1 &&
                 num_obstacles < this->max_num_obstacles) {
