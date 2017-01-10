@@ -50,52 +50,48 @@ const std::vector<Obstacle> &DepthImageObstacleDetector::detect()
 
 int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_labels)
 {
+    int pixel_idx, north_idx;
     int neighbor_idx = 0;
 
     if (i < 0 || i >= this->height || j < 0 || j >= this->width) {
         return 0;
     }
 
+    pixel_idx = i * this->width + j;
+    north_idx = pixel_idx - this->width;
+
     /* Check west */
     if (j > 0) {
-        if (abs(depth_frame[i * this->width + (j - 1)] -
-                 depth_frame[i * this->width + j]) <=
-            tolerance) {
-            neigh_labels[neighbor_idx] =
-                this->labels[i * this->width + (j - 1)];
+        if (abs(depth_frame[pixel_idx - 1] -
+                depth_frame[pixel_idx]) <= tolerance) {
+            neigh_labels[neighbor_idx] = this->labels[pixel_idx - 1];
             neighbor_idx++;
         }
     }
 
     /* Check northwest */
     if (j > 0 && i > 0) {
-        if (abs(depth_frame[(i - 1) * this->width + (j - 1)] -
-                 depth_frame[i * this->width + j]) <=
-            tolerance) {
-            neigh_labels[neighbor_idx] =
-                this->labels[(i - 1) * this->width + (j - 1)];
+        if (abs(depth_frame[north_idx - 1] -
+                depth_frame[pixel_idx]) <= tolerance) {
+            neigh_labels[neighbor_idx] = this->labels[north_idx - 1];
             neighbor_idx++;
         }
     }
 
     /* Check north */
     if (i > 0) {
-        if (abs(depth_frame[(i - 1) * this->width + j] -
-                 depth_frame[i * this->width + j]) <=
-            tolerance) {
-            neigh_labels[neighbor_idx] =
-                this->labels[(i - 1) * this->width + j];
+        if (abs(depth_frame[north_idx] -
+                depth_frame[pixel_idx]) <= tolerance) {
+            neigh_labels[neighbor_idx] = this->labels[north_idx];
             neighbor_idx++;
         }
     }
 
     /* Check northeast */
     if (i > 0 && j < (this->width - 1)) {
-        if (abs(depth_frame[(i - 1) * this->width + j + 1] -
-                 depth_frame[i * this->width + j]) <=
-            tolerance) {
-            neigh_labels[neighbor_idx] =
-                this->labels[(i - 1) * this->width + j + 1];
+        if (abs(depth_frame[north_idx + 1] -
+                 depth_frame[pixel_idx]) <= tolerance) {
+            neigh_labels[neighbor_idx] = this->labels[north_idx + 1];
             neighbor_idx++;
         }
     }
