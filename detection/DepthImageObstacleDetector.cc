@@ -170,15 +170,10 @@ int DepthImageObstacleDetector::extract_blobs()
     }
 
     /* Second Pass. */
-    for (int i = 0; i < this->height; i++) {
-        for (int j = 0; j < this->width; j++) {
-            if (this->depth_frame[i * this->width + j] != BACKGROUND) {
-                this->labels[i * this->width + j] =
-                    ds_tree.ds_find(this->labels[i * this->width + j]);
-
-                blob_num_pixels[this->labels[i * this->width + j]]++;
-            }
-
+    for (unsigned int i = 0; i < labels.size(); i++) {
+        if (this->labels[i]) {
+            this->labels[i] = ds_tree.ds_find(this->labels[i]);
+            blob_num_pixels[this->labels[i]]++;
         }
     }
 
