@@ -60,7 +60,7 @@ int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_lab
     if (j > 0) {
         if (fabs(depth_frame[i * this->width + (j - 1)] -
                  depth_frame[i * this->width + j]) <=
-            color_tolerance) {
+            tolerance) {
             neigh_labels[neighbor_idx] =
                 this->labels[i * this->width + (j - 1)];
             neighbor_idx++;
@@ -71,7 +71,7 @@ int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_lab
     if (j > 0 && i > 0) {
         if (fabs(depth_frame[(i - 1) * this->width + (j - 1)] -
                  depth_frame[i * this->width + j]) <=
-            color_tolerance) {
+            tolerance) {
             neigh_labels[neighbor_idx] =
                 this->labels[(i - 1) * this->width + (j - 1)];
             neighbor_idx++;
@@ -82,7 +82,7 @@ int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_lab
     if (i > 0) {
         if (fabs(depth_frame[(i - 1) * this->width + j] -
                  depth_frame[i * this->width + j]) <=
-            color_tolerance) {
+            tolerance) {
             neigh_labels[neighbor_idx] =
                 this->labels[(i - 1) * this->width + j];
             neighbor_idx++;
@@ -93,7 +93,7 @@ int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_lab
     if (i > 0 && j < (this->width - 1)) {
         if (fabs(depth_frame[(i - 1) * this->width + j + 1] -
                  depth_frame[i * this->width + j]) <=
-            color_tolerance) {
+            tolerance) {
             neigh_labels[neighbor_idx] =
                 this->labels[(i - 1) * this->width + j + 1];
             neighbor_idx++;
