@@ -42,7 +42,7 @@ class DepthImageObstacleDetector : public Detector<DepthCamera, Obstacle>
     double calc_pixel_area(int i, int j, uint16_t depth_value);
 
     int max_num_obstacles = 1000;
-    int color_tolerance = 2000;
+    int tolerance = 20;
     int min_num_pixels = 20;
 };
 
