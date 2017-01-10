@@ -196,11 +196,7 @@ int DepthImageObstacleDetector::extract_blobs()
                 continue;
 
             if (blob_num_pixels[label] < this->min_num_pixels) {
-                if (j > 0) {
-                    this->labels[i * this->width + j] = this->labels[i * this->width + j - 1];
-                } else {
-                    this->labels[i * this->width + j] = 0;
-                }
+                this->labels[i * this->width + j] = 0;
                 continue;
             }
 
