@@ -184,32 +184,31 @@ int DepthImageObstacleDetector::extract_blobs()
     /* Third Pass */
     for (int i = 0; i < this->height; i++) {
         for (int j = 0; j < this->width; j++) {
-            int index = this->labels[i * this->width + j];
+            int label = this->labels[i * this->width + j];
 
-            if (this->depth_frame[index] == BACKGROUND) {
+            if (this->depth_frame[i * this->width + j] == BACKGROUND) {
                 continue;
             }
 
-            if (blob_num_pixels[index] < this->min_num_pixels) {
+            if (blob_num_pixels[label] < this->min_num_pixels) {
                 if (j > 0) {
-                    this->labels[index] = this->labels[index - 1];
+                    this->labels[i * this->width + j] = this->labels[i * this->width + j - 1];
                 } else {
-                    this->labels[index] = 0;
+                    this->labels[i * this->width + j] = 0;
                 }
                 continue;
             }
 
-            if (blob_to_obstacle[index] == -1 &&
+            if (blob_to_obstacle[label] == -1 &&
                 num_obstacles < this->max_num_obstacles) {
-                blob_to_obstacle[index] = num_obstacles;
-                obstacles[blob_to_obstacle[index]].id = num_obstacles + 1;
+                blob_to_obstacle[label] = num_obstacles;
+                obstacles[blob_to_obstacle[label]].id = num_obstacles + 1;
                 num_obstacles++;
             }
 
-            if (blob_to_obstacle[this->labels[i * this->width + j]] != -1) {
+            if (blob_to_obstacle[label] != -1) {
                 /* Calculate obstacles parameters. */
-
-                obstacles[blob_to_obstacle[index]].center =
+                obstacles[blob_to_obstacle[label]].center =
                     glm::dvec3(j, i, depth_frame[i * this->width + j]);
             }
         }
