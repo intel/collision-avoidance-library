@@ -131,7 +131,7 @@ int DepthImageObstacleDetector::extract_blobs()
     // Store number of pixels for each blob
     int blob_num_pixels[MAX_NUM_BLOBS] = {0};
 
-    // Blob to Obstacle HashTable
+    // Blob to Obstacle Vector
     int blob_to_obstacle[MAX_NUM_BLOBS];
     int num_obstacles = 0;
     int curr_label = 1;
@@ -181,7 +181,7 @@ int DepthImageObstacleDetector::extract_blobs()
         }
     }
 
-    /* Initialize blob to obstacle hashtable. */
+    /* Initialize blob to obstacle vector. */
     for (int i = 0; i < MAX_NUM_BLOBS; i++) {
         blob_to_obstacle[i] = -1;
     }
