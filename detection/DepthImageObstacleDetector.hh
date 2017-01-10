@@ -43,6 +43,6 @@ class DepthImageObstacleDetector : public Detector<DepthCamera, Obstacle>
 
     int max_num_obstacles = 1000;
     int tolerance = 20;
-    int min_num_pixels = 20;
+    int min_num_pixels = 400; // equivalent area of a 20x20 square
 };
 
