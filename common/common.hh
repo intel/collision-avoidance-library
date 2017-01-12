@@ -32,6 +32,7 @@ class QuadCopter
 struct Obstacle {
     uint id;
     glm::dvec3 center;
+    glm::dvec3 spherical_pose;
 };
 
 template <typename SensorType, typename DetectedElementType>
