@@ -32,8 +32,11 @@ class DepthImageObstacleDetector : public Detector<DepthCamera>
     std::vector<uint16_t> labels;
     int width;
     int height;
-    double fov;
+    double hfov;
+    double vfov;
     double scale;
+    double base_theta;
+    double base_phi;
 
     bool is_valid(const uint16_t depth);
     bool is_in_range(const uint16_t d1, const uint16_t d2);
