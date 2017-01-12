@@ -21,14 +21,14 @@
 #include "common/common.hh"
 #include "common/DepthCamera.hh"
 
-class DepthImageSimpleDetector : public Detector<DepthCamera, bool>
+class DepthImageSimpleDetector : public Detector<DepthCamera, Obstacle>
 {
   public:
     DepthImageSimpleDetector(std::shared_ptr<DepthCamera> depth_camera, double threshold_m = 5.0);
 
-    const std::vector<bool> &detect() override;
+    const std::vector<Obstacle> &detect() override;
 
   private:
-    std::vector<bool> detection = {false};
+    std::vector<Obstacle> obstacles = {};
     double threshold;
 };

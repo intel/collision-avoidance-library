@@ -31,7 +31,7 @@ QuadCopterStopAvoidance::QuadCopterStopAvoidance(
     this->vehicle = quadcopter;
 }
 
-void QuadCopterStopAvoidance::avoid(const std::vector<bool> &detection)
+void QuadCopterStopAvoidance::avoid(const std::vector<Obstacle> &detection)
 {
     if(!this->vehicle) {
         std::cout << "[avoid] vehicle does not exist" << std::endl;
@@ -47,18 +47,13 @@ void QuadCopterStopAvoidance::avoid(const std::vector<bool> &detection)
         return;
     }
 
-    // The detection does not have valid data. We're blind.
-    if (detection.size() == 0) {
-        return;
-    }
-
     // Vehicle is too close to ground. Do nothing.
     if (vehicle->vehicle_pose().pos.z < defaults::lowest_altitude) {
         return;
     }
 
-    // Obstacle has not been detected. Do nothing.
-    if (!detection[0]) {
+    // If no obstacle was detected, do nothing.
+    if (detection.size() == 0) {
         return;
     }
 

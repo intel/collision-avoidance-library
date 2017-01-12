@@ -23,11 +23,11 @@
 #include <vector>
 
 class QuadCopterStopAvoidance
-    : public CollisionAvoidanceStrategy<MavQuadCopter, bool>
+    : public CollisionAvoidanceStrategy<MavQuadCopter, Obstacle>
 {
   public:
     QuadCopterStopAvoidance(std::shared_ptr<MavQuadCopter> quadcopter);
 
-    void avoid(const std::vector<bool> &detection) override;
+    void avoid(const std::vector<Obstacle> &detection) override;
 };
 
