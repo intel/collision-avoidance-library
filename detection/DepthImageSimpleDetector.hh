@@ -21,7 +21,7 @@
 #include "common/common.hh"
 #include "common/DepthCamera.hh"
 
-class DepthImageSimpleDetector : public Detector<DepthCamera, Obstacle>
+class DepthImageSimpleDetector : public Detector<DepthCamera>
 {
   public:
     DepthImageSimpleDetector(std::shared_ptr<DepthCamera> depth_camera, double threshold_m = 5.0);
