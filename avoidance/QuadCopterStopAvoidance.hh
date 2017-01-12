@@ -23,7 +23,7 @@
 #include <vector>
 
 class QuadCopterStopAvoidance
-    : public CollisionAvoidanceStrategy<MavQuadCopter, Obstacle>
+    : public CollisionAvoidanceStrategy<MavQuadCopter>
 {
   public:
     QuadCopterStopAvoidance(std::shared_ptr<MavQuadCopter> quadcopter);

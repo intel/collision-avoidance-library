@@ -19,7 +19,7 @@
 #include <common/DepthCamera.hh>
 #include <vector>
 
-class DepthImageObstacleDetector : public Detector<DepthCamera, Obstacle>
+class DepthImageObstacleDetector : public Detector<DepthCamera>
 {
 
   public:
