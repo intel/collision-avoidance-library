@@ -34,3 +34,12 @@ if (${WITH_VDEBUG})
       ${GLUT_LIBRARIES}
     )
 endif()
+
+if (${WITH_REALSENSE})
+    add_executable(polarhist_test polarhist_test.cc)
+    target_link_libraries(polarhist_test
+      common
+      sensors
+      detection
+    )
+endif()
