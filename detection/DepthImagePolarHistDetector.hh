@@ -20,7 +20,7 @@
 #include <memory>
 #include <vector>
 
-class DepthImagePolarHistDetector : public Detector<DepthCamera, Obstacle>
+class DepthImagePolarHistDetector : public Detector<DepthCamera>
 {
   public:
     DepthImagePolarHistDetector(std::shared_ptr<DepthCamera> depth_camera,

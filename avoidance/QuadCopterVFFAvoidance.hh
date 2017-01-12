@@ -20,7 +20,7 @@
 #include <chrono>
 #include <glm/glm.hpp>
 
-class QuadCopterVFFAvoidance : public CollisionAvoidanceStrategy<QuadCopter, Obstacle>
+class QuadCopterVFFAvoidance : public CollisionAvoidanceStrategy<QuadCopter>
 {
 public:
   QuadCopterVFFAvoidance(std::shared_ptr<QuadCopter> quadcopter);

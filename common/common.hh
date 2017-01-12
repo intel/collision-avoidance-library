@@ -36,21 +36,21 @@ struct Obstacle {
     glm::dvec3 center;
 };
 
-template <typename SensorType, typename DetectedElementType>
+template <typename SensorType>
 class Detector
 {
   public:
-    virtual const std::vector<DetectedElementType> &detect() = 0;
+    virtual const std::vector<Obstacle> &detect() = 0;
 
   protected:
     std::shared_ptr<SensorType> sensor;
 };
 
-template <typename VehicleType, typename DetectedElementType>
+template <typename VehicleType>
 class CollisionAvoidanceStrategy
 {
   public:
-    virtual void avoid(const std::vector<DetectedElementType> &elements) = 0;
+    virtual void avoid(const std::vector<Obstacle> &elements) = 0;
 
   protected:
     std::shared_ptr<VehicleType> vehicle;
