@@ -126,6 +126,8 @@ void init_obstacle_array(std::vector<Obstacle> &obstacles)
 
 int DepthImageObstacleDetector::extract_blobs()
 {
+    int row_offset;
+
     // Check if the current stored depth frame is valid
     if (depth_frame.size() == 0) {
         return 0;
@@ -148,28 +150,22 @@ int DepthImageObstacleDetector::extract_blobs()
 
     // First Pass
     for (int i = 0; i < this->height; i++) {
+        row_offset = i * this->width;
         for (int j = 0; j < this->width; j++) {
-            if (is_valid(this->depth_frame[i * this->width + j])) {
+            if (is_valid(this->depth_frame[row_offset + j])) {
                 std::vector<int> neigh_labels(4);
 
                 int num_neighbors = get_neighbors_label(i, j, neigh_labels.data());
-
                 if (num_neighbors) {
-                    this->labels[i * this->width + j] = neigh_labels[0];
+                    this->labels[row_offset + j] = neigh_labels[0];
                     for (int k = 1; k < num_neighbors; k++) {
                         ds_tree.ds_union(neigh_labels[0], neigh_labels[k]);
                     }
                 } else {
-                    if (curr_label <= MAX_NUM_BLOBS) {
-                        this->labels[i * this->width + j] =
-                            curr_label;
-                        curr_label++;
-                    } else {
-                        this->labels[i * this->width + j] = 0;
-                    }
+                    this->labels[row_offset + j] = (curr_label <= MAX_NUM_BLOBS) ? curr_label++ : 0;
                 }
             } else {
-                this->labels[i * this->width + j] = 0;
+                this->labels[row_offset + j] = 0;
             }
         }
     }
@@ -189,8 +185,9 @@ int DepthImageObstacleDetector::extract_blobs()
 
     /* Third Pass */
     for (int i = 0; i < this->height; i++) {
+        row_offset = i * this->width;
         for (int j = 0; j < this->width; j++) {
-            int label = this->labels[i * this->width + j];
+            int label = this->labels[row_offset + j];
 
             if (!label || blob_num_pixels[label] < this->min_num_pixels)
                 continue;
@@ -205,7 +202,7 @@ int DepthImageObstacleDetector::extract_blobs()
             if (blob_to_obstacle[label] != -1) {
                 /* Calculate obstacles parameters. */
                 obstacles[blob_to_obstacle[label]].center =
-                    glm::dvec3(j, i, depth_frame[i * this->width + j]);
+                    glm::dvec3(j, i, depth_frame[row_offset + j]);
             }
         }
     }
