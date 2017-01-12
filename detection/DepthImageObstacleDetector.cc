@@ -38,13 +38,13 @@ const std::vector<Obstacle> &DepthImageObstacleDetector::detect()
     this->height = this->sensor->get_height();
     this->width = this->sensor->get_width();
     this->scale = this->sensor->get_scale();
-    this->fov = this->sensor->get_fov_tan();
+    this->hfov = this->sensor->get_horizontal_fov();
+    this->vfov = this->sensor->get_vertical_fov();
+    this->base_phi = (M_PI - hfov) / 2;
+    this->base_theta = (M_PI - vfov) / 2;
 
     // Detect obstacles from current depth buffer
-    int num_obstacles = this->extract_blobs();
-
-    // Return the obstacles with the correct size
-    this->obstacles.resize(num_obstacles);
+    this->extract_blobs();
 
     return this->obstacles;
 }
@@ -185,6 +185,7 @@ int DepthImageObstacleDetector::extract_blobs()
     }
 
     /* Third Pass */
+
     for (int i = 0; i < this->height; i++) {
         row_offset = i * this->width;
         for (int j = 0; j < this->width; j++) {
@@ -193,19 +194,30 @@ int DepthImageObstacleDetector::extract_blobs()
             if (!label || blob_num_pixels[label] < this->min_num_pixels)
                 continue;
 
-            if (blob_to_obstacle[label] == -1 &&
-                num_obstacles < this->max_num_obstacles) {
-                blob_to_obstacle[label] = num_obstacles;
-                obstacles[blob_to_obstacle[label]].id = num_obstacles + 1;
-                num_obstacles++;
+            if (blob_to_obstacle[label] == -1) {
+                if (num_obstacles >= this->max_num_obstacles)
+                    continue;
+
+                blob_to_obstacle[label] = num_obstacles++;
+                obstacles[blob_to_obstacle[label]].id = label;
+                obstacles[blob_to_obstacle[label]].center.x = DBL_MAX;
             }
 
-            if (blob_to_obstacle[label] != -1) {
-                /* Calculate obstacles parameters. */
-                obstacles[blob_to_obstacle[label]].center =
-                    glm::dvec3(j, i, depth_frame[row_offset + j]);
-            }
+            Obstacle *o = &obstacles[blob_to_obstacle[label]];
+            o->center += glm::dvec3(0, i, j);
+            o->center.x = (depth_frame[row_offset + j] < o->center.x) ?
+                depth_frame[row_offset + j] : o->center.x;
         }
+    }
+
+    this->obstacles.resize(num_obstacles);
+    for (Obstacle &o : obstacles) {
+            o.center.y /= blob_num_pixels[o.id];
+            o.center.z /= blob_num_pixels[o.id];
+
+            // Cartesian to spherical
+            o.center.y = ((o.center.y / this->height) * vfov) + base_theta;
+            o.center.z = ((1.0 - (o.center.z / this->width)) * hfov) + base_phi;
     }
 
     return num_obstacles;
