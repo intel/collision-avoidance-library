@@ -41,10 +41,7 @@ const std::vector<Obstacle> &DepthImageObstacleDetector::detect()
     this->fov = this->sensor->get_fov_tan();
 
     // Detect obstacles from current depth buffer
-    int num_obstacles = this->extract_blobs();
-
-    // Return the obstacles with the correct size
-    this->obstacles.resize(num_obstacles);
+    this->extract_blobs();
 
     return this->obstacles;
 }
@@ -192,19 +189,22 @@ int DepthImageObstacleDetector::extract_blobs()
             if (!label || blob_num_pixels[label] < this->min_num_pixels)
                 continue;
 
-            if (blob_to_obstacle[label] == -1 &&
-                num_obstacles < this->max_num_obstacles) {
-                blob_to_obstacle[label] = num_obstacles;
-                obstacles[blob_to_obstacle[label]].id = num_obstacles + 1;
-                num_obstacles++;
+            if (blob_to_obstacle[label] == -1) {
+                if (num_obstacles >= this->max_num_obstacles)
+                    continue;
+
+                blob_to_obstacle[label] = num_obstacles++;
+                obstacles[blob_to_obstacle[label]].id = label;
             }
 
-            if (blob_to_obstacle[label] != -1) {
-                /* Calculate obstacles parameters. */
-                obstacles[blob_to_obstacle[label]].center =
-                    glm::dvec3(j, i, depth_frame[row_offset + j]);
-            }
+            obstacles[blob_to_obstacle[label]].center +=
+                glm::dvec3(j, i, depth_frame[row_offset + j]);
         }
+    }
+
+    this->obstacles.resize(num_obstacles);
+    for (Obstacle &o : obstacles) {
+            o.center /= blob_num_pixels[o.id];
     }
 
     return num_obstacles;
