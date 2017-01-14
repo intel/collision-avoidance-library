@@ -51,6 +51,11 @@ inline bool DepthImageObstacleDetector::is_valid(uint16_t depth)
     return (depth != BACKGROUND && (this->threshold ? depth < this->threshold : true));
 }
 
+inline bool DepthImageObstacleDetector::is_in_range(uint16_t d1, uint16_t d2)
+{
+    return (abs(d1 - d2) <= this->tolerance);
+}
+
 int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_labels)
 {
     int pixel_idx, north_idx;
@@ -65,8 +70,7 @@ int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_lab
 
     /* Check west */
     if (j > 0) {
-        if (abs(depth_frame[pixel_idx - 1] -
-                depth_frame[pixel_idx]) <= tolerance) {
+        if (is_in_range(depth_frame[pixel_idx - 1], depth_frame[pixel_idx])) {
             neigh_labels[neighbor_idx] = this->labels[pixel_idx - 1];
             neighbor_idx++;
         }
@@ -74,8 +78,7 @@ int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_lab
 
     /* Check northwest */
     if (j > 0 && i > 0) {
-        if (abs(depth_frame[north_idx - 1] -
-                depth_frame[pixel_idx]) <= tolerance) {
+        if (is_in_range(depth_frame[north_idx - 1], depth_frame[pixel_idx])) {
             neigh_labels[neighbor_idx] = this->labels[north_idx - 1];
             neighbor_idx++;
         }
@@ -83,8 +86,7 @@ int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_lab
 
     /* Check north */
     if (i > 0) {
-        if (abs(depth_frame[north_idx] -
-                depth_frame[pixel_idx]) <= tolerance) {
+        if (is_in_range(depth_frame[north_idx], depth_frame[pixel_idx])) {
             neigh_labels[neighbor_idx] = this->labels[north_idx];
             neighbor_idx++;
         }
@@ -92,8 +94,7 @@ int DepthImageObstacleDetector::get_neighbors_label(int i, int j, int *neigh_lab
 
     /* Check northeast */
     if (i > 0 && j < (this->width - 1)) {
-        if (abs(depth_frame[north_idx + 1] -
-                 depth_frame[pixel_idx]) <= tolerance) {
+        if (is_in_range(depth_frame[north_idx + 1], depth_frame[pixel_idx])) {
             neigh_labels[neighbor_idx] = this->labels[north_idx + 1];
             neighbor_idx++;
         }

@@ -36,6 +36,7 @@ class DepthImageObstacleDetector : public Detector<DepthCamera, Obstacle>
     double scale;
 
     bool is_valid(uint16_t depth);
+    bool is_in_range(uint16_t d1, uint16_t d2);
 
     int get_neighbors_label(int i, int j, int *neigh_labels);
 
