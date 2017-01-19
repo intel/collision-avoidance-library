@@ -24,10 +24,12 @@ class DepthImagePolarHistDetector : public Detector<DepthCamera, Obstacle>
 {
   public:
     DepthImagePolarHistDetector(std::shared_ptr<DepthCamera> depth_camera,
-                                double angle_step);
+            double angle_step, double threshold = 5.0, double density = 0.1);
     const std::vector<Obstacle> &detect() override;
 
   private:
     double step;
+    double threshold;
+    double density;
     std::vector<Obstacle> obstacles;
 };
