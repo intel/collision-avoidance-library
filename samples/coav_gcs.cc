@@ -192,10 +192,9 @@ int main(int argc, char **argv)
 
     while (running) {
         // Sense
-        std::vector<Obstacle> obstacles;
-        std::vector<double> hist = obstacle_detector->detect();
+        std::vector<Obstacle> obstacles = obstacle_detector->detect();
 
         // Avoid
-        avoidance->avoid(hist);
+        avoidance->avoid(obstacles);
     }
 }

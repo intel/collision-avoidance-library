@@ -38,7 +38,7 @@ QuadCopterShiftAvoidance::QuadCopterShiftAvoidance(
     this->vehicle = quadcopter;
 }
 
-void QuadCopterShiftAvoidance::avoid(const std::vector<double> &histogram)
+void QuadCopterShiftAvoidance::avoid(const std::vector<Obstacle> &obstacles)
 {
     Pose vehicle_pose = vehicle->vehicle_pose();
 
@@ -65,20 +65,28 @@ void QuadCopterShiftAvoidance::avoid(const std::vector<double> &histogram)
         // The vehicle is moving to the target. We need to detect if an
         // obstacle is found in order to start a detour.
 
-        // The histogram does not have valid data. We're blind.
-        if (histogram.size() == 0) {
+        // If no obstacle was detected, do nothing.
+        if (obstacles.size() == 0) {
             break;
         }
 
-        // Check if the path in front of the vehicle is safe
-        if (histogram[0] == 0 || histogram[0] > defaults::safe_distance) {
+        // Get closest obstacle
+        Obstacle closest;
+        closest.center.x = defaults::safe_distance + 1;
+        for (Obstacle obs : obstacles) {
+            if (obs.center.x < closest.center.x) {
+                closest = obs;
+            }
+        }
+
+        if (closest.center.x > defaults::safe_distance) {
             break;
         }
 
         // Check if the current mission waypoint is closer than the closest obstacle
         if (mavlink_vehicles::math::ground_dist(
                 vehicle->mav->get_global_position_int(),
-                vehicle->mav->get_mission_waypoint()) <= histogram[0]) {
+                vehicle->mav->get_mission_waypoint()) <= closest.center.x) {
             break;
         }
 
