@@ -16,14 +16,15 @@
 #pragma once
 
 #include "common/common.hh"
+#include "vehicles/MavQuadCopter.hh"
 
 #include <chrono>
 #include <glm/glm.hpp>
 
-class QuadCopterVFFAvoidance : public CollisionAvoidanceStrategy<QuadCopter>
+class QuadCopterVFFAvoidance : public CollisionAvoidanceStrategy<MavQuadCopter>
 {
 public:
-  QuadCopterVFFAvoidance(std::shared_ptr<QuadCopter> quadcopter);
+  QuadCopterVFFAvoidance(std::shared_ptr<MavQuadCopter> quadcopter);
   void avoid(const std::vector<Obstacle> &obstacles) override;
 
 private:

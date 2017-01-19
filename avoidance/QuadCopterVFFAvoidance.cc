@@ -27,7 +27,7 @@
 #define COAV_TARGET_SEC_MARGIN_M 1.5
 
 QuadCopterVFFAvoidance::QuadCopterVFFAvoidance(
-    std::shared_ptr<QuadCopter> quadcopter)
+    std::shared_ptr<MavQuadCopter> quadcopter)
 {
     this->vehicle = quadcopter;
 }
