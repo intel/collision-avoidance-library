@@ -20,14 +20,14 @@
 #include <memory>
 #include <vector>
 
-class DepthImagePolarHistDetector : public Detector<DepthCamera, double>
+class DepthImagePolarHistDetector : public Detector<DepthCamera, Obstacle>
 {
   public:
     DepthImagePolarHistDetector(std::shared_ptr<DepthCamera> depth_camera,
                                 double angle_step);
-    const std::vector<double> &detect() override;
+    const std::vector<Obstacle> &detect() override;
 
   private:
-    double angle_step;
-    std::vector<double> histogram;
+    double step;
+    std::vector<Obstacle> obstacles;
 };

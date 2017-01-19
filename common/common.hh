@@ -31,6 +31,8 @@ class QuadCopter
 
 struct Obstacle {
     uint id;
+    // Spherical coordinates (r, theta, phi), with the origin
+    // on the sensor looking down the y axis.
     glm::dvec3 center;
 };
 
