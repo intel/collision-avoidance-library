@@ -25,15 +25,19 @@ namespace defaults
 }
 
 DepthImagePolarHistDetector::DepthImagePolarHistDetector(
-    std::shared_ptr<DepthCamera> depth_camera, double angle_step)
+    std::shared_ptr<DepthCamera> depth_camera, double angle_step, double threshold,
+    double density)
 {
     this->sensor = depth_camera;
     this->step = glm::radians(angle_step);
+    this->threshold = threshold;
+    this->density = density;
 }
 
 const std::vector<Obstacle> &DepthImagePolarHistDetector::detect()
 {
     std::vector<double> histogram;
+    std::vector<unsigned int> density_count;
 
     // Obtain camera depth buffer and camera properties
     std::vector<uint16_t> depth_buffer = this->sensor->get_depth_buffer();
@@ -58,6 +62,7 @@ const std::vector<Obstacle> &DepthImagePolarHistDetector::detect()
 
     // Create one entry for each slice of the fov and initialize to max distance
     histogram.resize(glm::ceil(fov / this->step), UINT16_MAX * scale);
+    density_count.resize(histogram.size(), 0);
 
     // Sweep a slice of the depth buffer filling up the histogram with the
     // closest distance found in a given direction
@@ -71,6 +76,9 @@ const std::vector<Obstacle> &DepthImagePolarHistDetector::detect()
                 depth_value = UINT16_MAX;
             }
 
+            if (depth_value * scale < this->threshold)
+                density_count[pos]++;
+
             histogram[pos] = glm::min(depth_value * scale, histogram[pos]);
         }
     }
@@ -78,8 +86,13 @@ const std::vector<Obstacle> &DepthImagePolarHistDetector::detect()
     // we use equal sized slices, so the actual step may be smaller than the provided
     // step if fov is not a multiple of it.
     double fixed_step = fov / histogram.size();
+    unsigned int slice_pixel_count = (vertical_sweep_pixels * 2) * (width / histogram.size());
 
     for (size_t i = 0; i < histogram.size(); i++) {
+        if (histogram[i] > this->threshold ||
+                ((double) density_count[i]) / slice_pixel_count < this->density)
+            continue;
+
         // Assuming the drone is always looking down the y axis, calculate
         // the max phi it can see
         double max_phi = fov / 2 + M_PI / 2;
