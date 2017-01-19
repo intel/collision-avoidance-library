@@ -26,6 +26,7 @@ endmacro()
 option(WITH_REALSENSE "Add realsense support" ON)
 option(WITH_SAMPLES "Compile project samples" OFF)
 option(WITH_GAZEBO "Enable Gazebo simulation features" OFF)
+option(WITH_TOOLS "Enable library tools" OFF)
 dependent_option(WITH_VDEBUG "Compile visual debugger" OFF WITH_GAZEBO)
 
 # Options definitions and custom setup
@@ -114,6 +115,10 @@ add_subdirectory(tests)
 add_subdirectory(utils)
 add_subdirectory(vehicles)
 add_subdirectory(modules/mavlink_vehicles)
+
+if (${WITH_TOOLS})
+    add_subdirectory(tools/coav-control)
+endif()
 
 if (${WITH_SAMPLES})
     add_subdirectory(samples)
