@@ -19,7 +19,7 @@
 #include <common/DepthCamera.hh>
 #include <vector>
 
-class DepthImageStraightLineDetector : public Detector<DepthCamera, Obstacle>
+class DepthImageStraightLineDetector : public Detector<DepthCamera>
 {
   public:
     DepthImageStraightLineDetector(std::shared_ptr<DepthCamera> depth_camera);
