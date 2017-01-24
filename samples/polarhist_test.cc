@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     std::shared_ptr<DepthImagePolarHistDetector> obstacle_detector =
         std::make_shared<DepthImagePolarHistDetector>(depth_camera, STEP, 1.5, 0.2);
 
-    double fov = atan(depth_camera->get_fov_tan());
+    double fov = depth_camera->get_horizontal_fov();
     unsigned int slices = ceil(fov / STEP);
     double fixed_step = fov / slices;
 
