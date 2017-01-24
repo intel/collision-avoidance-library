@@ -31,8 +31,17 @@ class QuadCopter
 
 struct Obstacle {
     uint id;
-    // Spherical coordinates (r, theta, phi), with the origin
-    // on the sensor looking down the y axis.
+
+    /**
+     * Spherical coordinates as in ISO 31-11.
+     *
+     * x = r (Radial)
+     * y = theta (Polar Angle)
+     * z = phi (Azimuthal Angle)
+     *
+     * When returned from a Sensor, the origin is on it
+     * and looking along the y axis.
+     */
     glm::dvec3 center;
 };
 
