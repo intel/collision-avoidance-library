@@ -180,7 +180,7 @@ int main(int argc, char **argv)
     }
 
     obstacle_detector = std::make_shared<DepthImagePolarHistDetector>(
-            depth_camera, 180.0 * (atan(depth_camera->get_fov_tan())) / M_PI);
+            depth_camera, 180.0 * depth_camera->get_horizontal_fov() / M_PI);
     std::cout << "[coav] ObstacleDetector instantiated" << std::endl;
 
     // Initialize Vehicle
