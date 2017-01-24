@@ -212,12 +212,13 @@ int DepthImageObstacleDetector::extract_blobs()
 
     this->obstacles.resize(num_obstacles);
     for (Obstacle &o : obstacles) {
-            o.center.y /= blob_num_pixels[o.id];
-            o.center.z /= blob_num_pixels[o.id];
+        o.center.x *= this->scale;
+        o.center.y /= blob_num_pixels[o.id];
+        o.center.z /= blob_num_pixels[o.id];
 
-            // Cartesian to spherical
-            o.center.y = ((o.center.y / this->height) * vfov) + base_theta;
-            o.center.z = ((1.0 - (o.center.z / this->width)) * hfov) + base_phi;
+        // Cartesian to spherical
+        o.center.y = ((o.center.y / this->height) * vfov) + base_theta;
+        o.center.z = ((1.0 - (o.center.z / this->width)) * hfov) + base_phi;
     }
 
     return num_obstacles;
