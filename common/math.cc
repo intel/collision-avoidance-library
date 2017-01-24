@@ -87,8 +87,8 @@ PolarVector cartesian_to_spherical(double x, double y, double z)
     PolarVector p;
 
     p.r = sqrt(x * x + y * y + z * z);
-    p.theta = atan2(-x, y);
-    p.phi = asin(z / p.r);
+    p.theta = acos(z / p.r);
+    p.phi = atan2(y, x);
 
     return p;
 }

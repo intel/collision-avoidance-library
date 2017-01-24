@@ -48,14 +48,6 @@ double get_closest_obst_dist(const std::vector<Obstacle> &obstacles)
     return closest_obst_dist;
 }
 
-PolarVector get_critical_point(const Obstacle& obstacle)
-{
-    PolarVector cp;
-    cp.theta = atan(obstacle.center.x / obstacle.center.z);
-    cp.phi = atan(obstacle.center.y / obstacle.center.z);
-    return cp;
-}
-
 void QuadCopterVFFAvoidance::avoid(const std::vector<Obstacle> &obstacles)
 {
     /* TODO: WORK IN PROGRESS */
@@ -93,13 +85,11 @@ void QuadCopterVFFAvoidance::avoid(const std::vector<Obstacle> &obstacles)
     float s2 = 1.0;
     float c3 = 1.0;
     float c4 = 1.0;
-    PolarVector critical_point;
 
     for (unsigned int i = 0; i < obstacles.size(); ++i) {
-        critical_point = get_critical_point(obstacles[i]);
-        theta_o = critical_point.theta;
-        phi_o = critical_point.phi;
-        d_o = critical_point.r;
+        theta_o = obstacles[i].center.y;
+        phi_o = obstacles[i].center.z;
+        d_o = obstacles[i].center.x;
 
         /* If the angles are below a specific threshold, consider them as equal
          * to -/+ threshold. */
