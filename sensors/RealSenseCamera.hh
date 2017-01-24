@@ -28,6 +28,8 @@ class RealSenseCamera: public DepthCamera
     RealSenseCamera(size_t width, size_t height, unsigned int fps);
 
     std::vector<uint16_t> &get_depth_buffer() override;
+    double get_horizontal_fov() override;
+    double get_vertical_fov() override;
 
   private:
     std::mutex depth_buffer_mtx;
@@ -35,5 +37,8 @@ class RealSenseCamera: public DepthCamera
 
     std::shared_ptr<rs::context> ctx;
     rs::device *dev;
+
+    double hfov;
+    double vfov;
 };
 

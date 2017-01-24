@@ -43,7 +43,7 @@ const std::vector<Obstacle> &DepthImagePolarHistDetector::detect()
     std::vector<uint16_t> depth_buffer = this->sensor->get_depth_buffer();
     unsigned int height = this->sensor->get_height();
     unsigned int width = this->sensor->get_width();
-    double fov = glm::atan(this->sensor->get_fov_tan());
+    double fov = this->sensor->get_horizontal_fov();
     double scale = this->sensor->get_scale();
 
     unsigned int middle_row = height / 2;

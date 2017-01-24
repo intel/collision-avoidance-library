@@ -23,7 +23,6 @@ class DepthCamera
     protected:
         unsigned int width = 0;
         unsigned int height = 0;
-        double fov = 0;
         double scale = 0;
 
     public:
@@ -31,5 +30,6 @@ class DepthCamera
         unsigned int get_height();
         unsigned int get_width();
         double get_scale();
-        double get_fov_tan();
+        virtual double get_horizontal_fov() { return 0.0; };
+        virtual double get_vertical_fov() { return 0.0; };
 };

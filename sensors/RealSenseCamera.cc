@@ -36,7 +36,8 @@ RealSenseCamera::RealSenseCamera(size_t width, size_t height, unsigned int fps) 
             rs::format::z16, fps);
 
     auto intrinsics = this->dev->get_stream_intrinsics(rs::stream::depth);
-    this->fov = glm::radians(intrinsics.hfov());
+    this->hfov = glm::radians(intrinsics.hfov());
+    this->vfov = glm::radians(intrinsics.vfov());
 
     this->scale = this->dev->get_depth_scale();
 
@@ -74,4 +75,14 @@ catch(const rs::error &e)
         << e.get_failed_args().c_str() << std::endl;
 
     return this->depth_buffer;
+}
+
+double RealSenseCamera::get_horizontal_fov()
+{
+    return hfov;
+}
+
+double RealSenseCamera::get_vertical_fov()
+{
+    return vfov;
 }
