@@ -88,15 +88,14 @@ const std::vector<Obstacle> &DepthImagePolarHistDetector::detect()
     double fixed_step = fov / histogram.size();
     unsigned int slice_pixel_count = (vertical_sweep_pixels * 2) * (width / histogram.size());
 
+    // Assuming the drone is always looking down the y axis, calculate
+    // the max phi it can see
+    double max_phi = (fov + M_PI) / 2;
+
     for (size_t i = 0; i < histogram.size(); i++) {
         if (histogram[i] > this->threshold ||
                 ((double) density_count[i]) / slice_pixel_count < this->density)
             continue;
-
-        // Assuming the drone is always looking down the y axis, calculate
-        // the max phi it can see
-        double max_phi = fov / 2 + M_PI / 2;
-
         // Scan is made from left to right, so position 0 will be at the biggest phi
         // We center the phi in the middle of the slice
         double phi = max_phi - (i * fixed_step) - (fixed_step / 2);
