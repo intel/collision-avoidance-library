@@ -74,7 +74,7 @@ int main (int argc, char* argv[])
     shared_ptr<Detector<DepthCamera>> detector;
     switch (opts.detect) {
         case DI_OBSTACLE:
-            detector = make_shared<DepthImageObstacleDetector>(sensor);
+            detector = make_shared<DepthImageObstacleDetector>(sensor, 5.0);
             break;
         case DI_STRAIGHT_LINE:
             detector = make_shared<DepthImageStraightLineDetector>(sensor);
