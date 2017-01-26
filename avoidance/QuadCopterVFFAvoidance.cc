@@ -76,7 +76,7 @@ void QuadCopterVFFAvoidance::avoid(const std::vector<Obstacle> &obstacles)
 
     float theta_g = target.theta;
     float phi_g = target.phi;
-    float dg = target.len;
+    float dg = target.r;
 
     float attract_x = kg * theta_g * (exp(-c1 * dg) + c2);
     float attract_y = kg * phi_g * (exp(-c1 * dg) + c2);
@@ -99,7 +99,7 @@ void QuadCopterVFFAvoidance::avoid(const std::vector<Obstacle> &obstacles)
         critical_point = get_critical_point(obstacles[i]);
         theta_o = critical_point.theta;
         phi_o = critical_point.phi;
-        d_o = critical_point.len;
+        d_o = critical_point.r;
 
         /* If the angles are below a specific threshold, consider them as equal
          * to -/+ threshold. */
@@ -140,7 +140,7 @@ void QuadCopterVFFAvoidance::avoid(const std::vector<Obstacle> &obstacles)
         relative_pose.pos.x, relative_pose.pos.y, relative_pose.pos.z);
 
     glm::dvec3 coav_wp = calculate_coav_wp(vehicle_pose,
-        std::get<0>(rates), std::get<1>(rates), dist, target_polar_pos.len);
+        std::get<0>(rates), std::get<1>(rates), dist, target_polar_pos.r);
 
     // Set new Target Position According to COAV
     target_pose = Pose{coav_wp, glm::dquat(0, 0, 0, 0)};

@@ -35,10 +35,13 @@ Pose operator-(const Pose& a, const Pose &b);
 int sign(double x);
 double sigmoid(double x);
 
+/**
+ * @brief Spherical coordinates as in ISO 31-11.
+ */
 typedef struct {
-    double len;
-    double theta; // azimuthal angle
-    double phi;   // polar angle
+    double r; /**< Radial distance */
+    double theta; /**< Polar Angle */
+    double phi; /**< Azimuthal Angle */
 } PolarVector;
 
 PolarVector cartesian_to_spherical(double x, double y, double z);
