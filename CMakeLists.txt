@@ -44,6 +44,12 @@ if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/modules/mavlink_vehicles/CMakeLists.tx
     return()
 endif()
 
+# Support Yocto SDK
+if(DEFINED ENV{SDKTARGETSYSROOT})
+    message(STATUS "Using Yocto Environment to build")
+    set(CMAKE_FIND_ROOT_PATH $ENV{SDKTARGETSYSROOT})
+endif()
+
 #List required packages for each build option
 set(DEPS "GLM")
 option_deps(DEPS WITH_GAZEBO "gazebo")
