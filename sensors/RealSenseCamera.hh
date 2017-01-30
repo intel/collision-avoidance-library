@@ -15,6 +15,7 @@
 */
 #pragma once
 
+#include <GLFW/glfw3.h>
 #include <librealsense/rs.hpp>
 #include <memory>
 #include <mutex>
@@ -31,6 +32,8 @@ class RealSenseCamera: public DepthCamera
     double get_horizontal_fov() override;
     double get_vertical_fov() override;
 
+    void visualization(bool onoff);
+
   private:
     std::mutex depth_buffer_mtx;
     std::vector<uint16_t> depth_buffer;
@@ -40,5 +43,12 @@ class RealSenseCamera: public DepthCamera
 
     double hfov;
     double vfov;
+
+    bool visualization_on = false;
+    GLFWwindow *win = NULL;
+    GLuint texture;
+    uint8_t *frame_buffer;
+
+    void visualize(void);
 };
 
