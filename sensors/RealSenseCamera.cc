@@ -76,13 +76,3 @@ catch(const rs::error &e)
 
     return this->depth_buffer;
 }
-
-double RealSenseCamera::get_horizontal_fov()
-{
-    return hfov;
-}
-
-double RealSenseCamera::get_vertical_fov()
-{
-    return vfov;
-}

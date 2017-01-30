@@ -24,7 +24,7 @@ GazeboRealSenseCamera::GazeboRealSenseCamera()
     // TODO: Retrieve camera data straight from topic or camera plugin
     this->width = DEPTH_CAM_WIDTH;
     this->height = DEPTH_CAM_HEIGHT;
-    this->fov = DEPTH_CAM_FOV;
+    this->hfov = DEPTH_CAM_FOV;
     this->scale = DEPTH_CAM_SCALE;
 
     // TODO: Find RealSense camera topic and parameters automatically

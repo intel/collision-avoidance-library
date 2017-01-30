@@ -24,12 +24,14 @@ class DepthCamera
         unsigned int width = 0;
         unsigned int height = 0;
         double scale = 0;
+        double hfov = 0.0;
+        double vfov = 0.0;
 
     public:
         virtual std::vector<uint16_t> &get_depth_buffer() = 0;
         unsigned int get_height();
         unsigned int get_width();
         double get_scale();
-        virtual double get_horizontal_fov() { return 0.0; };
-        virtual double get_vertical_fov() { return 0.0; };
+        virtual double get_horizontal_fov() { return hfov; };
+        virtual double get_vertical_fov() { return vfov; };
 };
