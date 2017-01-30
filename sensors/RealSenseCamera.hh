@@ -34,6 +34,6 @@ class RealSenseCamera: public DepthCamera
     std::vector<uint16_t> depth_buffer;
 
     std::shared_ptr<rs::context> ctx;
-    rs::device *dev;
+    rs::device *dev = nullptr;
 };
 
