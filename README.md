@@ -108,3 +108,49 @@ folder is testbed** and simply execute the following command:
     If the `<world_file>.sdf` mission has been already executed by testbed.sh,
     the logs necessary to replay the mission will be available to gazebo.
 
+## Deploying on Intel Aero ##
+
+Intel Aero firmware is based on Yocto, so the Yocto SDK for Intel Aero will be
+used to properly compile Collision Avoidance Library for deploy on Intel Aero.
+
+Instruction on how to build Intel Aero image and the associated SDK can be found
+on Intel Aero [Wiki](https://github.com/intel-aero/meta-intel-aero/wiki).
+
+Intel Aero SDK will be missing two of the Collision Avoidance Library
+dependencies:
+  * GLM
+  * MavLink
+
+Since both are "headers only" libraries, cmake just need to know where to find
+the headers in order to successfully cross-compile the library. This will be
+done with "-DCMAKE_PREFIX_PATH" parameter as described by the instructions
+bellow.
+
+Once Intel Aero SDK is successfully installed, the following instructions will
+configure the environment and compile the library:
+
+    source <SDK_PATH>/environment-setup-core2-64-poky-linux
+
+    mkdir build
+    cd build
+    cmake .. -DCMAKE_PREFIX_PATH="<GLM_HEADERS_PATH>:<MAVLINK_HEADERS_PATH>"
+    make
+
+If MavLink and GLM can be found under the same path, one entry will be enough.
+
+After a successful build, you can install Collision Avoidance Library in a
+temporary path:
+
+    make install DESTDIR=<TMP_PATH>
+
+Pack everything:
+
+    cd <TMP_PATH>
+    tar cvf coav.tar *
+
+Copy coav.tar to Intel Aero root dir and execute the following on Intel Aero:
+
+    [intel-aero]$ cd /
+    [intel-aero]$ tar xvf coav.tar
+
+And Collision Avoidance Library should be successfully installed!
