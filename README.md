@@ -12,6 +12,24 @@ A framework for testing and benchmarking collision avoidance strategies.
       * Ardupilot (https://github.com/ArduPilot/ardupilot) or
       * PX4 (https://github.com/PX4/Firmware)
 
+Collision Avoidance Library (Coav) is developed having drones in mind, so when compiling
+the library without additional options, features related to benchmark and simulation
+will be OFF by default. This should be the preferred way when you want to ship
+the library on your drone target/product.
+
+### Library Features and Options ###
+
+Collision Avoidance Library has support to following features that can be defined
+on compile time:
+
+Feature/Option          | Compile Options | Default Value
+----------------------- | --------------- | -------------
+Intel RealSense support | WITH_REALSENSE  | ON
+Gazebo support          | WITH_GAZEBO     | OFF
+Visual Debugger support | WITH_VDEBUG     | OFF (depends on Gazebo)
+Coav Tools              | WITH_TOOLS      | OFF
+Compile code samples    | WITH_SAMPLES    | OFF
+
 ## Build and Install ##
 
 1. Make sure you have initialized and updated all the required submodules at
