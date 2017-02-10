@@ -39,7 +39,7 @@ least once with:
     git submodule update --init --recursive
     ```
 
-2. Create a "build" folder and build the library using CMAKE as follows:
+2. Create a "build" folder and build the library using CMake as follows:
 
     ```
     mkdir build
@@ -49,19 +49,38 @@ least once with:
     cd -
     ```
 
-    These instructions will build the targets and install gazebo plugins and
-    models into the default gazebo installation folder. To select a custom
-    installation path for gazebo plugins and models, call cmake with the
-    following line instead:
+    These instructions will build and install the targets on cmake's
+    default install path (usually '/usr/local'). To modify the library options,
+    the following syntax is used when issuing `cmake`:
 
     ```
-    cmake -D COAVLIB_MODEL_INSTALL_PATH=<model_install_path> -D COAVLIB_PLUGIN_INSTALL_PATH=<plugin_install_path> ..
+    cmake .. -D<COMPILE_OPTION_1>=<OPTION_1_VALUE> -D<COMPILE_OPTION_2>=<OPTION_2_VALUE>
     ```
 
-    Make sure you have set the proper gazebo environment variables for your
-    plugins/models to be found in your custom path.
+    Also, the following CMake options may be of value:
+
+    Option | Description
+    --- | ---
+    CMAKE_INSTALL_PREFIX | Set a custom installation path. This path is also used for dependance search.
+    CMAKE_PREFIX_PATH | Add paths to be searched when looking for dependances
+
+    A more complete explanation of those options can be found on CMake's Documentation.
+
+    Example:
+
+      * Search GLM and Mavlink on <custom_deps_path>
+      * Change the install path to <custom_install_path>
+      * Compile the library additional tools (coav-sim)
+
+    ```
+    cmake .. -DCMAKE_INSTALL_PREFIX=<custom_install_path> -DCMAKE_PREFIX_PATH=<custom_deps_path> -DWITH_TOOLS=ON
+    ```
 
 ## Run Testbed ##
+
+Make sure that Gazebo Support was ON during compile and that you have set the
+proper gazebo environment variables for your plugins/models to be found in your
+custom path (via GAZEBO_PLUGIN_PATH environment variable).
 
 1. The testbed uses ArduPilot as autopilot by default. Set the following
 environment variables prior to running testbed to use PX4 instead.
