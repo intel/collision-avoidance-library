@@ -123,8 +123,8 @@ environment variables prior to running testbed to use PX4 instead.
 
 2. The testbed.sh will automate the execution of a series of missions, given as
 world files in `testbeds/worlds/<world_name>.sdf`. The script will start
-gazebo, the autopilot (APM or PX4), and the collision avoidance gcs
-automatically, outputting the result and the logs of each mission, as they're
+gazebo, the autopilot (APM or PX4), and the coav-control automatically,
+outputting the result and the logs of each mission, as they're
 executed.
 
     The missions are simple gazebo world files composed by at least a
