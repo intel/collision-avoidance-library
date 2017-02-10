@@ -11,17 +11,6 @@ if (${WITH_GAZEBO})
     )
 endif()
 
-if (${WITH_GAZEBO} OR ${WITH_REALSENSE})
-    add_executable(coav_gcs coav_gcs.cc)
-    target_link_libraries(coav_gcs
-      common
-      sensors
-      detection
-      avoidance
-      vehicles
-    )
-endif()
-
 if (${WITH_VDEBUG})
     add_executable(test_detector test.cc)
     target_link_libraries(test_detector
