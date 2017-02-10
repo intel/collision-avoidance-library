@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 if (${WITH_GAZEBO})
-    add_executable(simple_gcs simple_gcs.cc)
-    target_link_libraries(simple_gcs
+    add_executable(coav_sample_app coav_sample_app.cc)
+    target_link_libraries(coav_sample_app
       common
       sensors
       detection
