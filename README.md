@@ -76,6 +76,33 @@ least once with:
     cmake .. -DCMAKE_INSTALL_PREFIX=<custom_install_path> -DCMAKE_PREFIX_PATH=<custom_deps_path> -DWITH_TOOLS=ON
     ```
 
+## Testing Collision Avoidance Library with *coav-control* ##
+
+Make sure that the library was compiled with 'Coav Tools' turned on. This will
+build a target `coav-control` that can be found in 'tools/coav-control/' inside
+the build folder.
+
+`coav-control` can be used execute a simple collision avoidance system for a
+Mavlink controlled Quadcopter that is composed by: a sensor, a detection algorithm
+and a detection strategy.
+
+The following will list the possible options for each component:
+
+```
+./coav-control --help
+```
+
+Example:
+
+Run a collision avoidance system composed by:
+ * Intel Realsense
+ * Obstacle detector based on 'Blob extraction'
+ * 'Stop' avoidance strategy
+
+```
+./coav-control -d DI_OBSTACLE -a QC_STOP -s ST_REALSENSE
+```
+
 ## Run Testbed ##
 
 Make sure that Gazebo Support was ON during compile and that you have set the
