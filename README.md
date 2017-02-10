@@ -6,6 +6,8 @@ A framework for testing and benchmarking collision avoidance strategies.
     * Gazebo 7.0+ (for virtual camera/vehicle support)
     * socat 1.7+ (for testbed support)
     * GZSitl (for virtual vehicle support)
+    * Mavlink (https://github.com/mavlink/mavlink)
+    * GLM (https://github.com/g-truc/glm.git)
     * Autopilot, either:
       * Ardupilot (https://github.com/ArduPilot/ardupilot) or
       * PX4 (https://github.com/PX4/Firmware)
