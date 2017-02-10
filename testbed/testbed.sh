@@ -32,7 +32,7 @@ PX4_UDP_PORT_2=14540
 
 # Collision Avoidance and Gazebo variables
 GZSITL_UDP_PORT=15556
-COAV_GCS_UDP_PORT=15557
+COAV_CONTROL_UDP_PORT=15557
 
 # Set autopilot
 AUTOPILOT=${TESTBED_AUTOPILOT:-AP_PX4}
@@ -137,29 +137,29 @@ testcase () {
     # Wait for gzsitl-sitl connection to be stabilished
     sleep 2
 
-    # Run the collision avoidance gcs
-    ../build/samples/coav_gcs --depth-camera GAZEBO --vehicle GAZEBO \
-        > "${LOGDIR}/coav_gcs.log" \
-        2> "${LOGDIR}/coav_gcserr.log" &
-    COAVGCSID=$!
+    # Run the collision avoidance app
+    ../build/tools/coav-control/coav-control -s ST_GAZEBO_REALSENSE -a QC_SHIFT_AVOIDANCE -d DI_POLAR_HIST \
+        > "${LOGDIR}/coav-control.log" \
+        2> "${LOGDIR}/coav-controlerr.log" &
+    COAVCONTROLID=$!
 
-    # Wait until gcs is up and running
+    # Wait until the app is up and running
     sleep 4
 
-    SOCAT_ARG_2="udp:localhost:$COAV_GCS_UDP_PORT"
+    SOCAT_ARG_2="udp:localhost:$COAV_CONTROL_UDP_PORT"
     if (("$AUTOPILOT" == "$AP_PX4")); then
         SOCAT_ARG_1="udp-listen:$PX4_UDP_PORT_2"
     elif (("$AUTOPILOT" == "$AP_APM")); then
         SOCAT_ARG_1="tcp:localhost:$APM_TCP_PORT_2"
     fi
 
-    # Bidirectional bridge between the autopilot and the coav_gcs
+    # Bidirectional bridge between the autopilot and the coav-control
     socat $SOCAT_ARG_1 $SOCAT_ARG_2 \
         > "${LOGDIR}/coav_socat.log" \
         2> "${LOGDIR}/coav_socaterr.log" &
     COAV_SOCATID=$!
 
-    # Wait for coav_gcs-SITL connection to be stabilished
+    # Wait for coav-control-SITL connection to be established
     sleep 2
 
     sleep_until_takeoff 0.5 # Detect takeoff on a distance from origin >= 0.5 meters
@@ -184,11 +184,11 @@ replay () {
 
 cleanup () {
     silentkill $GZSITL_SOCATID # Kill gzsitl socat
-    silentkill $COAV_SOCATID # Kill coav_gcs socat
+    silentkill $COAV_SOCATID # Kill coav-control socat
     silentkill $SITLID # Kill sitl
     silentkill $GZID -INT && sleep 3 # Wait gzserver to save the log
     silentkill $GZID  # Kill gzserver
-    silentkill $COAVGCSID # Kill coav_gcs sitl
+    silentkill $COAVCONTROLID # Kill coav-control sitl
 }
 
 cleanup_and_exit () {
