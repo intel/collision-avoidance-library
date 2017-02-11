@@ -9,4 +9,6 @@ if (${WITH_TOOLS})
       avoidance
       vehicles
     )
+    install(TARGETS coav-control
+            DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 endif()
