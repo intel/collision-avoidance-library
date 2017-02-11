@@ -76,6 +76,8 @@ set(CMAKE_STATIC_LINKER_FLAGS "${LDFLAGS}")
 set(CMAKE_SHARED_LINKER_FLAGS "${LDFLAGS} -z noexecstack -z relro -z now")
 set(CMAKE_EXE_LINKER_FLAGS "${LDFLAGS} -z noexecstack -z relro -z now")
 
+include(GNUInstallDirs)
+
 # Include and Link directories
 include_directories(${PROJECT_SOURCE_DIR})
 
