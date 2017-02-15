@@ -126,6 +126,7 @@ add_subdirectory(modules/mavlink_vehicles)
 
 if (${WITH_TOOLS})
     add_subdirectory(tools/coav-control)
+    add_subdirectory(tools/vdebug)
 endif()
 
 if (${WITH_SAMPLES})
