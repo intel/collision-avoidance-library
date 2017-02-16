@@ -64,6 +64,8 @@ void print_help(void)
         "       Vehicle Sensor. Can be one of the following:\n"
         "           ST_REALSENSE\n"
         "           ST_GAZEBO_REALSENSE\n"
+        "  -p, --port\n"
+        "       UDP port to use \n"
         "  -q, --quiet\n"
         "       Supress info messages \n"
         "  -h, --help\n"
@@ -195,6 +197,7 @@ control_options parse_cmdline(int argc, char *argv[])
         .detect = DA_UNDEFINED,
         .avoidance = AA_UNDEFINED,
         .sensor = ST_UNDEFINED,
+        .port = 0,
         .quiet = false,
     };
 
@@ -244,6 +247,10 @@ control_options parse_cmdline(int argc, char *argv[])
                 cerr << "ERROR: Feature not  available '" << opts.sensor << endl;
                 exit(-EINVAL);
             }
+
+        // Port
+        } else if (p.option == "-p" || p.option == "--port") {
+            opts.port = (unsigned int) stoul(p.val);
 
         // Quiet
         } else if (p.option == "-q" || p.option == "--quiet") {

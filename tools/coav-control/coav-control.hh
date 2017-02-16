@@ -43,6 +43,7 @@ struct control_options {
     enum detect_algorithm detect;
     enum avoidance_algorithm avoidance;
     enum sensor_type sensor;
+    unsigned int port;
     bool quiet;
 };
 
