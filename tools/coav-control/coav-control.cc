@@ -52,7 +52,8 @@ int main (int argc, char* argv[])
         cout << "Using Sensor: " << sensor_to_name(opts.sensor) << endl;
     }
 
-    shared_ptr<MavQuadCopter> vehicle = std::make_shared<MavQuadCopter>();
+    shared_ptr<MavQuadCopter> vehicle = opts.port ?
+        std::make_shared<MavQuadCopter>(opts.port) : std::make_shared<MavQuadCopter>();
 
     shared_ptr<DepthCamera> sensor;
 
