@@ -104,6 +104,62 @@ Run a collision avoidance system composed by:
 ./coav-control -d DI_OBSTACLE -a QC_STOP -s ST_REALSENSE
 ```
 
+## Build and deploy on Intel Aero ##
+
+This section explains how to compile the collision avoidance library locally in
+your x86-64 system for deployment on Intel Aero.
+
+1. Intel Aero currently supports the collision avoidance binaries only if they
+are compiled with gcc-5. Older versions have not been tested and gcc-6 is
+currently not supported. Before deploying the collision avoidance binaries on
+Intel Aero, please make sure you're using gcc-5.
+
+    If your gcc version is older than gcc-5, please update it before compiling
+    for Intel Aero. If your default compiler is gcc-6, install gcc-5 in your
+    system and set the following environmnet variables before building:
+
+
+    ```
+    export CXX=/bin/g++-5
+    export CC=/bin/gcc-5
+    ```
+
+    To build, use cmake as explained in [Build and Install](#build-and-install).
+
+2. After compiling, you may deploy your generated binaries to Intel Aero by
+copying your files to the board using scp, as follows:
+
+    Make sure Intel Aero is turned on and connected to your machine through
+    usb. Wait for a new virtual ethernet connection to show up and when that
+    happens, manually set the ip of the connection to 192.168.7.1
+
+    With the connection set up, you can easily copy the binaries of your
+    collision avoidance gcs to Intel Aero using scp. To copy the simple_gcs
+    sample to the Intel Aero home directory, for example, use the following
+    command line:
+
+    ```
+    scp -p build/samples/simple_gcs root@192.168.7.1:~
+    ```
+
+    To run your collision avoidance gcs, remotely log into Intel Aero with ssh
+    as follows:
+
+    ```
+    ssh root@192.168.7.2
+    ```
+
+    Then run your collision avoidance gcs. Per our example:
+
+    ```
+    ~\simple_gcs
+    ```
+
+    As soon as you start running your app, it will try to connect to the
+    vehicle and to the sensors you have configured. If it succeeds, your
+    collision avoidance strategy and the vehicle's autopilot will start running
+    in parallel.
+
 ## Run Testbed ##
 
 Make sure that Gazebo Support was ON during compile and that you have set the
