@@ -4,7 +4,7 @@ A framework for testing and benchmarking collision avoidance strategies.
 
 ## Requirements ##
 
- * Gazebo 7.0+ (for virtual camera/vehicle support)
+ * Gazebo 8.0+ (for virtual camera/vehicle support)
  * socat 1.7+ (for testbed support)
  * GZSitl (for virtual vehicle support)
  * Mavlink (https://github.com/mavlink/mavlink)
