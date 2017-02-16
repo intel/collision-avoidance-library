@@ -16,7 +16,7 @@
 
 #include <sensors/GazeboRealSenseCamera.hh>
 #include <detection/DepthImageStraightLineDetector.hh>
-#include <vehicles/GazeboQuadCopter.hh>
+#include <vehicles/MavQuadCopter.hh>
 #include <memory>
 #include <iostream>
 #include <cmath>
@@ -27,7 +27,7 @@
 
 auto gzrs_camera = std::make_shared<GazeboRealSenseCamera>();
 auto detector = std::make_shared<DepthImageStraightLineDetector>(gzrs_camera);
-auto gz_quad = std::make_shared<GazeboQuadCopter>();
+auto gz_quad = std::make_shared<MavQuadCopter>();
 std::vector<Obstacle> obstacles;
 
 static const int windowWidth = 1000;
