@@ -54,7 +54,6 @@ void print_help(void)
         "           DI_OBSTACLE\n"
         "           DI_STRAIGHT_LINE\n"
         "           DI_POLAR_HIST\n"
-        "           DI_SIMPLE\n"
         "  -a, --avoidance\n"
         "       Avoidance Algorithm. Can be one of the following:\n"
         "           QC_SHIFT_AVOIDANCE\n"
@@ -86,8 +85,6 @@ string detect_to_name(detect_algorithm d)
             return string("DI_STRAIGHT_LINE");
         case DI_POLAR_HIST:
             return string("DI_POLAR_HIST");
-        case DI_SIMPLE:
-            return string("DI_SIMPLE");
     }
 
     return string("UNKOWN_VALUE");
@@ -103,8 +100,6 @@ detect_algorithm name_to_detect(string name)
         return DI_STRAIGHT_LINE;
     } else if (name == "DI_POLAR_HIST") {
         return DI_POLAR_HIST;
-    } else if (name == "DI_SIMPLE") {
-        return DI_SIMPLE;
     }
 
     return DA_UNDEFINED;

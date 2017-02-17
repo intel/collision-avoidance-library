@@ -25,7 +25,6 @@
 #include "avoidance/QuadCopterVFFAvoidance.hh"
 #include "detection/DepthImageObstacleDetector.hh"
 #include "detection/DepthImagePolarHistDetector.hh"
-#include "detection/DepthImageSimpleDetector.hh"
 #include "detection/DepthImageStraightLineDetector.hh"
 
 #include "vehicles/MavQuadCopter.hh"
@@ -82,9 +81,6 @@ int main (int argc, char* argv[])
             break;
         case DI_POLAR_HIST:
             detector = make_shared<DepthImagePolarHistDetector>(sensor, 5);
-            break;
-        case DI_SIMPLE:
-            detector = make_shared<DepthImageSimpleDetector>(sensor);
             break;
         default:
             cerr << "ERROR: Invalid Detector" << endl;
