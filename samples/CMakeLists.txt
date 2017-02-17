@@ -12,6 +12,12 @@ if (${WITH_GAZEBO})
 endif()
 
 if (${WITH_REALSENSE})
+    add_executable(detector_sample detector_sample.cc)
+    target_link_libraries(detector_sample
+      common
+      sensors
+    )
+
     add_executable(polarhist_sample polarhist_sample.cc)
     target_link_libraries(polarhist_sample
       common

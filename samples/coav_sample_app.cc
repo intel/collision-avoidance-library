@@ -19,7 +19,7 @@
 
 #include "avoidance/QuadCopterStopAvoidance.hh"
 #include "common/common.hh"
-#include "detection/DepthImageSimpleDetector.hh"
+#include "detection/DepthImageObstacleDetector.hh"
 #include "sensors/GazeboRealSenseCamera.hh"
 #include "vehicles/MavQuadCopter.hh"
 
@@ -33,8 +33,8 @@ int main(int argc, char **argv)
     std::shared_ptr<MavQuadCopter> vehicle = std::make_shared<MavQuadCopter>();
 
     // Initialize Detector
-    std::shared_ptr<DepthImageSimpleDetector> obstacle_detector =
-        std::make_shared<DepthImageSimpleDetector>(depth_camera);
+    std::shared_ptr<DepthImageObstacleDetector> obstacle_detector =
+        std::make_shared<DepthImageObstacleDetector>(depth_camera);
 
     // Initialize Avoidance Strategy
     std::shared_ptr<QuadCopterStopAvoidance> avoidance =
