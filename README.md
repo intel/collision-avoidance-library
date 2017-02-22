@@ -32,6 +32,29 @@ Compile code samples    | WITH_SAMPLES    | OFF
 
 ## Build and Install ##
 
+### Method 1 - Embed 'coav-control' on an Intel Aero image ###
+
+This method is recommended for those who want to use 'coav-control' on an Intel
+Aero Drone.
+
+A Yocto layer containing recipes to build and install coav-control can be found on
+the repository under the folder 'meta-coav'. This layer can be easily added to
+to the image build by following the steps described by Intel Aero documentation
+[here](https://github.com/intel-aero/meta-intel-aero/wiki/Developing-on-Intel-Aero).
+
+The recipe install the 'coav-control' utility tool as well an init script that runs
+the tool on start-up. You can change it's behavior by editing the script file at
+any point of the process that seems convenient to you (custom branch, custom recipe
+or changing the file on the drone itself).
+
+### Method 2 - Compile and Install yourself ###
+
+This method is recommended for those who will run simulations and tests on the
+development environment instead of a real drone. It is also recommend for those
+actively writing the library code because makes it easier to switch binaries
+for tests during development. If targeting an Intel Aero drone, check [additional
+instructions](#deploying-on-intel-aero) about taking advantage of Yocto's SDK support.
+
 1. Make sure you have initialized and updated all the required submodules at
 least once with:
 
@@ -182,13 +205,12 @@ used to properly compile Collision Avoidance Library for deploy on Intel Aero.
 Instruction on how to build Intel Aero image and the associated SDK can be found
 on Intel Aero [Wiki](https://github.com/intel-aero/meta-intel-aero/wiki).
 
-Intel Aero SDK will be missing two of the Collision Avoidance Library
+Intel Aero SDK will be missing one of the Collision Avoidance Library
 dependencies:
   * GLM
-  * MavLink
 
-Since both are "headers only" libraries, cmake just need to know where to find
-the headers in order to successfully cross-compile the library. This will be
+Since GLM is a "headers only" library, cmake just need to know where to find
+the headers in order to successfully "cross-compile" it. This will be
 done with "-DCMAKE_PREFIX_PATH" parameter as described by the instructions
 bellow.
 
@@ -201,8 +223,6 @@ configure the environment and compile the library:
     cd build
     cmake .. -DCMAKE_PREFIX_PATH="<GLM_HEADERS_PATH>:<MAVLINK_HEADERS_PATH>"
     make
-
-If MavLink and GLM can be found under the same path, one entry will be enough.
 
 After a successful build, you can install Collision Avoidance Library in a
 temporary path:
