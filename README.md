@@ -56,6 +56,9 @@ actively writing the library code because makes it easier to switch binaries
 for tests during development. If targeting an Intel Aero drone, check [additional
 instructions](#deploying-on-intel-aero) about taking advantage of Yocto's SDK support.
 
+The project use CMake as build system and does not support in-tree build.
+As such, create a separate folder before building.
+
 1. Make sure you have initialized and updated all the required submodules at
 least once with:
 
@@ -72,7 +75,6 @@ least once with:
     sudo make install
     cd -
     ```
-
     These instructions will build and install the targets on cmake's
     default install path (usually '/usr/local'). To modify the library options,
     the following syntax is used when issuing `cmake`:
