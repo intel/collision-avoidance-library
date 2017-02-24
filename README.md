@@ -4,6 +4,7 @@ A framework for testing and benchmarking collision avoidance strategies.
 
 ## Requirements ##
 
+ * CMake 3.1 or newer
  * Gazebo 8.0+ (for virtual camera/vehicle support)
  * socat 1.7+ (for testbed support)
  * GZSitl (for virtual vehicle support)
