@@ -23,7 +23,6 @@ enum detect_algorithm {
     DI_OBSTACLE,
     DI_STRAIGHT_LINE,
     DI_POLAR_HIST,
-    DI_SIMPLE,
 };
 
 enum avoidance_algorithm {
