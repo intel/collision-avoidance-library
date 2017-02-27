@@ -59,7 +59,7 @@ void QuadCopterStopAvoidance::avoid(const std::vector<Obstacle> &detection)
 
     // Send the stop command to the vehicle
     if (!this->vehicle->mav->is_brake_active()) {
-        this->vehicle->mav->brake(true);
+        this->vehicle->mav->brake(false);
         std::cout << "[avoid] state = stopping..." << std::endl;
     }
 
