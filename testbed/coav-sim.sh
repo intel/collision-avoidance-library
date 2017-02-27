@@ -138,7 +138,9 @@ test_dep () {
 check_deps () {
     test_dep gzserver
     test_dep socat
-    test_dep $APM_CMD
+    if [ "$AUTOPILOT" = "AP_APM" ]; then
+        test_dep $APM_CMD
+    fi
 }
 
 test_dir () {
