@@ -15,9 +15,9 @@
 
 SCRIPT_DIR=$(dirname $(realpath ${BASH_SOURCE[0]}))
 
-# Supported Autopilots
-AP_PX4=0
-AP_APM=1
+# Set autopilot
+# Supported Autopilots: AP_PX4 and AP_APM
+AUTOPILOT=${AUTOPILOT:-"AP_PX4"}
 
 # ArduCopter Variables
 # APM_DIR will be added to PATH if set
@@ -38,12 +38,9 @@ WORLD=${WORLD:-"simple_obstacle.sdf"}
 GZSITL_UDP_PORT=15556
 COAV_GCS_UDP_PORT=15557
 
-# Set autopilot
-AUTOPILOT=${AUTOPILOT:-AP_PX4}
-
 run_autopilot () {
-        # Run SITL Simulator
-    if (("$AUTOPILOT" == "$AP_PX4")); then
+    # Run SITL Simulator
+    if [ "$AUTOPILOT" = "AP_PX4" ]; then
         cd $PX4_DIR
         $PX4_CMD &
         SITLID=$!
@@ -51,7 +48,7 @@ run_autopilot () {
 
         # Wait for sitl
         sleep 15
-    elif (("$AUTOPILOT" == "$AP_APM")); then
+    elif [ "$AUTOPILOT" = "AP_APM" ]; then
         if [ -n "$APM_DIR" ]; then
             PATH=$APM_DIR:$PATH
         fi
@@ -76,9 +73,9 @@ run_gazebo () {
     sleep 8
 
     SOCAT_ARG_2="udp:localhost:$GZSITL_UDP_PORT"
-    if (("$AUTOPILOT" == "$AP_PX4")); then
+    if [ "$AUTOPILOT" = "AP_PX4" ]; then
         SOCAT_ARG_1="udp-listen:$PX4_UDP_PORT_1"
-    elif (("$AUTOPILOT" == "$AP_APM")); then
+    elif [ "$AUTOPILOT" = "AP_APM" ]; then
         SOCAT_ARG_1="tcp:localhost:$APM_TCP_PORT_1"
     fi
 
@@ -91,17 +88,17 @@ run_gazebo () {
 }
 
 run_coav_control() {
-    # Run the collision avoidance gcs
+    # Run the collision avoidance
     ../build/tools/coav-control/coav-control "$@" &
     COAVID=$!
 
-    # Wait until gcs is up and running
+    # Wait until is up and running
     sleep 4
 
     SOCAT_ARG_2="udp:localhost:$COAV_GCS_UDP_PORT"
-    if (("$AUTOPILOT" == "$AP_PX4")); then
+    if [ "$AUTOPILOT" = "AP_PX4" ]; then
         SOCAT_ARG_1="udp-listen:$PX4_UDP_PORT_2"
-    elif (("$AUTOPILOT" == "$AP_APM")); then
+    elif [ "$AUTOPILOT" = "AP_APM" ]; then
         SOCAT_ARG_1="tcp:localhost:$APM_TCP_PORT_2"
     fi
 
@@ -154,7 +151,7 @@ test_dir () {
 
 check_dirs () {
     test_dir $SCRIPT_DIR
-    if (("$AUTOPILOT" == "$AP_PX4")); then
+    if [ "$AUTOPILOT" = "AP_PX4" ]; then
         test_dir $PX4_DIR
     elif (("$AUTOPILOT" == "$AP_APM")); then
         if [ -n "$APM_DIR" ]; then
