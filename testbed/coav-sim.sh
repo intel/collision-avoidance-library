@@ -56,6 +56,17 @@ run_autopilot () {
         # Wait for sitl
         sleep 5
     fi
+
+    SOCAT_ARG_2="udp:localhost:$COAV_GCS_UDP_PORT"
+    if [ "$AUTOPILOT" = "AP_PX4" ]; then
+        SOCAT_ARG_1="udp-listen:$PX4_UDP_PORT_2"
+    elif [ "$AUTOPILOT" = "AP_APM" ]; then
+        SOCAT_ARG_1="tcp:localhost:$APM_TCP_PORT_2"
+    fi
+
+    # Bidirectional bridge between the autopilot and the coav_gcs
+    socat $SOCAT_ARG_1 $SOCAT_ARG_2 &
+    COAV_SOCATID=$!
 }
 
 run_gazebo () {
@@ -90,24 +101,13 @@ run_coav_control() {
 
     # Wait until is up and running
     sleep 4
-
-    SOCAT_ARG_2="udp:localhost:$COAV_GCS_UDP_PORT"
-    if [ "$AUTOPILOT" = "AP_PX4" ]; then
-        SOCAT_ARG_1="udp-listen:$PX4_UDP_PORT_2"
-    elif [ "$AUTOPILOT" = "AP_APM" ]; then
-        SOCAT_ARG_1="tcp:localhost:$APM_TCP_PORT_2"
-    fi
-
-    # Bidirectional bridge between the autopilot and the coav_gcs
-    socat $SOCAT_ARG_1 $SOCAT_ARG_2 &
-    COAV_SOCATID=$!
 }
 
 
 simulate () {
+    run_coav_control "$@"
     run_autopilot
     run_gazebo
-    run_coav_control "$@"
 
     # wait forever
     cat
