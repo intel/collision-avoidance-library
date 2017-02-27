@@ -23,6 +23,7 @@ AUTOPILOT=${AUTOPILOT:-"AP_PX4"}
 APM_CMD="${APM_DIR:+"${APM_DIR}/"}arducopter"
 APM_TCP_PORT_1=5760
 APM_TCP_PORT_2=5762
+APM_PARM_URL=${APM_PARM_URL:-"https://raw.githubusercontent.com/ArduPilot/ardupilot/master/Tools/autotest/default_params/copter.parm"}
 
 # PX4 Variables
 PX4_DIR=${PX4_DIR:-"~/px4/Firmware"}
@@ -49,7 +50,19 @@ run_autopilot () {
         sleep 15
     elif [ "$AUTOPILOT" = "AP_APM" ]; then
         cd $SCRIPT_DIR # sitl must run in the same dir of "eeprom.bin"
-        $APM_CMD --model x &
+
+        # Fetch copter parameters file
+        if [ ! -f copter.parm ]; then
+            wget ${APM_PARM_URL}
+            wait $!
+
+            if [ ! -f copter.parm ]; then
+                echo "Couldn't fetch ardupilot's parm file."
+                exit 1
+            fi
+        fi
+
+        $APM_CMD --model x --defaults ./copter.parm &
         SITLID=$!
         cd - > /dev/null
 
@@ -138,6 +151,7 @@ test_dep () {
 check_deps () {
     test_dep gzserver
     test_dep socat
+    test_dep wget
     if [ "$AUTOPILOT" = "AP_APM" ]; then
         test_dep $APM_CMD
     fi
