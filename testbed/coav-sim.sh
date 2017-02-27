@@ -20,8 +20,7 @@ SCRIPT_DIR=$(dirname $(realpath ${BASH_SOURCE[0]}))
 AUTOPILOT=${AUTOPILOT:-"AP_PX4"}
 
 # ArduCopter Variables
-# APM_DIR will be added to PATH if set
-APM_CMD="arducopter"
+APM_CMD="${APM_DIR:+"${APM_DIR}/"}arducopter"
 APM_TCP_PORT_1=5760
 APM_TCP_PORT_2=5762
 
@@ -49,9 +48,6 @@ run_autopilot () {
         # Wait for sitl
         sleep 15
     elif [ "$AUTOPILOT" = "AP_APM" ]; then
-        if [ -n "$APM_DIR" ]; then
-            PATH=$APM_DIR:$PATH
-        fi
         cd $SCRIPT_DIR # sitl must run in the same dir of "eeprom.bin"
         $APM_CMD --model x &
         SITLID=$!
@@ -153,10 +149,6 @@ check_dirs () {
     test_dir $SCRIPT_DIR
     if [ "$AUTOPILOT" = "AP_PX4" ]; then
         test_dir $PX4_DIR
-    elif (("$AUTOPILOT" == "$AP_APM")); then
-        if [ -n "$APM_DIR" ]; then
-            test_dir $APM_DIR
-        fi
     fi
 }
 
