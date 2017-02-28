@@ -1,5 +1,10 @@
 # Collision Avoidance Library #
 
+<a href="https://scan.coverity.com/projects/01org-collision-avoidance-library">
+  <img alt="Coverity Scan Build Status"
+         src="https://scan.coverity.com/projects/11862/badge.svg"/>
+</a>
+
 A framework for testing and benchmarking collision avoidance strategies.
 
 ## Requirements ##
