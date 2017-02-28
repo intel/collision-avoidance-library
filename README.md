@@ -61,6 +61,16 @@ actively writing the library code because makes it easier to switch binaries
 for tests during development. If targeting an Intel Aero drone, check [additional
 instructions](#deploying-on-intel-aero) about taking advantage of Yocto's SDK support.
 
+If you're using Ubuntu, before continuing please ensure you have the needed dependencies:
+ * If you want to use Gazebo, ensure you go through the instructions available [here](http://gazebosim.org/tutorials?tut=install_ubuntu) and ensure you install the libgazebo8-dev package;
+ * Install all build dependencies (the last two are needed to build librealsense):
+ 
+  ```
+  sudo apt-get install git cmake libglm-dev python-future doxygen libusb-1.0-0-dev libglfw3-dev
+  ```
+
+ * Go through the steps to install librealsense which can be found [here](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
+  
 The project use CMake as build system and does not support in-tree build.
 As such, create a separate folder before building.
 
