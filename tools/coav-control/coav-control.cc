@@ -93,7 +93,7 @@ int main (int argc, char* argv[])
             avoidance = make_shared<QuadCopterShiftAvoidance>(vehicle);
             break;
         case QC_STOP:
-            avoidance = make_shared<QuadCopterStopAvoidance>(vehicle);
+            avoidance = make_shared<QuadCopterStopAvoidance>(vehicle, 2.5);
             break;
         case QC_VFF:
             avoidance = make_shared<QuadCopterVFFAvoidance>(vehicle);
