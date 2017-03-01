@@ -55,6 +55,11 @@ void QuadCopterStopAvoidance::avoid(const std::vector<Obstacle> &detection)
 
     // If no obstacle was detected, do nothing.
     if (detection.size() == 0) {
+        if (this->vehicle->mav->is_brake_active()) {
+            this->vehicle->mav->brake(true);
+            std::cout << "[avoid] state = resuming..." << std::endl;
+        }
+
         return;
     }
 
