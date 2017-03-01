@@ -26,9 +26,10 @@ const float lowest_altitude = 2.0;
 }
 
 QuadCopterStopAvoidance::QuadCopterStopAvoidance(
-    std::shared_ptr<MavQuadCopter> quadcopter)
+    std::shared_ptr<MavQuadCopter> quadcopter, double trigger_distance)
 {
     this->vehicle = quadcopter;
+    this->trigger_dst = trigger_distance;
 }
 
 void QuadCopterStopAvoidance::avoid(const std::vector<Obstacle> &detection)
@@ -54,13 +55,23 @@ void QuadCopterStopAvoidance::avoid(const std::vector<Obstacle> &detection)
 
     // If no obstacle was detected, do nothing.
     if (detection.size() == 0) {
+        if (this->vehicle->mav->is_brake_active()) {
+            this->vehicle->mav->brake(true);
+            std::cout << "[avoid] state = resuming..." << std::endl;
+        }
+
         return;
     }
 
-    // Send the stop command to the vehicle
-    if (!this->vehicle->mav->is_brake_active()) {
-        this->vehicle->mav->brake(true);
-        std::cout << "[avoid] state = stopping..." << std::endl;
+    // Send the stop command to the vehicle if any obstacle
+    // is closer than or at trigger distance.
+    for (Obstacle o : detection) {
+        if (o.center.x <= this->trigger_dst) {
+            if (!this->vehicle->mav->is_brake_active()) {
+                this->vehicle->mav->brake(false);
+                std::cout << "[avoid] state = stopping..." << std::endl;
+            }
+        }
     }
 
     return;

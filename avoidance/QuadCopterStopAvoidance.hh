@@ -26,8 +26,12 @@ class QuadCopterStopAvoidance
     : public CollisionAvoidanceStrategy<MavQuadCopter>
 {
   public:
-    QuadCopterStopAvoidance(std::shared_ptr<MavQuadCopter> quadcopter);
+    QuadCopterStopAvoidance(std::shared_ptr<MavQuadCopter> quadcopter,
+                            double trigger_distance = DBL_MAX);
 
     void avoid(const std::vector<Obstacle> &detection) override;
+
+  private:
+    double trigger_dst;
 };
 
