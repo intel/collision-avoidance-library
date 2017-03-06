@@ -59,9 +59,9 @@ check_deps () {
     test_dep gz
     test_dep socat
     if (("$AUTOPILOT" == "$AP_PX4")); then
-	test_dep $PX4_CMD
-    else
-        test_dep $APM_CMD
+		test_dep $PX4_CMD
+	else
+		test_dep $APM_CMD
     fi
 }
 
