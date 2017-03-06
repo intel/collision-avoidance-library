@@ -58,7 +58,11 @@ test_dep () {
 check_deps () {
     test_dep gz
     test_dep socat
-    test_dep $APM_CMD
+    if (("$AUTOPILOT" == "$AP_PX4")); then
+        test_dep $PX4_CMD
+    else
+        test_dep $APM_CMD
+    fi
 }
 
 test_path () {
