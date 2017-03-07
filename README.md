@@ -125,7 +125,8 @@ the build folder.
 
 `coav-control` can be used execute a simple collision avoidance system for a
 Mavlink controlled Quadcopter that is composed by: a sensor, a detection algorithm
-and a detection strategy.
+and a detection strategy. It needs interaction with an autopilot and a sensor to work,
+so it won't do much when executed alone.
 
 The following will list the possible options for each component:
 
@@ -144,76 +145,11 @@ Run a collision avoidance system composed by:
 ./coav-control -d DI_OBSTACLE -a QC_STOP -s ST_REALSENSE
 ```
 
-## Run Testbed ##
+## Simulation and Automated tests ##
 
-Make sure that Gazebo Support was ON during compile and that you have set the
-proper gazebo environment variables for your plugins/models to be found in your
-custom path (via GAZEBO_PLUGIN_PATH environment variable).
-
-1. The testbed uses ArduPilot as autopilot by default. Set the following
-environment variables prior to running testbed to use PX4 instead.
-
-    ```
-    export PX4_DIR="your/px4/directory/Firmware"
-    export USE_PX4_AUTOPILOT=1
-    ```
-
-    Before running the testbed, make sure PX4 sitl and jmavsim have already
-    been built by following the instructions on PX4 documentation.
-
-2. The testbed.sh will automate the execution of a series of missions, given as
-world files in `testbeds/worlds/<world_name>.sdf`. The script will start
-gazebo, the autopilot (APM or PX4), and the coav-control automatically,
-outputting the result and the logs of each mission, as they're
-executed.
-
-    The missions are simple gazebo world files composed by at least a
-    gzsitl_perm_target and a gzsitl_quadcopter_rs. Two test missions are
-    provided as samples:
-
-    ```
-    testbed/worlds/simple.sdf
-    testbed/worlds/simple_obstacle.sdf
-    ```
-
-    They are called by testbed.sh runtests() function in the following lines:
-
-    ```
-    runtests () {
-        mkdir -p "${SCRIPT_DIR}/output"
-
-        testcase simple.sdf 30
-        testcase simple_obstacle.sdf 60
-    }
-    ```
-
-    The first argument to testcase() is the name of the world file and the
-    second argument is the maximum time a mission will run before moving to the
-    next. You're invited to create your own missions and include them as you
-    wish inside runtests() to have them executed.
-
-    In orther to execute the testbed, make sure you have all the dependencies
-    installed and run the following commands **from the testbed directory**.
-
-    ```
-    testbed.sh
-    ```
-
-3. To replay a previously executed mission in gazebo, make sure **your current
-folder is testbed** and simply execute the following command:
-
-    ```
-    ./testbed.sh replay <world_file>.sdf
-    ```
-
-    For example:
-
-    ```
-    ./testbed.sh replay simple.sdf
-    ```
-
-    If the `<world_file>.sdf` mission has been already executed by testbed.sh,
-    the logs necessary to replay the mission will be available to gazebo.
+For information on how to make use of 'Collision Avoidance Library' on simulated
+environment and how to take advantage of tests automation via testbed, please
+refer to the [Simulation Docs](https://github.com/01org/collision-avoidance-library/wiki/Quickstart#running-the-simulation).
 
 ## Deploying on Intel Aero ##
 
