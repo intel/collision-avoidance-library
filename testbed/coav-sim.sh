@@ -71,17 +71,6 @@ run_autopilot () {
         # Wait for sitl
         sleep 5
     fi
-
-    SOCAT_ARG_2="udp:localhost:$COAV_GCS_UDP_PORT"
-    if [ "$AUTOPILOT" = "AP_PX4" ]; then
-        SOCAT_ARG_1="udp-listen:$PX4_UDP_PORT_2"
-    elif [ "$AUTOPILOT" = "AP_APM" ]; then
-        SOCAT_ARG_1="tcp:localhost:$APM_TCP_PORT_2"
-    fi
-
-    # Bidirectional bridge between the autopilot and the coav_gcs
-    socat $SOCAT_ARG_1 $SOCAT_ARG_2 &
-    COAV_SOCATID=$!
 }
 
 run_gazebo () {
@@ -94,20 +83,6 @@ run_gazebo () {
 
     # Wait until gazebo is up and running
     sleep 8
-
-    SOCAT_ARG_2="udp:localhost:$GZSITL_UDP_PORT"
-    if [ "$AUTOPILOT" = "AP_PX4" ]; then
-        SOCAT_ARG_1="udp-listen:$PX4_UDP_PORT_1"
-    elif [ "$AUTOPILOT" = "AP_APM" ]; then
-        SOCAT_ARG_1="tcp:localhost:$APM_TCP_PORT_1"
-    fi
-
-    # Bidirectional bridge between autopilot and gazebo-sitl
-    socat $SOCAT_ARG_1 $SOCAT_ARG_2 &
-    GZSITL_SOCATID=$!
-
-    # Wait for gzsitl-sitl connection to be stabilished
-    sleep 2
 }
 
 run_coav_control() {
@@ -117,14 +92,38 @@ run_coav_control() {
     COAVID=$!
 
     # Wait until is up and running
-    sleep 4
+    sleep 1
 }
-
 
 simulate () {
     run_coav_control "$@"
     run_autopilot
     run_gazebo
+
+    # Bidirectional bridge between autopilot and gazebo-sitl
+    SOCAT_ARG_2="udp:localhost:$GZSITL_UDP_PORT"
+    if [ "$AUTOPILOT" = "AP_PX4" ]; then
+        SOCAT_ARG_1="udp-listen:$PX4_UDP_PORT_1"
+    elif [ "$AUTOPILOT" = "AP_APM" ]; then
+        SOCAT_ARG_1="tcp:localhost:$APM_TCP_PORT_1"
+    fi
+
+    socat $SOCAT_ARG_1 $SOCAT_ARG_2 &
+    GZSITL_SOCATID=$!
+
+    # Wait for gzsitl-sitl connection to be stabilished
+    sleep 2
+
+    # Bidirectional bridge between the autopilot and the coav_gcs
+    SOCAT_ARG_2="udp:localhost:$COAV_GCS_UDP_PORT"
+    if [ "$AUTOPILOT" = "AP_PX4" ]; then
+        SOCAT_ARG_1="udp-listen:$PX4_UDP_PORT_2"
+    elif [ "$AUTOPILOT" = "AP_APM" ]; then
+        SOCAT_ARG_1="tcp:localhost:$APM_TCP_PORT_2"
+    fi
+
+    socat $SOCAT_ARG_1 $SOCAT_ARG_2 &
+    COAV_SOCATID=$!
 
     # wait forever
     cat
