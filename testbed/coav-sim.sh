@@ -33,6 +33,7 @@ PX4_UDP_PORT_2=14540
 
 # Simulation Parameters
 WORLD=${WORLD:-"simple_obstacle.sdf"}
+LOGDIR=${LOGDIR:-"${SCRIPT_DIR}/logs"}
 
 # Collision Avoidance and Gazebo variables
 GZSITL_UDP_PORT=15556
@@ -42,7 +43,7 @@ run_autopilot () {
     # Run SITL Simulator
     if [ "$AUTOPILOT" = "AP_PX4" ]; then
         cd $PX4_DIR
-        $PX4_CMD &
+        $PX4_CMD > ${LOGDIR}/sitl.log 2> ${LOGDIR}/sitl_err.log &
         SITLID=$!
         cd - > /dev/null
 
@@ -62,7 +63,8 @@ run_autopilot () {
             fi
         fi
 
-        $APM_CMD --model x --defaults ./copter.parm &
+        $APM_CMD --model x --defaults ./copter.parm \
+            > ${LOGDIR}/sitl.log 2> ${LOGDIR}/sitl_err.log &
         SITLID=$!
         cd - > /dev/null
 
@@ -86,7 +88,8 @@ run_gazebo () {
     # Gazebo engine without GUI.
     # The log can be played through `gazebo -p logfile`
     SDFFILE="${SCRIPT_DIR}/worlds/${WORLD}"
-    gzserver --verbose $SDFFILE &
+    gzserver --verbose $SDFFILE \
+        > ${LOGDIR}/gzserver.log 2> ${LOGDIR}/gzserver_err.log &
     GZID=$!
 
     # Wait until gazebo is up and running
@@ -109,7 +112,8 @@ run_gazebo () {
 
 run_coav_control() {
     # Run the collision avoidance
-    ../build/tools/coav-control/coav-control "$@" &
+    ../build/tools/coav-control/coav-control "$@" \
+        > ${LOGDIR}/coav-control.log 2> ${LOGDIR}/coav-control_err.log &
     COAVID=$!
 
     # Wait until is up and running
@@ -172,5 +176,9 @@ trap cleanup_and_exit SIGINT SIGTERM
 
 check_deps
 check_dirs
+
+if [ ! -d ${LOGDIR} ]; then
+    mkdir ${LOGDIR}
+fi
 
 simulate "$@"
