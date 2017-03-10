@@ -127,26 +127,25 @@ simulate () {
     socat $SOCAT_ARG_1 $SOCAT_ARG_2 &
     COAV_SOCATID=$!
 
-    # wait forever
-    cat
+    # Wait for child process
+    wait
 }
 
 silentkill () {
     if [ ! -z $2 ]; then
         kill $2 $1 > /dev/null 2>&1 || true
     else
-        kill -KILL $1 > /dev/null 2>&1 && wait $1 2> /dev/null || true
+        kill -KILL $1 > /dev/null 2>&1 || true
     fi
 }
 
-cleanup_and_exit () {
+cleanup () {
     silentkill $GZSITL_SOCATID # Kill gzsitl socat
     silentkill $COAV_SOCATID # Kill coav_gcs socat
+    silentkill $COAVID # Kill coav-control sitl
     silentkill $SITLID # Kill sitl
     silentkill $GZID -INT && sleep 3 # Wait gzserver to save the log
     silentkill $GZID  # Kill gzserver
-    silentkill $COAVID # Kill coav-control sitl
-    exit 0
 }
 
 test_dep () {
@@ -173,7 +172,8 @@ check_dirs () {
     fi
 }
 
-trap cleanup_and_exit SIGINT SIGTERM
+trap cleanup EXIT
+trap "exit 0" SIGHUP SIGINT SIGTERM
 
 check_deps
 check_dirs
