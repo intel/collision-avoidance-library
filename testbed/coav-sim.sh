@@ -79,7 +79,7 @@ run_gazebo () {
     # Gazebo engine without GUI.
     # The log can be played through `gazebo -p logfile`
     SDFFILE="${SCRIPT_DIR}/worlds/${WORLD}"
-    gzserver --verbose $SDFFILE \
+    gzserver --record_path $LOGDIR --verbose $SDFFILE \
         > ${LOGDIR}/gzserver.log 2> ${LOGDIR}/gzserver_err.log &
     GZID=$!
 
@@ -113,7 +113,7 @@ simulate () {
     socat $SOCAT_ARG_1 $SOCAT_ARG_2 &
     GZSITL_SOCATID=$!
 
-    # Wait for gzsitl-sitl connection to be stabilished
+    # Wait for gzsitl-sitl connection to be established
     sleep 2
 
     # Bidirectional bridge between the autopilot and the coav_gcs
