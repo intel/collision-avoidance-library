@@ -179,7 +179,8 @@ check_deps
 check_dirs
 
 if [ ! -d ${LOGDIR} ]; then
-    mkdir ${LOGDIR}
+    # Create logdir if it does not exist
+    mkdir -p ${LOGDIR}
 fi
 
 simulate "$@"
