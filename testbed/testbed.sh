@@ -26,7 +26,7 @@ silentkill () {
 
 sleep_until_takeoff () {
     gz topic -u -e /gazebo/default/gzsitl_quadcopter_rs/vehicle_pose \
-        | python detect_takeoff.py $1 # Detect takeoff on distance $1
+        | python detect_takeoff.py $1 $2 # Detect takeoff on distance $1
 }
 
 listen_collision () {
@@ -45,7 +45,7 @@ testcase () {
 
     # Detect takeoff on a distance from origin >= 0.5 meters
     # Fail test if no takeoff is detect after 5 seconds
-    sleep_until_takeoff 0.5
+    sleep_until_takeoff 0.5 10
     if [ $? -ne 0 ]; then
         echo "[${WORLD}] FAIL! Takeoff not detected in time"
         cleanup

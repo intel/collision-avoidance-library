@@ -23,19 +23,28 @@ def dist(x, y, z):
 
 if __name__ == '__main__':
     takeoff_distance = float(sys.argv[1])
+    takeoff_timeout = int(sys.argv[2])
     pos_re = re.compile("position\ \{\ *x\:(.+)y\:(.+)z\:(.+)\}\ orientation.*")
 
     def handler(signum, frame):
         sys.exit(0)
 
-    signal.signal(signal.SIGINT, handler)
+    def timeout_handler(signum, frame):
+        raise Exception("Takeoff not detected before timeout")
 
-    for line in sys.stdin:
-        m = pos_re.match(line)
-        if not m:
-            continue
-        x, y, z = m.groups()
-        if dist(float(x), float(y), float(z)) >= takeoff_distance:
-            exit(0)
+    signal.signal(signal.SIGINT, handler)
+    signal.signal(signal.SIGALRM, timeout_handler)
+    signal.alarm(takeoff_timeout)
+
+    try:
+        for line in sys.stdin:
+            m = pos_re.match(line)
+            if not m:
+                continue
+            x, y, z = m.groups()
+            if dist(float(x), float(y), float(z)) >= takeoff_distance:
+                exit(0)
+    except Exception as e:
+        exit(0)
 
     exit(1)
