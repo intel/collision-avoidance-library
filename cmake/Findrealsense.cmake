@@ -8,12 +8,11 @@ find_path(REALSENSE_INCLUDE_DIR "librealsense/rs.h")
 find_library(REALSENSE_LIBRARY "librealsense.so")
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(REALSENSE DEFAULT_MSG REALSENSE_INCLUDE_DIR REALSENSE_LIBRARY)
+find_package_handle_standard_args(realsense DEFAULT_MSG REALSENSE_INCLUDE_DIR REALSENSE_LIBRARY)
 
 if(REALSENSE_FOUND)
     set(REALSENSE_INCLUDE_DIRS "${REALSENSE_INCLUDE_DIR}")
     message(STATUS "REALSENSE_INCLUDE_DIR = ${REALSENSE_INCLUDE_DIR}")
     set(REALSENSE_LIBRARIES "${REALSENSE_LIBRARY}")
     message(STATUS "REALSENSE_LIBRARY = ${REALSENSE_LIBRARY}")
-endif(REALSENSE_FOUND)
-
+endif()
