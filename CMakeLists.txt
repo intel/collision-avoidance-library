@@ -83,13 +83,7 @@ include_directories(${PROJECT_SOURCE_DIR})
 
 if (${WITH_GAZEBO})
     # Custom installation paths
-    if (COAVLIB_PLUGIN_INSTALL_PATH)
-        GET_FILENAME_COMPONENT(COAVLIB_PLUGIN_PATH ${COAVLIB_PLUGIN_INSTALL_PATH} ABSOLUTE)
-    else()
-        set(COAVLIB_PLUGIN_PATH ${GAZEBO_PLUGIN_PATH})
-    endif()
-
-    # Gazebo 7 does not provide a ${GAZEBO_MODEL_PATH} variable.
+    # TODO: Gazebo 7 didn't provide a ${GAZEBO_MODEL_PATH} variable.
     # That's why we are accessing it relatively to ${GAZEBO_MEDIA_PATH}.
     # A proper ${GAZEBO_MODEL_PATH} variable might be available in Gazebo 8+.
     if (COAVLIB_MODEL_INSTALL_PATH)
@@ -99,10 +93,6 @@ if (${WITH_GAZEBO})
     else()
         GET_FILENAME_COMPONENT(COAVLIB_MODEL_PATH ${GAZEBO_MEDIA_PATH}/../models ABSOLUTE)
     endif()
-
-    # Add submodules and gazebo plugins subdirectories
-    set(GZRS_PLUGIN_INSTALL_PATH ${COAVLIB_PLUGIN_PATH})
-    set(GZRS_MODEL_INSTALL_PATH ${COAVLIB_MODEL_PATH})
 
     # Include and Link directories
     include_directories(${GAZEBO_INCLUDE_DIRS})
@@ -134,6 +124,5 @@ if (${WITH_SAMPLES})
 endif()
 
 if (${WITH_GAZEBO})
-    add_subdirectory(modules/gazebo_realsense)
     add_subdirectory(simulation/gazebo-models)
 endif()
