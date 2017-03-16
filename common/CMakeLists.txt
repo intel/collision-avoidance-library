@@ -6,4 +6,4 @@ set (sources
 )
 
 add_library(common ${sources})
-target_link_libraries(common utils)
+target_link_libraries(common)
