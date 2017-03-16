@@ -109,8 +109,6 @@ add_subdirectory(common)
 add_subdirectory(communication)
 add_subdirectory(detection)
 add_subdirectory(sensors)
-add_subdirectory(tests)
-add_subdirectory(utils)
 add_subdirectory(vehicles)
 add_subdirectory(modules/mavlink_vehicles)
 
