@@ -21,8 +21,14 @@ SCRIPT_DIR=$(dirname $(realpath ${BASH_SOURCE[0]}))
 # Supported Autopilots: AP_PX4 and AP_APM
 AUTOPILOT=${AUTOPILOT:-"AP_PX4"}
 
+# 0: Log only
+# 1: Log + stdout
+# 2: stdout only
+# 3: no output
+VERBOSE_LEVEL=${VERBOSE_LEVEL:-0}
+
 # ArduCopter Variables
-APM_CMD="${APM_DIR:+"${APM_DIR}/"}arducopter"
+APM_CMD="${APM_DIR:+"${APM_DIR}/"}arducopter --model x --defaults ./copter.parm"
 APM_TCP_PORT_1=5760
 APM_TCP_PORT_2=5762
 APM_PARM_URL=${APM_PARM_URL:-"https://raw.githubusercontent.com/ArduPilot/ardupilot/master/Tools/autotest/default_params/copter.parm"}
@@ -41,11 +47,33 @@ LOGDIR=${LOGDIR:-"${SCRIPT_DIR}/logs"}
 GZSITL_UDP_PORT=15556
 COAV_GCS_UDP_PORT=15557
 
+run_and_log() {
+    cmd=$1
+    log_out="${2}.log"
+    log_err="${2}_err.log"
+
+    # Log to file
+    if [ "$VERBOSE_LEVEL" -eq 0 ]; then
+        $cmd > "${LOGDIR}/${log_out}" 2> "${LOGDIR}/${log_err}" &
+    # Log to file and stdout
+    elif [ "$VERBOSE_LEVEL" -eq 1 ]; then
+        $cmd > >(tee "${LOGDIR}/${log_out}") 2> >(tee "${LOGDIR}/${log_err}") &
+    # Log to stdout only
+    elif [ "$VERBOSE_LEVEL" -eq 2 ]; then
+        $cmd &
+    # No output
+    else
+        $cmd > /dev/null 2> /dev/null &
+    fi
+}
+
 run_autopilot () {
     # Run SITL Simulator
     if [ "$AUTOPILOT" = "AP_PX4" ]; then
         cd $PX4_DIR
-        $PX4_CMD > ${LOGDIR}/sitl.log 2> ${LOGDIR}/sitl_err.log &
+
+        run_and_log "$PX4_CMD" "autopilot"
+
         SITLID=$!
         cd - > /dev/null
 
@@ -65,8 +93,8 @@ run_autopilot () {
             fi
         fi
 
-        $APM_CMD --model x --defaults ./copter.parm \
-            > ${LOGDIR}/sitl.log 2> ${LOGDIR}/sitl_err.log &
+        run_and_log "$APM_CMD" "autopilot"
+
         SITLID=$!
         cd - > /dev/null
 
@@ -79,8 +107,8 @@ run_gazebo () {
     # Gazebo engine without GUI.
     # The log can be played through `gazebo -p logfile`
     SDFFILE="${SCRIPT_DIR}/worlds/${WORLD}"
-    gzserver --record_path $LOGDIR --verbose $SDFFILE \
-        > ${LOGDIR}/gzserver.log 2> ${LOGDIR}/gzserver_err.log &
+    GZCMD="gzserver --record_path $LOGDIR --verbose $SDFFILE"
+    run_and_log "$GZCMD" "gzserver"
     GZID=$!
 
     # Wait until gazebo is up and running
@@ -89,8 +117,8 @@ run_gazebo () {
 
 run_coav_control() {
     # Run the collision avoidance
-    ../build/tools/coav-control/coav-control "$@" \
-        > ${LOGDIR}/coav-control.log 2> ${LOGDIR}/coav-control_err.log &
+    COAVCMD="../build/tools/coav-control/coav-control "$@""
+    run_and_log "$COAVCMD" "coav-control"
     COAVID=$!
 
     # Wait until is up and running
