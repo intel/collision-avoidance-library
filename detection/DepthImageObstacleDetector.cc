@@ -15,13 +15,96 @@
 */
 
 #include <cmath>
+#include <cstdlib>
+#include <vector>
 
 #include "DepthImageObstacleDetector.hh"
-#include "utils/PPTree.hh"
 #include "common/common.hh"
 
 #define MAX_NUM_LABELS UINT16_MAX
 #define BACKGROUND 0
+
+struct Set {
+    Set *parent;
+    int rank = 0;
+
+    Set();
+    Set *repr();
+    static void join(Set *a, Set *b);
+};
+
+class PPTree
+{
+  public:
+    PPTree(int num_nodes);
+    ~PPTree();
+
+    void ds_union(int node_x_id, int node_y_id);
+    int ds_find(int node_id);
+
+  private:
+    Set *find(int node_id);
+    std::vector<Set> sets;
+};
+
+Set::Set()
+    : parent(this)
+{
+}
+
+Set *Set::repr()
+{
+    if (this->parent == this)
+        return this;
+
+    return this->parent = this->parent->repr();
+}
+
+PPTree::PPTree(int num_nodes)
+    : sets(num_nodes)
+{
+}
+
+int PPTree::ds_find(int node_id)
+{
+    return this->find(node_id) - this->sets.data();
+}
+
+Set *PPTree::find(int node_id)
+{
+    return this->sets[node_id].repr();
+}
+
+
+void PPTree::ds_union(int a, int b)
+{
+    Set::join(&this->sets[a], &this->sets[b]);
+}
+
+PPTree::~PPTree()
+{
+}
+
+void Set::join(Set *a, Set *b)
+{
+    a = a->repr();
+    b = b->repr();
+
+    if (a == b) {
+        /* Already united. */
+        return;
+    }
+
+    /* Unite the roots of the nodes. */
+    if (a->rank < b->rank) {
+        a->parent = b;
+        return;
+    }
+
+    b->parent = a;
+    if (a->rank == b->rank)
+        a->rank += 1;
+}
 
 DepthImageObstacleDetector::DepthImageObstacleDetector(
     std::shared_ptr<DepthCamera> depth_camera, double threshold_meters)
