@@ -71,7 +71,7 @@ replay () {
 }
 
 cleanup () {
-    silentkill -TERM $COAVSIM_ID # Terminate coav-sim.sh
+    silentkill $COAVSIM_ID -TERM # Terminate coav-sim.sh
     wait $COAVSIM_ID # Just because we know TERM will exit coav-sim.sh
 }
 
