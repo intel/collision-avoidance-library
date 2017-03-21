@@ -35,7 +35,7 @@ APM_PARM_URL=${APM_PARM_URL:-"https://raw.githubusercontent.com/ArduPilot/ardupi
 
 # PX4 Variables
 PX4_DIR=${PX4_DIR:-"~/px4/Firmware"}
-PX4_CMD="make posix_sitl_default jmavsim"
+PX4_CMD="setsid make posix_sitl_default jmavsim"
 PX4_UDP_PORT_1=14550
 PX4_UDP_PORT_2=14540
 
@@ -74,7 +74,7 @@ run_autopilot () {
 
         run_and_log "$PX4_CMD" "autopilot"
 
-        SITLID=$!
+        SITLID=-$!
         cd - > /dev/null
 
         # Wait for sitl
