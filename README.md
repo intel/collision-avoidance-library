@@ -175,7 +175,7 @@ configure the environment and compile the library:
 
     mkdir build
     cd build
-    cmake .. -DCMAKE_PREFIX_PATH="<GLM_HEADERS_PATH>:<MAVLINK_HEADERS_PATH>"
+    cmake .. -DCMAKE_PREFIX_PATH="<GLM_HEADERS_PATH>"
     make
 
 After a successful build, you can install Collision Avoidance Library in a
