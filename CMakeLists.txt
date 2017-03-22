@@ -79,7 +79,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${LDFLAGS} -z noexecstack -z relro -z now")
 include(GNUInstallDirs)
 
 # Include and Link directories
-include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR} src/)
 
 if (${WITH_GAZEBO})
     # Custom installation paths
@@ -104,13 +104,13 @@ if (${WITH_REALSENSE})
 endif()
 
 # Add library subdirectories
-add_subdirectory(avoidance)
-add_subdirectory(common)
-add_subdirectory(communication)
-add_subdirectory(detection)
-add_subdirectory(sensors)
-add_subdirectory(vehicles)
 add_subdirectory(modules/mavlink_vehicles)
+add_subdirectory(src/avoidance)
+add_subdirectory(src/common)
+add_subdirectory(src/communication)
+add_subdirectory(src/detection)
+add_subdirectory(src/sensors)
+add_subdirectory(src/vehicles)
 
 if (${WITH_TOOLS})
     add_subdirectory(tools/coav-control)
