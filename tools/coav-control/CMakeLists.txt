@@ -8,12 +8,6 @@ if(DEFINED ENV{SDKTARGETSYSROOT})
 endif()
 
 add_executable(coav-control coav-control.cc parser.cc)
-target_link_libraries(coav-control
-    common
-    sensors
-    detection
-    avoidance
-    vehicles
-    )
+target_link_libraries(coav-control coav)
 install(TARGETS coav-control
     DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})

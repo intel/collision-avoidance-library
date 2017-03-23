@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
-project(LIBCOAV)
+project(COAV)
 
 # Set add REQUIRED list to DEP_VAR if FEATURE is ON
 function(option_deps DEP_VAR FEATURE REQUIRED)
@@ -79,7 +79,9 @@ set(CMAKE_EXE_LINKER_FLAGS "${LDFLAGS} -z noexecstack -z relro -z now")
 include(GNUInstallDirs)
 
 # Include and Link directories
-include_directories(${PROJECT_SOURCE_DIR} src/)
+include_directories(${PROJECT_SOURCE_DIR}
+    modules/mavlink_vehicles/src
+    src)
 
 if (${WITH_GAZEBO})
     # Custom installation paths
@@ -97,13 +99,15 @@ if (${WITH_GAZEBO})
     # Include and Link directories
     include_directories(${GAZEBO_INCLUDE_DIRS})
     link_directories(${GAZEBO_LIBRARY_DIRS})
+    set(LIBRARIES ${LIBRARIES} ${GAZEBO_LIBRARIES})
 endif()
 
 if (${WITH_REALSENSE})
     include_directories(${REALSENSE_INCLUDE_DIRS})
+    set(LIBRARIES ${LIBRARIES} ${REALSENSE_LIBRARIES})
 endif()
 
-# Add library subdirectories
+# Add subdirectories
 add_subdirectory(modules/mavlink_vehicles)
 add_subdirectory(src/avoidance)
 add_subdirectory(src/common)
@@ -111,6 +115,19 @@ add_subdirectory(src/communication)
 add_subdirectory(src/detection)
 add_subdirectory(src/sensors)
 add_subdirectory(src/vehicles)
+
+# Add library
+add_library(coav SHARED
+    $<TARGET_OBJECTS:avoidance>
+    $<TARGET_OBJECTS:common>
+    $<TARGET_OBJECTS:communication>
+    $<TARGET_OBJECTS:detection>
+    $<TARGET_OBJECTS:sensors>
+    $<TARGET_OBJECTS:vehicles>)
+
+target_link_libraries(coav
+    PUBLIC ${LIBRARIES}
+    PRIVATE mavlink_vehicles)
 
 if (${WITH_TOOLS})
     add_subdirectory(tools/coav-control)

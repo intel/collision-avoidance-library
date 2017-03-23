@@ -1,11 +1,8 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
-set (sources
-  DepthImageObstacleDetector.cc
-  DepthImageStraightLineDetector.cc
-  DepthImagePolarHistDetector.cc
-)
+set(SOURCES
+    DepthImageObstacleDetector.cc
+    DepthImageStraightLineDetector.cc
+    DepthImagePolarHistDetector.cc)
 
-add_library(detection ${sources})
-target_link_libraries(detection common)
-
+add_library(detection OBJECT ${SOURCES})
