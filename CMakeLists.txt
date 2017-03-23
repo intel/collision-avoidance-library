@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
-project(COAV)
+project(COAV VERSION 0.0.1)
 
 # Set add REQUIRED list to DEP_VAR if FEATURE is ON
 function(option_deps DEP_VAR FEATURE REQUIRED)
@@ -125,10 +125,17 @@ add_library(coav SHARED
     $<TARGET_OBJECTS:sensors>
     $<TARGET_OBJECTS:vehicles>)
 
+set_target_properties(coav PROPERTIES
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR})
+
 target_link_libraries(coav
     PUBLIC ${LIBRARIES}
     PRIVATE mavlink_vehicles)
 
+install(TARGETS coav DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+# Extra targets
 if (${WITH_TOOLS})
     add_subdirectory(tools/coav-control)
     add_subdirectory(tools/vdebug)
