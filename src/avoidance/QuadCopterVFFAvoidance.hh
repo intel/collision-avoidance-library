@@ -13,13 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
+
 #pragma once
 
-#include "common/common.hh"
-#include "vehicles/MavQuadCopter.hh"
-
 #include <chrono>
+#include <memory>
+#include <vector>
+
 #include <glm/glm.hpp>
+
+#include "avoidance/Avoidance.hh"
+#include "vehicles/MavQuadCopter.hh"
 
 class QuadCopterVFFAvoidance : public CollisionAvoidanceStrategy<MavQuadCopter>
 {

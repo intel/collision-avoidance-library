@@ -13,17 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
-#include "QuadCopterShiftAvoidance.hh"
-#include "vehicles/MavQuadCopter.hh"
-#include "common/common.hh"
-#include "common/math.hh"
-#include "glm/glm.hpp"
 
-#include <chrono>
-#include <memory>
-#include <vector>
 #include <limits>
 #include <iostream>
+
+#include <glm/glm.hpp>
+
+#include "avoidance/QuadCopterShiftAvoidance.hh"
+#include "common/common.hh"
+#include "common/math.hh"
 
 namespace defaults
 {

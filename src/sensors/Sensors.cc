@@ -14,9 +14,9 @@
 // limitations under the License.
 */
 
-#include <cmath>
+#include "Sensors.hh"
 
-#include "DepthCamera.hh"
+#include <cmath>
 
 unsigned int DepthCamera::get_height()
 {

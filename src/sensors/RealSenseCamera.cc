@@ -14,11 +14,11 @@
 // limitations under the License.
 */
 
-#include <glm/glm.hpp>
-#include <iostream>
-#include <mutex>
+#include "sensors/RealSenseCamera.hh"
 
-#include "RealSenseCamera.hh"
+#include <iostream>
+
+#include <glm/glm.hpp>
 
 RealSenseCamera::RealSenseCamera(size_t width, size_t height, unsigned int fps) try
 {

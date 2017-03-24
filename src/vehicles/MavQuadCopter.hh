@@ -13,17 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
+
 #pragma once
 
 #include <memory>
+#include <netinet/in.h>
 #include <thread>
-#include <cstdint>
-#include <sys/socket.h>
-#include <arpa/inet.h>
 
-#include "common/math.hh"
-#include "common/common.hh"
-#include "mavlink_vehicles.hh"
+#include <mavlink_vehicles.hh>
+
+#include "vehicles/Vehicles.hh"
 
 class MavQuadCopter : public QuadCopter
 {

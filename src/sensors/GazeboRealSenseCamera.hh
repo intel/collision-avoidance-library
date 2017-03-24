@@ -13,24 +13,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
+
 #pragma once
 
-#include <gazebo/transport/transport.hh>
-#include <common/DepthCamera.hh>
-#include <communication/GazeboContext.hh>
+#include <cstdint>
+#include <memory>
 #include <mutex>
 #include <vector>
-#include <memory>
+
+#include <gazebo/transport/transport.hh>
+
+#include "communication/GazeboContext.hh"
+#include "sensors/Sensors.hh"
 
 class GazeboRealSenseCamera: public DepthCamera
 {
-  public:
+public:
     GazeboRealSenseCamera();
     ~GazeboRealSenseCamera();
 
     std::vector<uint16_t> &get_depth_buffer() override;
 
-  private:
+private:
     void on_stream_depth_recvd(ConstImageStampedPtr &_msg);
 
     std::mutex depth_buffer_mtx;
@@ -41,4 +45,3 @@ class GazeboRealSenseCamera: public DepthCamera
     gazebo::transport::SubscriberPtr rs_depth_sub;
     bool camera_exists = false;
 };
-

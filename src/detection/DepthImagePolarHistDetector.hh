@@ -13,21 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
+
 #pragma once
 
-#include <common/common.hh>
-#include <common/DepthCamera.hh>
 #include <memory>
 #include <vector>
 
+#include "detection/Detectors.hh"
+#include "sensors/Sensors.hh"
+
 class DepthImagePolarHistDetector : public Detector<DepthCamera>
 {
-  public:
+public:
     DepthImagePolarHistDetector(std::shared_ptr<DepthCamera> depth_camera,
             double angle_step, double threshold = 5.0, double density = 0.1);
     const std::vector<Obstacle> &detect() override;
 
-  private:
+private:
     double step;
     double threshold;
     double density;

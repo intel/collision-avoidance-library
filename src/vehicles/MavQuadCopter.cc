@@ -13,19 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
-#include <arpa/inet.h>
+
+#include "MavQuadCopter.hh"
+
 #include <cstdint>
 #include <fcntl.h>
 #include <iostream>
-#include <memory>
 #include <sys/socket.h>
-#include <thread>
 #include <unistd.h>
-
-#include "MavQuadCopter.hh"
-#include "common/common.hh"
-#include "common/math.hh"
-#include "mavlink_vehicles.hh"
 
 namespace defaults
 {

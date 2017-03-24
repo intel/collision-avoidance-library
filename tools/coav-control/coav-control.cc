@@ -19,7 +19,8 @@
 #include <vector>
 
 #include "common/common.hh"
-#include "common/DepthCamera.hh"
+#include "detection/Detectors.hh"
+#include "sensors/Sensors.hh"
 #include "avoidance/QuadCopterShiftAvoidance.hh"
 #include "avoidance/QuadCopterStopAvoidance.hh"
 #include "avoidance/QuadCopterVFFAvoidance.hh"

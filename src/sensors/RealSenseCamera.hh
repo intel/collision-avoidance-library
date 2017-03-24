@@ -13,27 +13,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
+
 #pragma once
 
-#include <librealsense/rs.hpp>
+#include <cstdint>
 #include <memory>
 #include <mutex>
 #include <vector>
 
-#include <common/DepthCamera.hh>
+#include <librealsense/rs.hpp>
+
+#include "sensors/Sensors.hh"
 
 class RealSenseCamera: public DepthCamera
 {
-  public:
+public:
     RealSenseCamera(size_t width, size_t height, unsigned int fps);
 
     std::vector<uint16_t> &get_depth_buffer() override;
 
-  private:
+private:
     std::mutex depth_buffer_mtx;
     std::vector<uint16_t> depth_buffer;
 
     std::shared_ptr<rs::context> ctx;
     rs::device *dev = nullptr;
 };
-

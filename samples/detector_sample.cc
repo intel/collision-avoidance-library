@@ -21,7 +21,8 @@
 #include <vector>
 
 #include "common/common.hh"
-#include "common/DepthCamera.hh"
+#include "detection/Detectors.hh"
+#include "sensors/Sensors.hh"
 #include "sensors/RealSenseCamera.hh"
 
 using namespace std;

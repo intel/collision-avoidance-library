@@ -16,35 +16,19 @@
 
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/euler_angles.hpp>
-
-struct Pose {
-    glm::dvec3 pos;
-    glm::dquat rot;
-
-    double pitch();
-    double roll();
-    double yaw();
-    void set_rot(float pitch, float roll, float yaw);
-};
-
-Pose operator-(const Pose& a, const Pose &b);
+#define inbounds(X, A, B) ((X) >= A && (X) <= B)
 
 int sign(double x);
+
 double sigmoid(double x);
 
 /**
  * @brief Spherical coordinates as in ISO 31-11.
  */
-typedef struct {
+struct PolarVector {
     double r; /**< Radial distance */
     double theta; /**< Polar Angle */
     double phi; /**< Azimuthal Angle */
-} PolarVector;
+};
 
 PolarVector cartesian_to_spherical(double x, double y, double z);
-
-#define inbounds(X, A, B) ((X) >= A && (X) <= B)
-

@@ -14,11 +14,11 @@
 // limitations under the License.
 */
 
-#include "QuadCopterVFFAvoidance.hh"
-
 #include <cerrno>
 #include <tuple>
-#include <chrono>
+
+#include "avoidance/QuadCopterVFFAvoidance.hh"
+#include "common/common.hh"
 #include "common/math.hh"
 
 #define MIN_THETA 0.01

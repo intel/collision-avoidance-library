@@ -13,20 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
+
 #pragma once
 
-#include <common/common.hh>
-#include <common/DepthCamera.hh>
+#include <memory>
 #include <vector>
+
+#include "detection/Detectors.hh"
+#include "sensors/Sensors.hh"
 
 class DepthImageObstacleDetector : public Detector<DepthCamera>
 {
-
-  public:
+public:
     DepthImageObstacleDetector(std::shared_ptr<DepthCamera> depth_camera, double threshold_meters = 0.0);
     const std::vector<Obstacle> &detect() override;
 
-  private:
+private:
     std::vector<Obstacle> obstacles;
     std::vector<uint16_t> depth_frame;
     std::vector<uint16_t> labels;
@@ -53,4 +55,3 @@ class DepthImageObstacleDetector : public Detector<DepthCamera>
 
     uint16_t threshold = 0;
 };
-

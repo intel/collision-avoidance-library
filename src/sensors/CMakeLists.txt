@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
+set(SOURCES Sensors.cc)
+
 if (${WITH_GAZEBO})
     set(SOURCES ${SOURCES} GazeboRealSenseCamera.cc)
 endif()

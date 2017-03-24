@@ -13,20 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
+
 #pragma once
 
-#include <common/common.hh>
-#include <common/DepthCamera.hh>
+#include <memory>
 #include <vector>
+
+#include "detection/Detectors.hh"
+#include "sensors/Sensors.hh"
 
 class DepthImageStraightLineDetector : public Detector<DepthCamera>
 {
-  public:
+public:
     DepthImageStraightLineDetector(std::shared_ptr<DepthCamera> depth_camera);
     const std::vector<Obstacle> &detect() override;
     void set_waypoint();
 
-  private:
+private:
     std::vector<Obstacle> obstacles;
 };
-

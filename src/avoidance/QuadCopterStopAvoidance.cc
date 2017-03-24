@@ -13,12 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
+
 #include <iostream>
 
-#include "QuadCopterStopAvoidance.hh"
+#include "avoidance/QuadCopterStopAvoidance.hh"
 #include "common/common.hh"
-#include "common/math.hh"
-#include "vehicles/MavQuadCopter.hh"
 
 namespace defaults
 {

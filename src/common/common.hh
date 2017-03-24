@@ -19,15 +19,8 @@
 #include <memory>
 #include <vector>
 
-#include "math.hh"
-
-class QuadCopter
-{
-  public:
-    virtual Pose target_pose() = 0;
-    virtual Pose vehicle_pose() = 0;
-    virtual void set_target_pose(Pose pose) = 0;
-};
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 struct Obstacle {
     uint id;
@@ -45,23 +38,14 @@ struct Obstacle {
     glm::dvec3 center;
 };
 
-template <typename SensorType>
-class Detector
-{
-  public:
-    virtual const std::vector<Obstacle> &detect() = 0;
+struct Pose {
+    glm::dvec3 pos;
+    glm::dquat rot;
 
-  protected:
-    std::shared_ptr<SensorType> sensor;
+    double pitch();
+    double roll();
+    double yaw();
+    void set_rot(float pitch, float roll, float yaw);
 };
 
-template <typename VehicleType>
-class CollisionAvoidanceStrategy
-{
-  public:
-    virtual void avoid(const std::vector<Obstacle> &elements) = 0;
-
-  protected:
-    std::shared_ptr<VehicleType> vehicle;
-};
-
+Pose operator-(const Pose& a, const Pose &b);

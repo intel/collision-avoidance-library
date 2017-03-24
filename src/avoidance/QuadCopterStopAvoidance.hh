@@ -13,25 +13,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
+
 #pragma once
 
-#include "common/common.hh"
-#include "vehicles/MavQuadCopter.hh"
-
-#include <chrono>
 #include <memory>
 #include <vector>
+
+#include "avoidance/Avoidance.hh"
+#include "vehicles/MavQuadCopter.hh"
 
 class QuadCopterStopAvoidance
     : public CollisionAvoidanceStrategy<MavQuadCopter>
 {
-  public:
+public:
     QuadCopterStopAvoidance(std::shared_ptr<MavQuadCopter> quadcopter,
                             double trigger_distance = 4.0);
 
     void avoid(const std::vector<Obstacle> &detection) override;
 
-  private:
+private:
     double trigger_dst;
 };
 

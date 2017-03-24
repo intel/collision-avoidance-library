@@ -13,27 +13,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
-#pragma once
 
-#include "common/common.hh"
-#include "vehicles/MavQuadCopter.hh"
+#pragma once
 
 #include <chrono>
 #include <memory>
 #include <vector>
 
+#include "avoidance/Avoidance.hh"
+#include "vehicles/MavQuadCopter.hh"
+
 class QuadCopterShiftAvoidance
     : public CollisionAvoidanceStrategy<MavQuadCopter>
 {
-  public:
+public:
     QuadCopterShiftAvoidance(std::shared_ptr<MavQuadCopter> quadcopter);
     void avoid(const std::vector<Obstacle> &obstacles) override;
 
-  private:
+private:
     std::chrono::time_point<std::chrono::system_clock> wp_sent_time =
         std::chrono::system_clock::from_time_t(0);
 
     enum class avoid_state { moving, detouring };
     avoid_state avoidance_state = avoid_state::moving;
 };
-
