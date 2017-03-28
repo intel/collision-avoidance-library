@@ -46,8 +46,8 @@ int main (int argc, char* argv[])
     control_options opts = parse_cmdline(argc, argv);
 
     if (!opts.quiet) {
-        cout << "Using Detect Algorith: " << detect_to_name(opts.detect) << endl;
-        cout << "Using Avoidance Algorith: " << avoidance_to_name(opts.avoidance) << endl;
+        cout << "Using Detect Algorithm: " << detect_to_name(opts.detect) << endl;
+        cout << "Using Avoidance Algorithm: " << avoidance_to_name(opts.avoidance) << endl;
         cout << "Using Sensor: " << sensor_to_name(opts.sensor) << endl;
     }
 
