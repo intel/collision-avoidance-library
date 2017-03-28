@@ -14,9 +14,6 @@
 // limitations under the License.
 */
 
-#include <sensors/GazeboRealSenseCamera.hh>
-#include <detection/DepthImageStraightLineDetector.hh>
-#include <vehicles/MavQuadCopter.hh>
 #include <memory>
 #include <iostream>
 #include <cmath>
@@ -24,6 +21,8 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
+
+#include <coav/coav.hh>
 
 auto gzrs_camera = std::make_shared<GazeboRealSenseCamera>();
 auto detector = std::make_shared<DepthImageStraightLineDetector>(gzrs_camera);

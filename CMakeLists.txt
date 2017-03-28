@@ -22,6 +22,19 @@ macro(dependent_option option doc default dependency)
     endif()
 endmacro()
 
+# Generate an inclusion list
+function(export_headers HEADERS_LIST COMP_NAME)
+    set(INCLUDE_LIST "\n//${COMP_NAME}\n")
+
+    foreach(HEADER ${HEADERS_LIST})
+        set(INCLUDE_LIST "${INCLUDE_LIST}#include \"${HEADER}\"\n")
+        file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/${HEADER}
+            DESTINATION ${CMAKE_BINARY_DIR}/include/coav)
+    endforeach()
+
+    set(INCLUDE_LIST ${INCLUDE_LIST} PARENT_SCOPE)
+endfunction()
+
 # Build Options
 option(WITH_REALSENSE "Add realsense support" ON)
 option(WITH_SAMPLES "Compile project samples" OFF)
@@ -80,6 +93,7 @@ include(GNUInstallDirs)
 
 # Include and Link directories
 include_directories(${PROJECT_SOURCE_DIR}
+    ${CMAKE_BINARY_DIR}/include
     modules/mavlink_vehicles/src
     src)
 
@@ -107,6 +121,8 @@ if (${WITH_REALSENSE})
     set(LIBRARIES ${LIBRARIES} ${REALSENSE_LIBRARIES})
 endif()
 
+list(APPEND PUBLIC_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/include/coav.hh)
+
 # Add subdirectories
 add_subdirectory(modules/mavlink_vehicles)
 add_subdirectory(src/avoidance)
@@ -132,6 +148,10 @@ target_link_libraries(coav
     PRIVATE mavlink_vehicles)
 
 install(TARGETS coav DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+configure_file(include/coav.hh.in include/coav/coav.hh)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Extra targets
 if (${WITH_TOOLS})

@@ -13,15 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
+
 #include <cmath>
 #include <memory>
 #include <vector>
 
-#include "avoidance/QuadCopterStopAvoidance.hh"
-#include "common/common.hh"
-#include "detection/DepthImageObstacleDetector.hh"
-#include "sensors/GazeboRealSenseCamera.hh"
-#include "vehicles/MavQuadCopter.hh"
+#include <coav/coav.hh>
 
 int main(int argc, char **argv)
 {
@@ -49,4 +46,3 @@ int main(int argc, char **argv)
         avoidance->avoid(sensed_elements);
     }
 }
-

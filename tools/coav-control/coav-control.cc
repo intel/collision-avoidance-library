@@ -18,25 +18,7 @@
 #include <memory>
 #include <vector>
 
-#include "common/common.hh"
-#include "detection/Detectors.hh"
-#include "sensors/Sensors.hh"
-#include "avoidance/QuadCopterShiftAvoidance.hh"
-#include "avoidance/QuadCopterStopAvoidance.hh"
-#include "avoidance/QuadCopterVFFAvoidance.hh"
-#include "detection/DepthImageObstacleDetector.hh"
-#include "detection/DepthImagePolarHistDetector.hh"
-#include "detection/DepthImageStraightLineDetector.hh"
-
-#include "vehicles/MavQuadCopter.hh"
-
-#ifdef HAVE_REALSENSE
-#include "sensors/RealSenseCamera.hh"
-#endif
-
-#ifdef HAVE_GAZEBO
-#include "sensors/GazeboRealSenseCamera.hh"
-#endif
+#include <coav/coav.hh>
 
 #include "coav-control.hh"
 

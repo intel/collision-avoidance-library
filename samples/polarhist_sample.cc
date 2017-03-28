@@ -13,14 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 */
+
 #include <cmath>
 #include <memory>
 #include <vector>
 #include <iostream>
 
-#include "common/common.hh"
-#include "detection/DepthImagePolarHistDetector.hh"
-#include "sensors/RealSenseCamera.hh"
+#include <coav/coav.hh>
 
 #define STEP (5.0 * M_PI / 180)
 
@@ -60,4 +59,3 @@ int main(int argc, char **argv)
 
     return 0;
 }
-

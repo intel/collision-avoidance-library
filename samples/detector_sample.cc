@@ -20,10 +20,7 @@
 #include <memory>
 #include <vector>
 
-#include "common/common.hh"
-#include "detection/Detectors.hh"
-#include "sensors/Sensors.hh"
-#include "sensors/RealSenseCamera.hh"
+#include <coav/coav.hh>
 
 using namespace std;
 
