@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <gazebo/gazebo_client.hh>
+
 #include "sensors/GazeboRealSenseCamera.hh"
 
 // TODO: The camera configuration should be aggregated on the gazebo .sdf model
@@ -24,6 +26,54 @@
 #define DEPTH_CAM_HEIGHT 480
 #define DEPTH_CAM_FOV M_PI / 3.0
 #define DEPTH_CAM_SCALE 0.001
+
+// =============
+// GazeboContext
+// =============
+
+class GazeboContext
+{
+  public:
+    ~GazeboContext();
+    gazebo::transport::Node *node();
+    static std::shared_ptr<GazeboContext> instance();
+
+  private:
+    GazeboContext();
+};
+
+GazeboContext::GazeboContext()
+{
+    gazebo::client::setup();
+    std::cout << "[GazeboContext] Gazebo client has been set up" << std::endl;
+}
+
+GazeboContext::~GazeboContext()
+{
+    gazebo::client::shutdown();
+    std::cout << "[GazeboContext] Gazebo client has been shut down" << std::endl;
+}
+
+std::shared_ptr<GazeboContext> GazeboContext::instance() {
+    static std::weak_ptr<GazeboContext> _instance;
+    if (auto ptr = _instance.lock()) { // .lock() returns a shared_ptr and increments the refcount
+        return ptr;
+    }
+    // Does not support std::make_shared<GazeboContext> because of
+    // the Resource private constructor.
+    auto ptr = std::shared_ptr<GazeboContext>(new GazeboContext());
+    _instance = ptr;
+    return ptr;
+}
+
+gazebo::transport::Node *GazeboContext::node()
+{
+    return new gazebo::transport::Node();
+}
+
+// =====================
+// GazeboRealSenseCamera
+// =====================
 
 GazeboRealSenseCamera::GazeboRealSenseCamera()
 {

@@ -111,7 +111,6 @@ endif()
 add_subdirectory(modules/mavlink_vehicles)
 add_subdirectory(src/avoidance)
 add_subdirectory(src/common)
-add_subdirectory(src/communication)
 add_subdirectory(src/detection)
 add_subdirectory(src/sensors)
 add_subdirectory(src/vehicles)
@@ -120,7 +119,6 @@ add_subdirectory(src/vehicles)
 add_library(coav SHARED
     $<TARGET_OBJECTS:avoidance>
     $<TARGET_OBJECTS:common>
-    $<TARGET_OBJECTS:communication>
     $<TARGET_OBJECTS:detection>
     $<TARGET_OBJECTS:sensors>
     $<TARGET_OBJECTS:vehicles>)

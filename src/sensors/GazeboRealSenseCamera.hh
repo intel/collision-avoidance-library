@@ -23,8 +23,9 @@
 
 #include <gazebo/transport/transport.hh>
 
-#include "communication/GazeboContext.hh"
 #include "sensors/Sensors.hh"
+
+class GazeboContext;
 
 class GazeboRealSenseCamera: public DepthCamera
 {
