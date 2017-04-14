@@ -20,6 +20,18 @@
 
 #include <glm/glm.hpp>
 
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
+
+static const rs::option r200_opts[] = {
+    rs::option::r200_lr_auto_exposure_enabled,
+    rs::option::r200_emitter_enabled,
+};
+
+static const double r200_values[] = {
+    1.0,
+    1.0,
+};
+
 RealSenseCamera::RealSenseCamera(size_t width, size_t height, unsigned int fps) try
 {
     this->width = width;
@@ -32,6 +44,7 @@ RealSenseCamera::RealSenseCamera(size_t width, size_t height, unsigned int fps) 
     }
 
     this->dev = this->ctx->get_device(0);
+
     this->dev->enable_stream(rs::stream::depth, this->width, this->height,
             rs::format::z16, fps);
 
@@ -40,6 +53,10 @@ RealSenseCamera::RealSenseCamera(size_t width, size_t height, unsigned int fps) 
     this->vfov = glm::radians(intrinsics.vfov());
 
     this->scale = this->dev->get_depth_scale();
+
+    if (this->dev->supports_option(r200_opts[0])) {
+        this->dev->set_options(r200_opts, ARRAY_SIZE(r200_opts), r200_values);
+    }
 
     this->dev->start();
 
