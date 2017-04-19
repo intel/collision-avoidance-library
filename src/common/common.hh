@@ -36,6 +36,11 @@ struct Obstacle {
      * "looking" along the 'y' axis.
      */
     glm::dvec3 center;
+
+    struct { // Not the minimum bounding box yet
+        glm::dvec3 tlc; // Top Left Closest
+        glm::dvec3 brf; // Bottom Right Furthest
+    } bounding_box;
 };
 
 struct Pose {

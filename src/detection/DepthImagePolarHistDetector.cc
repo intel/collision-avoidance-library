@@ -101,7 +101,17 @@ const std::vector<Obstacle> &DepthImagePolarHistDetector::detect(
         double phi = max_phi - (i * fixed_step) - (fixed_step / 2);
 
         Obstacle obs;
+
+        obs.bounding_box.tlc.x = histogram[i];
+        obs.bounding_box.tlc.y = (M_PI - depth_data->vfov) / 2 ;
+        obs.bounding_box.tlc.z = phi + (fixed_step / 2);
+
+        obs.bounding_box.brf.x = histogram[i];
+        obs.bounding_box.brf.y = (M_PI + depth_data->vfov) / 2;
+        obs.bounding_box.brf.z = phi - (fixed_step / 2);
+
         obs.center = glm::dvec3(histogram[i], M_PI / 2, phi);
+
         this->obstacles.push_back(obs);
     }
 

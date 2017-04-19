@@ -204,7 +204,9 @@ void init_obstacle_array(std::vector<Obstacle> &obstacles)
     obstacles.resize(MAX_NUM_LABELS);
     for (unsigned int i = 0; i < obstacles.size(); ++i) {
         obstacles[i].id = -1;
-        obstacles[i].center = glm::dvec3(-1, -1, -1);
+        obstacles[i].center = glm::dvec3(DBL_MAX, -1, -1);
+        obstacles[i].bounding_box.tlc = glm::dvec3(DBL_MAX, DBL_MAX, DBL_MAX);
+        obstacles[i].bounding_box.brf = glm::dvec3(0, 0, 0);
     }
 }
 
@@ -269,7 +271,6 @@ int DepthImageObstacleDetector::extract_blobs()
     }
 
     /* Third Pass */
-
     for (int i = 0; i < this->height; i++) {
         row_offset = i * this->width;
         for (int j = 0; j < this->width; j++) {
@@ -284,25 +285,47 @@ int DepthImageObstacleDetector::extract_blobs()
 
                 blob_to_obstacle[label] = num_obstacles++;
                 obstacles[blob_to_obstacle[label]].id = label;
-                obstacles[blob_to_obstacle[label]].center.x = DBL_MAX;
+                obstacles[blob_to_obstacle[label]].bounding_box.tlc.y = i;
             }
 
             Obstacle *o = &obstacles[blob_to_obstacle[label]];
             o->center += glm::dvec3(0, i, j);
-            o->center.x = (depth_frame[row_offset + j] < o->center.x) ?
-                depth_frame[row_offset + j] : o->center.x;
+
+            if (depth_frame[row_offset + j] < o->bounding_box.tlc.x)
+                o->bounding_box.tlc.x = depth_frame[row_offset + j];
+
+            if (depth_frame[row_offset + j] > o->bounding_box.brf.x)
+                o->bounding_box.brf.x = depth_frame[row_offset + j];
+
+            if (i > o->bounding_box.brf.y)
+                o->bounding_box.brf.y = i;
+
+            if (j > o->bounding_box.brf.z)
+                o->bounding_box.brf.z = j;
+
+            if (j < o->bounding_box.tlc.z)
+                o->bounding_box.tlc.z = j;
         }
     }
 
     this->obstacles.resize(num_obstacles);
     for (Obstacle &o : obstacles) {
-        o.center.x *= this->scale;
+        o.bounding_box.brf.x *= this->scale;
+        o.bounding_box.tlc.x *= this->scale;
+
+        o.center.x = o.bounding_box.tlc.x;
         o.center.y /= blob_num_pixels[o.id];
         o.center.z /= blob_num_pixels[o.id];
 
         // Cartesian to spherical
         o.center.y = ((o.center.y / this->height) * vfov) + base_theta;
         o.center.z = ((1.0 - (o.center.z / this->width)) * hfov) + base_phi;
+
+        o.bounding_box.tlc.y = ((o.bounding_box.tlc.y / this->height) * vfov) + base_theta;
+        o.bounding_box.tlc.z = ((1.0 - (o.bounding_box.tlc.z / this->width)) * hfov) + base_phi;
+
+        o.bounding_box.brf.y = ((o.bounding_box.brf.y / this->height) * vfov) + base_theta;
+        o.bounding_box.brf.z = ((1.0 - (o.bounding_box.brf.z / this->width)) * hfov) + base_phi;
     }
 
     return num_obstacles;
