@@ -1,0 +1,31 @@
+language: cpp
+dist: trusty
+sudo: required
+cache: pip
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+            - gcc-6
+            - python-pip
+            - cmake
+            - pkg-config
+            - libusb-1.0
+            - libglm-dev 
+
+before_script:
+        - pip install --user future pymavlink
+        - sudo add-apt-repository http://packages.ros.org/ros/ubuntu && sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net --recv-key 0xB01FA116
+        - sudo apt-get update
+        - sudo apt -y install ros-indigo-librealsense
+        - git submodule update --init --recursive
+        - CXX="g++-6"
+        - CC="gcc-6"
+
+script:
+        - mkdir build && cd build && cmake -DREALSENSE_INCLUDE_DIR=/opt/ros/indigo/include/ -DREALSENSE_LIBRARY=/opt/ros/indigo/lib/librealsense.so .. && make -j
