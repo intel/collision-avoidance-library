@@ -52,7 +52,6 @@ void print_help(void)
         "  -d, --detect\n"
         "       Detection Algorithms. Can be one of the following:\n"
         "           DI_OBSTACLE\n"
-        "           DI_STRAIGHT_LINE\n"
         "           DI_POLAR_HIST\n"
         "  -a, --avoidance\n"
         "       Avoidance Algorithm. Can be one of the following:\n"
@@ -81,8 +80,6 @@ string detect_to_name(detect_algorithm d)
             return string("DA_UNDEFINED");
         case DI_OBSTACLE:
             return string("DI_OBSTACLE");
-        case DI_STRAIGHT_LINE:
-            return string("DI_STRAIGHT_LINE");
         case DI_POLAR_HIST:
             return string("DI_POLAR_HIST");
     }
@@ -96,8 +93,6 @@ detect_algorithm name_to_detect(string name)
 
     if (name == "DI_OBSTACLE") {
         return DI_OBSTACLE;
-    } else if (name == "DI_STRAIGHT_LINE") {
-        return DI_STRAIGHT_LINE;
     } else if (name == "DI_POLAR_HIST") {
         return DI_POLAR_HIST;
     }
