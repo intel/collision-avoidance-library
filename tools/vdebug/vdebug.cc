@@ -25,7 +25,7 @@
 #include <coav/coav.hh>
 
 auto gzrs_camera = std::make_shared<GazeboRealSenseCamera>();
-auto detector = std::make_shared<DepthImageStraightLineDetector>(gzrs_camera);
+auto detector = std::make_shared<DepthImageObstacleDetector>(gzrs_camera);
 auto gz_quad = std::make_shared<MavQuadCopter>();
 std::vector<Obstacle> obstacles;
 

@@ -21,7 +21,6 @@
 enum detect_algorithm {
     DA_UNDEFINED = 0,
     DI_OBSTACLE,
-    DI_STRAIGHT_LINE,
     DI_POLAR_HIST,
 };
 

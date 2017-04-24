@@ -59,9 +59,6 @@ int main (int argc, char* argv[])
         case DI_OBSTACLE:
             detector = make_shared<DepthImageObstacleDetector>(sensor, 5.0);
             break;
-        case DI_STRAIGHT_LINE:
-            detector = make_shared<DepthImageStraightLineDetector>(sensor);
-            break;
         case DI_POLAR_HIST:
             detector = make_shared<DepthImagePolarHistDetector>(sensor, 5);
             break;
