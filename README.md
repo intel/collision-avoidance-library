@@ -1,6 +1,6 @@
 # Collision Avoidance Library #
 
-<a href="https://scan.coverity.com/projects/01org-collision-avoidance-library">
+[![Build Status](https://travis-ci.org/01org/collision-avoidance-library.svg?branch=master)](https://travis-ci.org/01org/collision-avoidance-library) <a href="https://scan.coverity.com/projects/01org-collision-avoidance-library">
   <img alt="Coverity Scan Build Status"
          src="https://scan.coverity.com/projects/11862/badge.svg"/>
 </a>
