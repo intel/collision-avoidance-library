@@ -24,9 +24,9 @@
 #define GZ_RS_STREAM_DEPTH_TOPIC "~/gzsitl_quadcopter_rs/rs/stream/depth"
 #define DEPTH_CAM_WIDTH 640
 #define DEPTH_CAM_HEIGHT 480
-#define DEPTH_CAM_FOV M_PI / 3.0
+#define DEPTH_CAM_HFOV M_PI / 3.0
+#define DEPTH_CAM_VFOV 0.757608
 #define DEPTH_CAM_SCALE 0.001
-
 // =============
 // GazeboContext
 // =============
@@ -90,7 +90,8 @@ GazeboRealSenseCamera::GazeboRealSenseCamera()
     // TODO: Retrieve camera data straight from topic or camera plugin
     this->width = DEPTH_CAM_WIDTH;
     this->height = DEPTH_CAM_HEIGHT;
-    this->hfov = DEPTH_CAM_FOV;
+    this->hfov = DEPTH_CAM_HFOV;
+    this->vfov = DEPTH_CAM_VFOV;
     this->scale = DEPTH_CAM_SCALE;
 
     // TODO: Find RealSense camera topic and parameters automatically
