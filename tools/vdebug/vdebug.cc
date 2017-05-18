@@ -16,7 +16,7 @@
 
 #include <memory>
 #include <iostream>
-#include <cmath>
+#include <glm/glm.hpp>
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -29,100 +29,203 @@ auto detector = std::make_shared<DepthImageObstacleDetector>(gzrs_camera);
 auto gz_quad = std::make_shared<MavQuadCopter>();
 std::vector<Obstacle> obstacles;
 
-static const int windowWidth = 1000;
-static const int windowHeight = 1000;
-static double eyeX = 0;
-static double eyeY = 0;
-static double eyeZ = 0;
+static int window;
+static int windowWidth = 1280;
+static int windowHeight = 720;
+static double eyeX = 40;
+static double eyeY = -30;
+static double eyeZ = 15;
+static double zoom = 20;
 
 static int enterX = 0, enterY = 0;
 
-void mouseMove(int mouseX, int mouseY)
+void draw_blade(float x, float y, float z)
 {
-    double angle = 3.14 * float(enterX + mouseX) / windowWidth;
-    eyeX = 100 * sin(angle);
-    eyeY = 100 * cos(angle);
-    eyeZ = (enterY + mouseY) / 10 ;
+    glPushMatrix();
 
-    glutPostRedisplay();
+	glColor3f(0.4f, 0.4f, 0.4f);
+
+    GLUquadricObj *cylinder;
+    cylinder = gluNewQuadric();
+
+    GLUquadricObj *circle;
+    circle = gluNewQuadric();
+
+    glTranslatef(x, y, z);
+    gluCylinder(cylinder, 0.3f, 0.3f, 0.05f, 32, 32);
+    gluDisk(circle, 0.0, 0.3f, 32, 1);
+    glTranslatef(0.0f, 0.0f, 0.05f);
+    gluDisk(circle, 0.0, 0.3f, 32, 1);
+
+    glPopMatrix();
 }
 
-void updateMouse(int button, int state, int mouseX, int mouseY)
+void draw_vehicle()
 {
-    if (button != GLUT_LEFT_BUTTON)
-        return;
+    glPushMatrix();
 
-    if (state == GLUT_DOWN) {
-        enterX = enterX - mouseX;
-        enterY = enterY - mouseY;
-    } else if (state == GLUT_UP) {
-        enterX = enterX + mouseX;
-        enterY = enterY + mouseY;
-    }
+	glColor3f(0.1f, 0.1f, 0.1f);
+
+	// top
+	glBegin(GL_QUADS);
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(-0.2f, 0.3f, 0.2f);
+	glVertex3f(0.2f, 0.3f, 0.2f);
+	glVertex3f(0.2f, -0.3f, 0.2f);
+	glVertex3f(-0.2f, -0.3f, 0.2f);
+
+	glEnd();
+
+	// front
+	glBegin(GL_QUADS);
+	glNormal3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.2f, 0.3f, 0.2f);
+	glVertex3f(0.2f, 0.3f, 0.0f);
+	glVertex3f(-0.2f, 0.3f, 0.0f);
+	glVertex3f(-0.2f, 0.3f, 0.2f);
+
+	glEnd();
+
+	// right
+	glBegin(GL_QUADS);
+	glNormal3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(0.2f, 0.3f, 0.0f);
+	glVertex3f(0.2f, 0.3f, 0.2f);
+	glVertex3f(0.2f, -0.3f, 0.2f);
+	glVertex3f(0.2f, -0.3f, 0.0f);
+
+	glEnd();
+
+	// left
+	glBegin(GL_QUADS);
+	glNormal3f(-1.0f, 0.0f, 0.0f);
+	glVertex3f(-0.2f, -0.3f, 0.2f);
+	glVertex3f(-0.2f, 0.3f, 0.2f);
+	glVertex3f(-0.2f, 0.3f, 0.0f);
+	glVertex3f(-0.2f, -0.3f, 0.0f);
+
+	glEnd();
+
+	// bottom
+	glBegin(GL_QUADS);
+	glNormal3f(0.0f, 0.0f, -1.0f);
+	glVertex3f(0.2f, 0.3f, 0.0f);
+	glVertex3f(0.2f, -0.3f, 0.0f);
+	glVertex3f(-0.2f, -0.3f, 0.0f);
+	glVertex3f(-0.2f, 0.3f, 0.0f);
+
+	glEnd();
+
+	// back
+	glBegin(GL_QUADS);
+	glNormal3f(0.0f, -1.0f, 0.0f);
+	glVertex3f(0.2f, -0.3f, 0.2f);
+	glVertex3f(0.2f, -0.3f, 0.0f);
+	glVertex3f(-0.2f, -0.3f, 0.0f);
+	glVertex3f(-0.2f, -0.3f, 0.2f);
+
+	glEnd();
+
+    draw_blade(0.4, 0.4, 0.2);
+    draw_blade(0.4, -0.4, 0.2);
+    draw_blade(-0.4, -0.4, 0.2);
+    draw_blade(-0.4, 0.4, 0.2);
+
 }
 
-void updateDisplay()
+void draw_obstacle(float x, float y, float z)
 {
-    glClearColor(0.1, 0.1, 0.1, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glPushMatrix();
 
-    // Reset transformations
-    glLoadIdentity();
-    glScalef(-1, 1, 1);
-    glOrtho(-10, 10, -10, 10, -100, 1000);
-    gluLookAt(eyeX, eyeY, eyeZ,
-        0, 0, 0,
-        0, 0, 1);
+    glTranslatef(x, y, z);
+    glColor3f(0.7f, 0.0f, 0.0f);
+    glutSolidSphere(0.3, 20.0, 20.0);
 
-    glEnable(GL_FOG);
-    glFogf(GL_FOG_DENSITY, 1.0f);
-    glFogf(GL_FOG_START, 20.0f);
-    glFogf(GL_FOG_END, 120.0f);
+    glPopMatrix();
+}
 
-    glBegin(GL_QUADS);
-        glColor3f(0.2, 0.2, 0.2);
-        glVertex3f(-100, -100, -0.01);
-        glVertex3f(-100,  100, -0.01);
-        glVertex3f( 100,  100, -0.01);
-        glVertex3f( 100, -100, -0.01);
-    glEnd();
+void draw_grid()
+{
+    glPushMatrix();
 
     glBegin(GL_LINES);
+        glColor3f(0.9f, 0.9f, 0.9f);
+        for (int i = -10; i <= 10; i++) {
+            if (i == 0) continue;
+
+            glNormal3f(0.0f, 0.0f, 1.0f);
+            glVertex3f(100, i * 10, 0);
+            glVertex3f(-100, i * 10, 0);
+
+            glNormal3f(0.0f, 0.0f, 1.0f);
+            glVertex3f(i * 10, 100, 0);
+            glVertex3f(i * 10, -100, 0);
+        }
+
         // X axis
-        glColor3f(1.0, 0, 0);
+        glColor3f(1.0, 0.4, 0.4);
         glVertex3f(-100, 0, 0);
         glVertex3f( 100, 0, 0);
         // Y axis
-        glColor3f(0, 1.0, 0);
+        glColor3f(0.4, 1.0, 0.4);
         glVertex3f(0, -100, 0);
         glVertex3f(0,  100, 0);
         // Z axis
-        glColor3f(0, 0, 1.0);
+        glColor3f(0.4, 0.4, 1.0);
         glVertex3f(0, 0, 0);
         glVertex3f(0, 0, 100);
     glEnd();
 
-    glPointSize(4.0f);
+    glTranslatef(0.0, 0.0, -0.01);
+
+	glBegin(GL_QUADS);
+	glNormal3f(0.0f, 0.0f, 1.0f);
+    glColor3f(0.7f, 0.7f, 0.7f);
+	glVertex3f(100.0f, 100.0f, 0.0f);
+	glVertex3f(100.0f, -100.0f, 0.0f);
+	glVertex3f(-100.0f, -100.0f, 0.0f);
+	glVertex3f(-100.0f, 100.0f, 0.0f);
+    glEnd();
+
+    glPopMatrix();
+}
+
+void updateDisplay()
+{
+    glClearColor(0.8, 0.8, 0.8, 1.0);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45, float(windowWidth) / float(windowHeight), 1, 1000);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    gluLookAt(eyeX, eyeY, eyeZ, 0, 0, 0, 0, 0, 1);
+
+    draw_grid();
 
     glm::dvec3 pos = gz_quad->vehicle_pose().pos;
     glm::dquat rot = gz_quad->vehicle_pose().rot;
 
     glPushMatrix();
+
     glTranslatef(pos.x, pos.y, pos.z);
-    glRotatef(-90, 1.0f, 0.0f, 0.0f); // fix coordinate system
     auto angleAxis = glm::axis(rot);
     glRotatef(glm::angle(rot), angleAxis.x, angleAxis.y, angleAxis.z);
 
-    glBegin(GL_POINTS);
-        // Draw vehicle pos
-        glColor3f(0, 1, 0);
-        glVertex3f(0, 0, 0);
-        // Draw detected obstacles
-        glColor3f(1, 0, 0);
-        for (auto& o : obstacles) {
-             glVertex3f(o.center.x, o.center.y, o.center.z);
-        }
-    glEnd();
+    draw_vehicle();
+
+    for (auto& o : obstacles) {
+        float ox = o.center.x * cos(o.center.y);
+        float oy = o.center.x * sin(o.center.y);
+        float oz = o.center.x * cos(o.center.z);
+
+        draw_obstacle(ox, oy, oz);
+    }
+
     glPopMatrix();
 
     glutSwapBuffers();
@@ -134,15 +237,100 @@ void detect()
     glutPostRedisplay();
 }
 
+void mouseMove(int mouseX, int mouseY)
+{
+    double angle = 3.14 * float(enterX + mouseX) / windowWidth;
+    eyeX = zoom * sin(angle);
+    eyeY = zoom * cos(angle);
+    eyeZ = (enterY + mouseY) / 10 ;
+
+    std::cout.precision(4);
+
+    glutPostRedisplay();
+}
+
+void updateMouse(int button, int state, int mouseX, int mouseY)
+{
+    if (button == GLUT_LEFT_BUTTON) {
+        if (state == GLUT_DOWN) {
+            enterX = enterX - mouseX;
+            enterY = enterY - mouseY;
+        } else if (state == GLUT_UP) {
+            enterX = enterX + mouseX;
+            enterY = enterY + mouseY;
+        }
+    } else if (button == 3) {
+        if (state == GLUT_UP) return;
+        zoom -= 5;
+        eyeX = zoom / (zoom + 5) * eyeX;
+        eyeY = zoom / (zoom + 5) * eyeY;
+    } else if (button == 4) {
+        if (state == GLUT_UP) return;
+        zoom += 5;
+        eyeX = zoom / (zoom - 5) * eyeX;
+        eyeY = zoom / (zoom - 5) * eyeY;
+    }
+
+    glutPostRedisplay();
+}
+
+void windowReshape(GLint newWidth, GLint newHeight)
+{
+    windowWidth = newWidth;
+    windowHeight = newHeight;
+
+    glViewport( 0, 0, newWidth, newHeight );
+}
+
+void keyboard_handler( unsigned char key, int x, int y )
+{
+  switch ( key )
+  {
+    case 27: // Escape key
+        glutDestroyWindow(window);
+        exit (0);
+        break;
+  }
+}
+
+void init_gl()
+{
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    GLfloat ambient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    GLfloat diffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+    GLfloat specular[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+    GLfloat position[] = { 30.0f, 30.0f, 30.0f, 1.0f };
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+    glLightfv(GL_LIGHT0, GL_POSITION, position);
+
+    glShadeModel(GL_SMOOTH);
+
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+}
+
 int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE);
     glutInitWindowSize(windowWidth, windowHeight);
     glutInitWindowPosition(100, 100);
-    glutCreateWindow("Coav Visual Debugger");
+    window = glutCreateWindow("Coav Visual Debugger");
+
+    init_gl();
+
+    glutReshapeFunc(windowReshape);
     glutMouseFunc(updateMouse);
     glutMotionFunc(mouseMove);
+    glutKeyboardFunc(keyboard_handler);
     glutIdleFunc(detect);
     glutDisplayFunc(updateDisplay);
     glutMainLoop();
