@@ -24,27 +24,27 @@ namespace defaults
     const unsigned int vertical_sweep_pixels = 10;
 }
 
-DepthImagePolarHistDetector::DepthImagePolarHistDetector(
-    std::shared_ptr<DepthCamera> depth_camera, double angle_step, double threshold,
-    double density)
+DepthImagePolarHistDetector::DepthImagePolarHistDetector(double angle_step,
+        double threshold, double density)
 {
-    this->sensor = depth_camera;
     this->step = glm::radians(angle_step);
     this->threshold = threshold;
     this->density = density;
 }
 
-const std::vector<Obstacle> &DepthImagePolarHistDetector::detect()
+const std::vector<Obstacle> &DepthImagePolarHistDetector::detect(
+        std::shared_ptr<void> data)
 {
+    std::shared_ptr<DepthData> depth_data = std::static_pointer_cast<DepthData>(data);
     std::vector<double> histogram;
     std::vector<unsigned int> density_count;
 
     // Obtain camera depth buffer and camera properties
-    std::vector<uint16_t> depth_buffer = this->sensor->get_depth_buffer();
-    unsigned int height = this->sensor->get_height();
-    unsigned int width = this->sensor->get_width();
-    double fov = this->sensor->get_horizontal_fov();
-    double scale = this->sensor->get_scale();
+    std::vector<uint16_t> depth_buffer = depth_data->depth_buffer;
+    unsigned int height = depth_data->height;
+    unsigned int width = depth_data->width;
+    double fov = depth_data->hfov;
+    double scale = depth_data->scale;
 
     unsigned int middle_row = height / 2;
 

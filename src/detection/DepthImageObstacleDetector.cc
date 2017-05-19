@@ -106,23 +106,22 @@ void Set::join(Set *a, Set *b)
         a->rank += 1;
 }
 
-DepthImageObstacleDetector::DepthImageObstacleDetector(
-    std::shared_ptr<DepthCamera> depth_camera, double threshold_meters)
+DepthImageObstacleDetector::DepthImageObstacleDetector(double threshold_meters)
 {
-    this->sensor = depth_camera;
     this->obstacles.resize(MAX_NUM_LABELS);
     this->threshold = threshold_meters;
 }
 
-const std::vector<Obstacle> &DepthImageObstacleDetector::detect()
+const std::vector<Obstacle> &DepthImageObstacleDetector::detect(std::shared_ptr<void> data)
 {
+    std::shared_ptr<DepthData> depth_data = std::static_pointer_cast<DepthData>(data);
     // Store current camera frame data
-    this->depth_frame = this->sensor->get_depth_buffer();
-    this->height = this->sensor->get_height();
-    this->width = this->sensor->get_width();
-    this->scale = this->sensor->get_scale();
-    this->hfov = this->sensor->get_horizontal_fov();
-    this->vfov = this->sensor->get_vertical_fov();
+    this->depth_frame = depth_data->depth_buffer;
+    this->height = depth_data->height;
+    this->width = depth_data->width;
+    this->scale = depth_data->scale;
+    this->hfov = depth_data->hfov;
+    this->vfov = depth_data->vfov;
     this->base_phi = (M_PI - hfov) / 2;
     this->base_theta = (M_PI - vfov) / 2;
 

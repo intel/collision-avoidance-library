@@ -27,9 +27,10 @@ using namespace std;
 class DepthImageSimpleDetector : public Detector
 {
   public:
-    DepthImageSimpleDetector(shared_ptr<DepthCamera> depth_camera, double threshold_m = 1.5);
+    DepthImageSimpleDetector(double threshold_m = 1.5);
 
-    const vector<Obstacle> &detect() override;
+    const vector<Obstacle> &detect(
+            shared_ptr<void> data) override;
 
   private:
     vector<Obstacle> obstacles = {};
@@ -38,25 +39,25 @@ class DepthImageSimpleDetector : public Detector
 };
 
 DepthImageSimpleDetector::DepthImageSimpleDetector(
-    shared_ptr<DepthCamera> depth_camera,
     double threshold_m)
 {
-    this->sensor = depth_camera;
     this->threshold = threshold_m;
 }
 
-const vector<Obstacle> &DepthImageSimpleDetector::detect()
+const vector<Obstacle> &DepthImageSimpleDetector::detect(
+        shared_ptr<void> data)
 {
+    shared_ptr<DepthData> depth_data = static_pointer_cast<DepthData>(data);
     // Obtain camera depth buffer and camera properties
-    vector<uint16_t> depth_buffer = this->sensor->get_depth_buffer();
+    vector<uint16_t> depth_buffer = depth_data->depth_buffer;
 
-    unsigned int height = this->sensor->get_height();
-    unsigned int width = this->sensor->get_width();
+    unsigned int height = depth_data->height;
+    unsigned int width = depth_data->width;
 
-    double scale = this->sensor->get_scale();
+    double scale = depth_data->scale;
 
-    double hfov = this->sensor->get_horizontal_fov();
-    double vfov = this->sensor->get_vertical_fov();
+    double hfov = depth_data->hfov;
+    double vfov = depth_data->vfov;
     double base_phi = (M_PI - hfov) / 2;
     double base_theta = (M_PI - vfov) / 2;
 
@@ -115,13 +116,13 @@ int main(int argc, char **argv)
 
     // Initialize Detector
     shared_ptr<DepthImageSimpleDetector> obstacle_detector =
-        make_shared<DepthImageSimpleDetector>(depth_camera);
+        make_shared<DepthImageSimpleDetector>();
 
     cout << "Sensing the obstacles closer than 1.5 meters." << endl;
     while (true) {
 
         // Sense
-        auto sensed_elements = obstacle_detector->detect();
+        auto sensed_elements = obstacle_detector->detect(depth_camera->read());
 
         // Print found Obstacle information
         if (sensed_elements.size()) {
