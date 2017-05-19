@@ -24,7 +24,7 @@
 
 using namespace std;
 
-class DepthImageSimpleDetector : public Detector<DepthCamera>
+class DepthImageSimpleDetector : public Detector
 {
   public:
     DepthImageSimpleDetector(shared_ptr<DepthCamera> depth_camera, double threshold_m = 1.5);
@@ -33,6 +33,7 @@ class DepthImageSimpleDetector : public Detector<DepthCamera>
 
   private:
     vector<Obstacle> obstacles = {};
+    std::shared_ptr<DepthCamera> sensor;
     double threshold;
 };
 

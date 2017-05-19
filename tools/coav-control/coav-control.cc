@@ -54,7 +54,7 @@ int main (int argc, char* argv[])
         exit(-EINVAL);
     }
 
-    shared_ptr<Detector<DepthCamera>> detector;
+    shared_ptr<Detector> detector;
     switch (opts.detect) {
         case DI_OBSTACLE:
             detector = make_shared<DepthImageObstacleDetector>(sensor, 5.0);

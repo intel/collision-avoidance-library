@@ -21,12 +21,8 @@
 
 #include "common/common.hh"
 
-template <typename SensorType>
 class Detector
 {
 public:
     virtual const std::vector<Obstacle> &detect() = 0;
-
-protected:
-    std::shared_ptr<SensorType> sensor;
 };
