@@ -43,6 +43,7 @@ struct control_options {
     enum sensor_type sensor;
     unsigned int port;
     bool quiet;
+    bool vdebug;
 };
 
 control_options parse_cmdline(int argc, char *argv[]);

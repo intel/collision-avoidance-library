@@ -7,7 +7,13 @@ if(DEFINED ENV{SDKTARGETSYSROOT})
         DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/init.d)
 endif()
 
-add_executable(coav-control coav-control.cc parser.cc)
-target_link_libraries(coav-control coav)
+set(LIBRARIES coav)
+
+if (${WITH_VDEBUG})
+    set(LIBRARIES ${LIBRARIES} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
+endif()
+
+add_executable(coav-control coav-control.cc parser.cc visual.cc)
+target_link_libraries(coav-control ${LIBRARIES})
 install(TARGETS coav-control
     DESTINATION ${CMAKE_INSTALL_BINDIR})

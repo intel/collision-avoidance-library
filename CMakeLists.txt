@@ -51,6 +51,10 @@ if (${WITH_GAZEBO})
     add_definitions(-DHAVE_GAZEBO)
 endif()
 
+if (${WITH_VDEBUG})
+    add_definitions(-DWITH_VDEBUG)
+endif()
+
 # Check if submodules have been initialized
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/modules/mavlink_vehicles/CMakeLists.txt)
     message(SEND_ERROR "mavlink_vehicles submodule not found")
