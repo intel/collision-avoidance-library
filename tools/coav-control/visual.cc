@@ -52,8 +52,8 @@ void keyboard_handler( unsigned char key, int x, int y )
 void coav_loop()
 {
     vdata.coav.depth_data = vdata.coav.sensor->read();
-    vector<Obstacle> obstacles = vdata.coav.detector->detect(vdata.coav.depth_data);
-    vdata.coav.avoidance->avoid(obstacles);
+    vdata.coav.obstacles = vdata.coav.detector->detect(vdata.coav.depth_data);
+    vdata.coav.avoidance->avoid(vdata.coav.obstacles);
 
     glutPostRedisplay();
 }
@@ -63,7 +63,7 @@ void update_display()
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    vdata.depth->visualize(vdata.coav.depth_data);
+    vdata.depth->visualize(vdata.coav.depth_data, vdata.coav.obstacles);
 
     glutSwapBuffers();
 }
