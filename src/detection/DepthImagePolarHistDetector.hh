@@ -22,7 +22,7 @@
 #include "detection/Detectors.hh"
 #include "sensors/Sensors.hh"
 
-class DepthImagePolarHistDetector : public Detector<DepthCamera>
+class DepthImagePolarHistDetector : public Detector
 {
 public:
     DepthImagePolarHistDetector(std::shared_ptr<DepthCamera> depth_camera,
@@ -34,4 +34,5 @@ private:
     double threshold;
     double density;
     std::vector<Obstacle> obstacles;
+    std::shared_ptr<DepthCamera> sensor;
 };
