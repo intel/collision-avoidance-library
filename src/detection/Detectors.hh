@@ -24,5 +24,5 @@
 class Detector
 {
 public:
-    virtual const std::vector<Obstacle> &detect() = 0;
+    virtual const std::vector<Obstacle> &detect(std::shared_ptr<void> data) = 0;
 };

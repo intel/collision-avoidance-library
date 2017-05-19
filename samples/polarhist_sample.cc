@@ -29,7 +29,7 @@ int main(int argc, char **argv)
         std::make_shared<RealSenseCamera>(640, 480, 30);
 
     std::shared_ptr<DepthImagePolarHistDetector> obstacle_detector =
-        std::make_shared<DepthImagePolarHistDetector>(depth_camera, STEP, 1.5, 0.2);
+        std::make_shared<DepthImagePolarHistDetector>(STEP, 1.5, 0.2);
 
     double fov = depth_camera->get_horizontal_fov();
     unsigned int slices = ceil(fov / STEP);
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
     std::cout << "step = " << fixed_step << std::endl;
 
     while (true) {
-        std::vector<Obstacle> obstacles = obstacle_detector->detect();
+        std::vector<Obstacle> obstacles = obstacle_detector->detect(depth_camera->read());
 
         std::vector<bool> visual_slices;
         visual_slices.resize(slices, false);

@@ -57,10 +57,10 @@ int main (int argc, char* argv[])
     shared_ptr<Detector> detector;
     switch (opts.detect) {
         case DI_OBSTACLE:
-            detector = make_shared<DepthImageObstacleDetector>(sensor, 5.0);
+            detector = make_shared<DepthImageObstacleDetector>(5.0);
             break;
         case DI_POLAR_HIST:
-            detector = make_shared<DepthImagePolarHistDetector>(sensor, 5);
+            detector = make_shared<DepthImagePolarHistDetector>(5);
             break;
         default:
             cerr << "ERROR: Invalid Detector" << endl;
@@ -84,7 +84,7 @@ int main (int argc, char* argv[])
     }
 
     while (true) {
-        avoidance->avoid(detector->detect());
+        avoidance->avoid(detector->detect(sensor->read()));
     }
 
     return 0;

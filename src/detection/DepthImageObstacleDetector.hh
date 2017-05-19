@@ -25,12 +25,11 @@
 class DepthImageObstacleDetector : public Detector
 {
 public:
-    DepthImageObstacleDetector(std::shared_ptr<DepthCamera> depth_camera, double threshold_meters = 0.0);
-    const std::vector<Obstacle> &detect() override;
+    DepthImageObstacleDetector(double threshold_meters = 0.0);
+    const std::vector<Obstacle> &detect(std::shared_ptr<void> data) override;
 
 private:
     std::vector<Obstacle> obstacles;
-    std::shared_ptr<DepthCamera> sensor;
     std::vector<uint16_t> depth_frame;
     std::vector<uint16_t> labels;
     int width;
