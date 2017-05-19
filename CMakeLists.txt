@@ -40,7 +40,7 @@ option(WITH_REALSENSE "Add realsense support" ON)
 option(WITH_SAMPLES "Compile project samples" OFF)
 option(WITH_GAZEBO "Enable Gazebo simulation features" OFF)
 option(WITH_TOOLS "Enable library tools" OFF)
-dependent_option(WITH_VDEBUG "Compile visual debugger" OFF WITH_GAZEBO)
+option(WITH_VDEBUG "Compile visual debugger" OFF)
 
 # Options definitions and custom setup
 if (${WITH_REALSENSE})
@@ -160,7 +160,6 @@ install(DIRECTORY ${CMAKE_BINARY_DIR}/include/
 # Extra targets
 if (${WITH_TOOLS})
     add_subdirectory(tools/coav-control)
-    add_subdirectory(tools/vdebug)
 endif()
 
 if (${WITH_SAMPLES})
