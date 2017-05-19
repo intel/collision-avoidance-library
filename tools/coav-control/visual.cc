@@ -35,6 +35,7 @@ void reshape_handler(GLint newWidth, GLint newHeight)
     vdata.window.width = newWidth;
     vdata.window.height = newHeight;
 
+    vdata.env->set_viewport(0, 0, vdata.window.width, vdata.window.height);
     vdata.depth->set_viewport(0, 0, vdata.window.width * 0.3, vdata.window.height * 0.3);
 }
 
@@ -49,6 +50,16 @@ void keyboard_handler( unsigned char key, int x, int y )
   }
 }
 
+void mouse_move_handler(int x, int y)
+{
+    vdata.env->on_mouse_move(x, y);
+}
+
+void mouse_button_handler(int button, int state, int x, int y)
+{
+    vdata.env->on_mouse_button(button, state, x, y);
+}
+
 void coav_loop()
 {
     vdata.coav.depth_data = vdata.coav.sensor->read();
@@ -61,8 +72,9 @@ void coav_loop()
 void update_display()
 {
     glClearColor(0.0, 0.0, 0.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    vdata.env->visualize(vdata.coav.vehicle, vdata.coav.obstacles);
     vdata.depth->visualize(vdata.coav.depth_data, vdata.coav.obstacles);
 
     glutSwapBuffers();
@@ -80,6 +92,7 @@ void visual_mainlopp(int argc, char* argv[], shared_ptr<MavQuadCopter> vehicle,
     vdata.window.width = 1280;
     vdata.window.height = 960;
 
+    vdata.env = make_shared<VisualEnvironment>(0, 0, vdata.window.width, vdata.window.height);
     vdata.depth = make_shared<VisualDepth>(0, 0, vdata.window.width * 0.3, vdata.window.height * 0.3);
 
     glutInit(&argc, argv);
@@ -91,6 +104,8 @@ void visual_mainlopp(int argc, char* argv[], shared_ptr<MavQuadCopter> vehicle,
 
     glutReshapeFunc(reshape_handler);
     glutKeyboardFunc(keyboard_handler);
+    glutMouseFunc(mouse_button_handler);
+    glutMotionFunc(mouse_move_handler);
 
     glutIdleFunc(coav_loop);
 

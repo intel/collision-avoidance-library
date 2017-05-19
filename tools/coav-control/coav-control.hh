@@ -88,6 +88,32 @@ private:
     size_t frame_buffer_size;
 };
 
+class VisualEnvironment
+{
+public:
+    VisualEnvironment(int x, int y, unsigned int width, unsigned int height);
+    void visualize(shared_ptr<MavQuadCopter> vehicle, vector<Obstacle> obstacles);
+    void set_viewport(int x, int y, unsigned int width, unsigned int height);
+
+    void on_mouse_move(int mouseX, int mouseY);
+    void on_mouse_button(int button, int state, int mouseX, int mouseY);
+
+private:
+    int x;
+    int y;
+
+    unsigned int width;
+    unsigned int height;
+
+    double x_eye = 40;
+    double y_eye = -30;
+    double z_eye = 15;
+    double zoom = 20;
+
+    int x_enter = 0;
+    int y_enter = 0;
+};
+
 struct VisualData
 {
     struct {
@@ -108,6 +134,7 @@ struct VisualData
     } coav;
 
     shared_ptr<VisualDepth> depth;
+    shared_ptr<VisualEnvironment> env;
 };
 
 void visual_mainlopp(int argc, char* argv[], shared_ptr<MavQuadCopter> vehicle,
