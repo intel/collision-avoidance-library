@@ -17,7 +17,18 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 #include <vector>
+
+struct DepthData
+{
+    unsigned int height;
+    unsigned int width;
+    double scale;
+    double hfov;
+    double vfov;
+    std::vector<uint16_t> depth_buffer;
+};
 
 class DepthCamera
 {
@@ -25,6 +36,7 @@ public:
     unsigned int get_height();
     unsigned int get_width();
     double get_scale();
+    std::shared_ptr<struct DepthData> read();
 
     virtual std::vector<uint16_t> &get_depth_buffer() = 0;
     virtual double get_horizontal_fov() { return hfov; };
