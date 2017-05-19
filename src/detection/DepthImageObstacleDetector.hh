@@ -54,5 +54,5 @@ private:
     int tolerance = 20;
     int min_num_pixels = 400; // equivalent area of a 20x20 square
 
-    uint16_t threshold = 0;
+    double threshold = 0;
 };

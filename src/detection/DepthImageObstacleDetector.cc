@@ -111,7 +111,7 @@ DepthImageObstacleDetector::DepthImageObstacleDetector(
 {
     this->sensor = depth_camera;
     this->obstacles.resize(MAX_NUM_LABELS);
-    this->threshold = (uint16_t)(threshold_meters / depth_camera->get_scale());
+    this->threshold = threshold_meters;
 }
 
 const std::vector<Obstacle> &DepthImageObstacleDetector::detect()
@@ -134,7 +134,8 @@ const std::vector<Obstacle> &DepthImageObstacleDetector::detect()
 
 inline bool DepthImageObstacleDetector::is_valid(const uint16_t depth)
 {
-    return (depth != BACKGROUND && (this->threshold ? depth < this->threshold : true));
+    uint16_t threshold_scaled = (uint16_t) (this->threshold / this->scale);
+    return (depth != BACKGROUND && (threshold_scaled ? depth < threshold_scaled : true));
 }
 
 inline bool DepthImageObstacleDetector::is_in_range(const uint16_t d1, const uint16_t d2)
