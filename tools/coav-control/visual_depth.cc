@@ -20,6 +20,8 @@
 
 #include <GL/glu.h>
 
+#include <coav/coav.hh>
+
 #include "coav-control.hh"
 
 VisualDepth::VisualDepth(int x, int y, unsigned int width, unsigned int height)
@@ -80,7 +82,7 @@ void VisualDepth::rainbow_scale(double value, uint8_t rgb[])
     }
 }
 
-void VisualDepth::visualize(shared_ptr<DepthData> depth_data)
+void VisualDepth::visualize(shared_ptr<DepthData> depth_data, vector<Obstacle> obstacles)
 {
     if (depth_data == nullptr) {
         return;
@@ -111,6 +113,25 @@ void VisualDepth::visualize(shared_ptr<DepthData> depth_data)
     for (unsigned int i = 0; i < depth_data->depth_buffer.size(); i++) {
         uint8_t *rgb = this->frame_buffer + (3 * i);
         this->rainbow_scale(((double)depth_data->depth_buffer[i] * depth_data->scale) / 5.0, rgb);
+    }
+
+    if (obstacles.size() != 0) {
+        double base_phi = (M_PI - depth_data->hfov) / 2;
+        double base_theta = (M_PI - depth_data->vfov) / 2;
+
+        for (Obstacle o : obstacles) {
+            int x = (1 - ((o.center.z - base_phi) / depth_data->hfov)) * depth_data->width;
+            int y = (o.center.y - base_theta) * depth_data->height / depth_data->vfov;
+
+            uint8_t *p = this->frame_buffer;
+            for (int j = y - 5; j < y + 5; j++) {
+                for (int i = x - 5; i < x + 5; i++) {
+                    p[((j * depth_data->width) + i) * 3] = 255;
+                    p[(((j * depth_data->width) + i) * 3) + 1] = 0;
+                    p[(((j * depth_data->width) + i) * 3) + 2] = 255;
+                }
+            }
+        }
     }
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, depth_data->width, depth_data->height, 0, GL_RGB,

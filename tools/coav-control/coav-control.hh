@@ -73,7 +73,7 @@ public:
     ~VisualDepth();
     void info();
     void rainbow_scale(double value, uint8_t rgb[]);
-    void visualize(shared_ptr<DepthData> depth_data);
+    void visualize(shared_ptr<DepthData> depth_data, vector<Obstacle> obstacles = vector<Obstacle>());
     void set_viewport(int x, int y, unsigned int width, unsigned int height);
 
 private:
@@ -104,6 +104,7 @@ struct VisualData
         shared_ptr<CollisionAvoidanceStrategy<MavQuadCopter>> avoidance;
 
         shared_ptr<DepthData> depth_data;
+        vector<Obstacle> obstacles;
     } coav;
 
     shared_ptr<VisualDepth> depth;
