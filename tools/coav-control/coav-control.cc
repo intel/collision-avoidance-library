@@ -83,8 +83,14 @@ int main (int argc, char* argv[])
             exit(-EINVAL);
     }
 
-    while (true) {
-        avoidance->avoid(detector->detect(sensor->read()));
+    if (opts.vdebug) {
+#ifdef WITH_VDEBUG
+        visual_mainlopp(argc, argv, vehicle, sensor, detector, avoidance);
+#endif
+    } else {
+        while (true) {
+            avoidance->avoid(detector->detect(sensor->read()));
+        }
     }
 
     return 0;

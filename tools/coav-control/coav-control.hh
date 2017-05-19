@@ -17,6 +17,9 @@
 #pragma once
 
 #include <string>
+#include <memory>
+
+#include <coav/coav.hh>
 
 enum detect_algorithm {
     DA_UNDEFINED = 0,
@@ -43,6 +46,7 @@ struct control_options {
     enum sensor_type sensor;
     unsigned int port;
     bool quiet;
+    bool vdebug;
 };
 
 control_options parse_cmdline(int argc, char *argv[]);
@@ -55,3 +59,29 @@ avoidance_algorithm name_to_avoidance(std::string name);
 
 std::string sensor_to_name(sensor_type s);
 sensor_type name_to_sensor(std::string name);
+
+#ifdef WITH_VDEBUG
+
+using namespace std;
+
+struct VisualData
+{
+    struct {
+        unsigned int width;
+        unsigned int height;
+
+        int ref;
+    } window;
+
+    struct {
+        shared_ptr<MavQuadCopter> vehicle;
+        shared_ptr<DepthCamera> sensor;
+        shared_ptr<Detector> detector;
+        shared_ptr<CollisionAvoidanceStrategy<MavQuadCopter>> avoidance;
+    } coav;
+};
+
+void visual_mainlopp(int argc, char* argv[], shared_ptr<MavQuadCopter> vehicle,
+        shared_ptr<DepthCamera> sensor, shared_ptr<Detector> detector,
+        shared_ptr<CollisionAvoidanceStrategy<MavQuadCopter>> avoidance);
+#endif

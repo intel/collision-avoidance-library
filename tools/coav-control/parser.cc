@@ -66,6 +66,8 @@ void print_help(void)
         "       UDP port to use \n"
         "  -q, --quiet\n"
         "       Supress info messages \n"
+        "  -x, --visual\n"
+        "       Run visual debugger\n\n"
         "  -h, --help\n"
         "       Display this help and exit\n\n"
         "Example:\n"
@@ -189,6 +191,7 @@ control_options parse_cmdline(int argc, char *argv[])
         .sensor = ST_UNDEFINED,
         .port = 0,
         .quiet = false,
+        .vdebug = false,
     };
 
     for (v_pair p : list) {
@@ -245,6 +248,14 @@ control_options parse_cmdline(int argc, char *argv[])
         // Quiet
         } else if (p.option == "-q" || p.option == "--quiet") {
             opts.quiet = true;
+
+        // VDebug
+        } else if (p.option == "-x" || p.option == "--visual") {
+#ifdef WITH_VDEBUG
+            opts.vdebug = true;
+#else
+            cerr << "ERROR: Feature not  available 'visual debugger'" << endl;
+#endif
 
         //Help
         } else if (p.option == "-h" || p.option == "--help") {
