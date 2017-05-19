@@ -35,7 +35,7 @@ void reshape_handler(GLint newWidth, GLint newHeight)
     vdata.window.width = newWidth;
     vdata.window.height = newHeight;
 
-    glViewport(0, 0, newWidth, newHeight);
+    vdata.depth->set_viewport(0, 0, vdata.window.width * 0.3, vdata.window.height * 0.3);
 }
 
 void keyboard_handler( unsigned char key, int x, int y )
@@ -51,8 +51,8 @@ void keyboard_handler( unsigned char key, int x, int y )
 
 void coav_loop()
 {
-    shared_ptr<DepthData> depth_data = vdata.coav.sensor->read();
-    vector<Obstacle> obstacles = vdata.coav.detector->detect(depth_data);
+    vdata.coav.depth_data = vdata.coav.sensor->read();
+    vector<Obstacle> obstacles = vdata.coav.detector->detect(vdata.coav.depth_data);
     vdata.coav.avoidance->avoid(obstacles);
 
     glutPostRedisplay();
@@ -60,6 +60,11 @@ void coav_loop()
 
 void update_display()
 {
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    vdata.depth->visualize(vdata.coav.depth_data);
+
     glutSwapBuffers();
 }
 
@@ -74,6 +79,8 @@ void visual_mainlopp(int argc, char* argv[], shared_ptr<MavQuadCopter> vehicle,
 
     vdata.window.width = 1280;
     vdata.window.height = 960;
+
+    vdata.depth = make_shared<VisualDepth>(0, 0, vdata.window.width * 0.3, vdata.window.height * 0.3);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE);

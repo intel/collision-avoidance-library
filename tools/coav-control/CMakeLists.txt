@@ -13,7 +13,7 @@ if (${WITH_VDEBUG})
     set(LIBRARIES ${LIBRARIES} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
 endif()
 
-add_executable(coav-control coav-control.cc parser.cc visual.cc)
+add_executable(coav-control coav-control.cc parser.cc visual.cc visual_depth.cc)
 target_link_libraries(coav-control ${LIBRARIES})
 install(TARGETS coav-control
     DESTINATION ${CMAKE_INSTALL_BINDIR})
