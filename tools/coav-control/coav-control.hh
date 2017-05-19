@@ -62,7 +62,31 @@ sensor_type name_to_sensor(std::string name);
 
 #ifdef WITH_VDEBUG
 
+#include <GL/gl.h>
+
 using namespace std;
+
+class VisualDepth
+{
+public:
+    VisualDepth(int x, int y, unsigned int width, unsigned int height);
+    ~VisualDepth();
+    void info();
+    void rainbow_scale(double value, uint8_t rgb[]);
+    void visualize(shared_ptr<DepthData> depth_data);
+    void set_viewport(int x, int y, unsigned int width, unsigned int height);
+
+private:
+    int x;
+    int y;
+
+    unsigned int width;
+    unsigned int height;
+
+    GLuint texture;
+    uint8_t *frame_buffer;
+    size_t frame_buffer_size;
+};
 
 struct VisualData
 {
@@ -78,7 +102,11 @@ struct VisualData
         shared_ptr<DepthCamera> sensor;
         shared_ptr<Detector> detector;
         shared_ptr<CollisionAvoidanceStrategy<MavQuadCopter>> avoidance;
+
+        shared_ptr<DepthData> depth_data;
     } coav;
+
+    shared_ptr<VisualDepth> depth;
 };
 
 void visual_mainlopp(int argc, char* argv[], shared_ptr<MavQuadCopter> vehicle,
