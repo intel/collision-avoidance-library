@@ -85,6 +85,7 @@ run_autopilot () {
         # Fetch copter parameters file
         if [ ! -f copter.parm ]; then
             wget ${APM_PARM_URL}
+            echo "WPNAV_SPEED 100" >> ./copter.parm
             wait $!
 
             if [ ! -f copter.parm ]; then
