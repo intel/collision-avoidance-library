@@ -214,6 +214,7 @@ int DepthImageObstacleDetector::extract_blobs()
 
     // Check if the current stored depth frame is valid
     if (depth_frame.size() == 0) {
+        obstacles.resize(0);
         return 0;
     }
 
