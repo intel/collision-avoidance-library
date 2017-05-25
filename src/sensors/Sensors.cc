@@ -32,3 +32,17 @@ double DepthCamera::get_scale()
 {
     return scale;
 }
+
+std::shared_ptr<struct DepthData> DepthCamera::read()
+{
+    std::shared_ptr<struct DepthData> data = std::make_shared<struct DepthData>();
+
+    data->height = this->get_height();
+    data->width = this->get_width();
+    data->scale = this->get_scale();
+    data->hfov = this->get_horizontal_fov();
+    data->vfov = this->get_vertical_fov();
+    data->depth_buffer = this->get_depth_buffer();
+
+    return data;
+}

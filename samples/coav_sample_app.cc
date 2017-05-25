@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 
     // Initialize Detector
     std::shared_ptr<DepthImageObstacleDetector> obstacle_detector =
-        std::make_shared<DepthImageObstacleDetector>(depth_camera);
+        std::make_shared<DepthImageObstacleDetector>();
 
     // Initialize Avoidance Strategy
     std::shared_ptr<QuadCopterStopAvoidance> avoidance =
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
     while (true) {
 
         // Sense and avoid
-        auto sensed_elements = obstacle_detector->detect();
+        auto sensed_elements = obstacle_detector->detect(depth_camera->read());
 
         // Avoid
         avoidance->avoid(sensed_elements);
