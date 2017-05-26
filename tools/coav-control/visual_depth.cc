@@ -120,12 +120,17 @@ void VisualDepth::visualize(shared_ptr<DepthData> depth_data, vector<Obstacle> o
         double base_theta = (M_PI - depth_data->vfov) / 2;
 
         for (Obstacle o : obstacles) {
-            int x = (1 - ((o.center.z - base_phi) / depth_data->hfov)) * depth_data->width;
-            int y = (o.center.y - base_theta) * depth_data->height / depth_data->vfov;
+            unsigned int x = (1 - ((o.center.z - base_phi) / depth_data->hfov))
+                * depth_data->width;
+            unsigned int y = (o.center.y - base_theta) * depth_data->height
+                / depth_data->vfov;
+
+            x = x < 5 ? 5 : (x > depth_data->width - 5 ? depth_data->width - 5 : x);
+            y = y < 5 ? 5 : (y > depth_data->height - 5 ? depth_data->height - 5 : y);
 
             uint8_t *p = this->frame_buffer;
-            for (int j = y - 5; j < y + 5; j++) {
-                for (int i = x - 5; i < x + 5; i++) {
+            for (unsigned int j = y - 5; j < y + 5; j++) {
+                for (unsigned int i = x - 5; i < x + 5; i++) {
                     p[((j * depth_data->width) + i) * 3] = 255;
                     p[(((j * depth_data->width) + i) * 3) + 1] = 0;
                     p[(((j * depth_data->width) + i) * 3) + 2] = 255;
