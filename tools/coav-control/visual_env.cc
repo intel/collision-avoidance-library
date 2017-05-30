@@ -121,14 +121,60 @@ void draw_vehicle()
 
 }
 
-void draw_obstacle(float x, float y, float z)
+void spherical_to_cartesian(const double r, const double theta, const double phi,
+    float &x, float &y, float &z)
 {
-    glPushMatrix();
+    x = r * sin(theta) * cos(phi);
+    y = r * sin(theta) * sin(phi);
+    z = r * cos(theta);
+}
 
-    glTranslatef(x, y, z);
+void draw_obstacle(Obstacle o)
+{
+    float x, y, z, x2, y2, z2;
+
     glColor3f(0.7f, 0.0f, 0.0f);
-    glutSolidSphere(0.3, 20.0, 20.0);
 
+    spherical_to_cartesian(
+        o.bounding_box.tlc.x, o.bounding_box.tlc.y, o.bounding_box.tlc.z,
+        x, y, z);
+    spherical_to_cartesian(
+        o.bounding_box.brf.x, o.bounding_box.brf.y, o.bounding_box.brf.z,
+        x2, y2, z2);
+
+    glBegin(GL_LINE_LOOP);
+    glVertex3f(x, y, z);
+    glVertex3f(x2, y, z);
+    glVertex3f(x2, y2, z);
+    glVertex3f(x, y2, z);
+    glEnd();
+
+    glBegin(GL_LINE_LOOP);
+    glVertex3f(x, y, z2);
+    glVertex3f(x2, y, z2);
+    glVertex3f(x2, y2, z2);
+    glVertex3f(x, y2, z2);
+    glEnd();
+
+    glBegin(GL_LINES);
+    glVertex3f(x, y, z);
+    glVertex3f(x, y, z2);
+
+    glVertex3f(x2, y, z);
+    glVertex3f(x2, y, z2);
+
+    glVertex3f(x2, y2, z);
+    glVertex3f(x2, y2, z2);
+
+    glVertex3f(x, y2, z);
+    glVertex3f(x, y2, z2);
+    glEnd();
+
+    spherical_to_cartesian(o.center.x, o.center.y, o.center.z, x, y, z);
+
+    glPushMatrix();
+    glTranslatef(x, y, z);
+    glutSolidSphere(0.1, 20.0, 20.0);
     glPopMatrix();
 }
 
@@ -236,17 +282,8 @@ void VisualEnvironment::visualize(shared_ptr<MavQuadCopter> vehicle, vector<Obst
 
     draw_vehicle();
 
-    for (Obstacle o : obstacles) {
-        float r = o.center.x;
-        float theta = o.center.y;
-        float phi = o.center.z;
-
-        float ox = r * sin(theta) * cos(phi);
-        float oy = r * sin(theta) * sin(phi);
-        float oz = r * cos(theta);
-
-        draw_obstacle(ox, oy, oz);
-    }
+    for (Obstacle o : obstacles)
+        draw_obstacle(o);
 
     glPopMatrix();
 
