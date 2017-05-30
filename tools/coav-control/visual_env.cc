@@ -137,31 +137,31 @@ void draw_grid()
     glPushMatrix();
 
     glBegin(GL_LINES);
-        glColor3f(0.6f, 0.6f, 0.6f);
-        for (int i = -10; i <= 10; i++) {
-            if (i == 0) continue;
+    glColor3f(0.6f, 0.6f, 0.6f);
+    for (int i = -10; i <= 10; i++) {
+        if (i == 0) continue;
 
-            glNormal3f(0.0f, 0.0f, 1.0f);
-            glVertex3f(100, i * 10, 0);
-            glVertex3f(-100, i * 10, 0);
+        glNormal3f(0.0f, 0.0f, 1.0f);
+        glVertex3f(100, i * 10, 0);
+        glVertex3f(-100, i * 10, 0);
 
-            glNormal3f(0.0f, 0.0f, 1.0f);
-            glVertex3f(i * 10, 100, 0);
-            glVertex3f(i * 10, -100, 0);
-        }
+        glNormal3f(0.0f, 0.0f, 1.0f);
+        glVertex3f(i * 10, 100, 0);
+        glVertex3f(i * 10, -100, 0);
+    }
 
-        // X axis
-        glColor3f(0.8, 0.0, 0.0);
-        glVertex3f(-100, 0, 0);
-        glVertex3f( 100, 0, 0);
-        // Y axis
-        glColor3f(0.0, 0.8, 0.0);
-        glVertex3f(0, -100, 0);
-        glVertex3f(0,  100, 0);
-        // Z axis
-        glColor3f(0.0, 0.0, 0.8);
-        glVertex3f(0, 0, 0);
-        glVertex3f(0, 0, 100);
+    // X axis
+    glColor3f(0.8, 0.0, 0.0);
+    glVertex3f(-100, 0, 0);
+    glVertex3f( 100, 0, 0);
+    // Y axis
+    glColor3f(0.0, 0.8, 0.0);
+    glVertex3f(0, -100, 0);
+    glVertex3f(0,  100, 0);
+    // Z axis
+    glColor3f(0.0, 0.0, 0.8);
+    glVertex3f(0, 0, 0);
+    glVertex3f(0, 0, 100);
     glEnd();
 
     glTranslatef(0.0, 0.0, -0.01);
