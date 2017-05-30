@@ -102,8 +102,8 @@ least once with:
 
     Option | Description
     --- | ---
-    CMAKE_INSTALL_PREFIX | Set a custom installation path. This path is also used for dependance search.
-    CMAKE_PREFIX_PATH | Add paths to be searched when looking for dependances
+    CMAKE_INSTALL_PREFIX | Set a custom installation path. This path is also used for dependency search.
+    CMAKE_PREFIX_PATH | Add paths to be searched when looking for dependencies
 
     A more complete explanation of those options can be found on CMake's Documentation.
 
