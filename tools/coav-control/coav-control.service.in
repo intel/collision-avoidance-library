@@ -1,0 +1,10 @@
+[Unit]
+Description=Collision Avoidance Daemon
+
+[Service]
+Type=simple
+ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/coav-control -d DI_OBSTACLE -a QC_STOP -s ST_REALSENSE
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

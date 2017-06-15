@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 configure_file(coav-control.sh.in coav-control.sh @ONLY)
+configure_file(coav-control.service.in coav-control.service @ONLY)
 
 if(DEFINED ENV{SDKTARGETSYSROOT})
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/coav-control.sh
