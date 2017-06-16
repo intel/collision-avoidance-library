@@ -43,15 +43,31 @@ Compile code samples    | WITH_SAMPLES    | OFF
 This method is recommended for those who want to use 'coav-control' on an Intel
 Aero Drone.
 
-A Yocto layer containing recipes to build and install coav-control can be found on
-the repository under the folder 'meta-coav'. This layer can be easily added to
-to the image build by following the steps described by Intel Aero documentation
-[here](https://github.com/intel-aero/meta-intel-aero/wiki/Developing-on-Intel-Aero).
+'coav-control' utility tool comes installed on Intel Aero image since version 1.4.
+Its life cycle is controlled by a Systemd service that *won't* be enabled
+by default. To start the tool, issue the following from the drone's shell:
 
-The recipe install the 'coav-control' utility tool as well an init script that runs
-the tool on start-up. You can change it's behavior by editing the script file at
-any point of the process that seems convenient to you (custom branch, custom recipe
-or changing the file on the drone itself).
+ ```
+ systemctl start coav-control.service
+ ```
+
+You can change its behavior to execute your desired combination of Detection and
+Avoidance Strategy by editing the service file and restarting the service:
+
+ ```
+ systemctl restart coav-control.service
+ ```
+
+If you want that to start 'coav-control' automatically on boot, use the following:
+
+ ```
+ systemctl enable coav-control.service
+ ```
+
+We also provide a reference of a Yocto layer with recipes to build and install
+'libcoav' and 'coav-control' on this repository under the folder 'meta-coav'.
+This is just a reference and aims to make it easier for others to embed this
+project on a Yocto build if they don't want to use the layer provided by Intel Aero.
 
 ### Method 2 - Compile and Install yourself ###
 
