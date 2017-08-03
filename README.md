@@ -14,6 +14,7 @@ A framework for testing and benchmarking collision avoidance strategies.
  * socat 1.7+ (for testbed support)
  * GZSitl (for virtual vehicle support)
  * GLM (https://github.com/g-truc/glm.git)
+ * librealsense: Steps to install can be found [here](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
  * Autopilot, either:
    * Ardupilot (https://github.com/ArduPilot/ardupilot) or
    * PX4 (https://github.com/PX4/Firmware)
@@ -65,7 +66,8 @@ If you want that to start 'coav-control' automatically on boot, use the followin
  ```
 
 We also provide a reference of a Yocto layer with recipes to build and install
-'libcoav' and 'coav-control' on this repository under the folder 'meta-coav'.
+'libcoav' and 'coav-control' on this repository under the folder
+https://github.com/intel-aero/meta-intel-aero/tree/master/recipes-support/collision-avoidance-library 
 This is just a reference and aims to make it easier for others to embed this
 project on a Yocto build if they don't want to use the layer provided by Intel Aero.
 
@@ -79,14 +81,12 @@ instructions](#deploying-on-intel-aero) about taking advantage of Yocto's SDK su
 
 If you're using Ubuntu, before continuing please ensure you have the needed dependencies:
  * If you want to use Gazebo, ensure you go through the instructions available [here](http://gazebosim.org/tutorials?tut=install_ubuntu) and ensure you install the libgazebo8-dev package;
- * Install all build dependencies (the last two are needed to build librealsense):
+ * Install all build dependencies :
  
   ```
-  sudo apt-get install git cmake libglm-dev python-future doxygen libusb-1.0-0-dev libglfw3-dev
+  sudo apt-get install git cmake libglm-dev python-future doxygen
   ```
 
- * Go through the steps to install librealsense which can be found [here](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
-  
 The project use CMake as build system and does not support in-tree build.
 As such, create a separate folder before building.
 
