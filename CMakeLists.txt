@@ -151,15 +151,17 @@ target_link_libraries(coav
     PUBLIC ${LIBRARIES}
     PRIVATE mavlink_vehicles)
 
-install(TARGETS coav DESTINATION ${CMAKE_INSTALL_LIBDIR})
-
 configure_file(include/coav.hh.in include/coav/coav.hh)
-install(DIRECTORY ${CMAKE_BINARY_DIR}/include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Extra targets
 if (${WITH_TOOLS})
     add_subdirectory(tools/coav-control)
+endif()
+
+if (NOT TARGET coav-control)
+	install(TARGETS coav DESTINATION ${CMAKE_INSTALL_LIBDIR})
+	install(DIRECTORY ${CMAKE_BINARY_DIR}/include/
+			DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif()
 
 if (${WITH_SAMPLES})
