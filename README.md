@@ -69,7 +69,7 @@ If you're using Ubuntu, before continuing please ensure you have the needed depe
   sudo apt-get install git cmake libglm-dev python-future doxygen libusb-1.0-0-dev libglfw3-dev
   ```
 
- * Go through the steps to install librealsense which can be found [here](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
+ * Go through the steps to install librealsense (it does not support librealsense2) which can be found [here](https://github.com/IntelRealSense/librealsense/blob/legacy/doc/installation.md)
   
 The project use CMake as build system and does not support in-tree build.
 As such, create a separate folder before building.
